@@ -53,7 +53,15 @@ if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   info "Auth: using GITHUB_TOKEN env var"
 elif command -v gh >/dev/null 2>&1; then
   if gh auth status >/dev/null 2>&1; then
+    # Try gh auth token (v2.17+), fallback to hosts.yml for older versions
     TOKEN="$(gh auth token 2>/dev/null || true)"
+    if [[ -z "$TOKEN" ]]; then
+      # Old gh CLI — read token from hosts.yml directly
+      GH_HOSTS="${XDG_CONFIG_HOME:-$HOME/.config}/gh/hosts.yml"
+      if [[ -f "$GH_HOSTS" ]]; then
+        TOKEN="$(grep -A2 'github.com' "$GH_HOSTS" | grep 'oauth_token' | awk '{print $2}' | tr -d '[:space:]')"
+      fi
+    fi
     if [[ -n "$TOKEN" ]]; then
       info "Auth: using gh CLI token"
     else
@@ -64,6 +72,12 @@ elif command -v gh >/dev/null 2>&1; then
     if gh auth login 2>/dev/null; then
       gh auth refresh -h github.com -s repo >/dev/null 2>&1 || true
       TOKEN="$(gh auth token 2>/dev/null || true)"
+      if [[ -z "$TOKEN" ]]; then
+        GH_HOSTS="${XDG_CONFIG_HOME:-$HOME/.config}/gh/hosts.yml"
+        if [[ -f "$GH_HOSTS" ]]; then
+          TOKEN="$(grep -A2 'github.com' "$GH_HOSTS" | grep 'oauth_token' | awk '{print $2}' | tr -d '[:space:]')"
+        fi
+      fi
       ok "GitHub login successful"
     else
       warn "gh auth login failed"
@@ -81,8 +95,9 @@ fi
 # ─── Verify repo access ─────────────────────────────────────────────────────
 echo ""
 info "Verifying access..."
+USE_GH_API=false
 
-HTTP_CODE="$(curl -sS -o /dev/null -w "%{http_code}" \
+HTTP_CODE="$(curl -sS --http1.1 -o /dev/null -w "%{http_code}" \
   --connect-timeout 10 --max-time 30 \
   -H "Authorization: token ${TOKEN}" \
   -H "Accept: application/vnd.github+json" \
@@ -91,9 +106,11 @@ HTTP_CODE="$(curl -sS -o /dev/null -w "%{http_code}" \
 if [[ "$HTTP_CODE" == "200" ]]; then
   ok "Repo access verified"
 elif [[ "$HTTP_CODE" == "401" || "$HTTP_CODE" == "403" || "$HTTP_CODE" == "404" ]]; then
-  # Try gh API as fallback
-  if command -v gh >/dev/null 2>&1 && GH_TOKEN="$TOKEN" gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs?ref=${GITHUB_SOURCE_BRANCH}" >/dev/null 2>&1; then
+  # Try gh API as fallback (works when gh session has access but token lacks repo scope)
+  if command -v gh >/dev/null 2>&1 && gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs?ref=${GITHUB_SOURCE_BRANCH}" >/dev/null 2>&1; then
     ok "Repo access verified (via gh)"
+    # Switch to gh-based download mode
+    USE_GH_API=true
   else
     warn "You do not have ACS access yet (HTTP $HTTP_CODE)."
     echo ""
@@ -113,10 +130,14 @@ fi
 echo ""
 info "Fetching release manifest..."
 
-MANIFEST="$(curl -fsSL \
-  -H "Authorization: token ${TOKEN}" \
-  -H "Accept: application/vnd.github.raw" \
-  "https://api.github.com/repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/manifest.json?ref=${GITHUB_SOURCE_BRANCH}")"
+if [[ "$USE_GH_API" == "true" ]]; then
+  MANIFEST="$(gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/manifest.json?ref=${GITHUB_SOURCE_BRANCH}" -H "Accept: application/vnd.github.raw")"
+else
+  MANIFEST="$(curl -fsSL --http1.1 \
+    -H "Authorization: token ${TOKEN}" \
+    -H "Accept: application/vnd.github.raw" \
+    "https://api.github.com/repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/manifest.json?ref=${GITHUB_SOURCE_BRANCH}")"
+fi
 
 VERSION="$(echo "$MANIFEST" | python3 -c "import sys,json; print(json.load(sys.stdin)['version'])" 2>/dev/null || true)"
 if [[ -z "$VERSION" ]]; then
@@ -176,15 +197,24 @@ if command -v git >/dev/null 2>&1 && git lfs version >/dev/null 2>&1; then
   rm -rf "$LFS_DIR" 2>/dev/null || true
 fi
 
-# Method 2: GitHub Contents API download_url
+# Method 2: gh API download (when curl token auth fails)
+if [[ "$DOWNLOADED" != "true" ]] && [[ "$USE_GH_API" == "true" ]]; then
+  gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/${FILE_NAME}?ref=${GITHUB_SOURCE_BRANCH}" \
+    -H "Accept: application/octet-stream" > "$TMP_FILE" 2>/dev/null
+  if [[ -f "$TMP_FILE" ]] && [[ "$(wc -c < "$TMP_FILE")" -gt 1000000 ]]; then
+    DOWNLOADED=true
+  fi
+fi
+
+# Method 3: GitHub Contents API download_url (curl with token)
 if [[ "$DOWNLOADED" != "true" ]]; then
-  DL_URL="$(curl -fsSL \
+  DL_URL="$(curl -fsSL --http1.1 \
     -H "Authorization: token ${TOKEN}" \
     -H "Accept: application/vnd.github+json" \
     "https://api.github.com/repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/${FILE_NAME}?ref=${GITHUB_SOURCE_BRANCH}" \
     | python3 -c "import sys,json; print(json.load(sys.stdin).get('download_url',''))" 2>/dev/null || true)"
   if [[ -n "$DL_URL" ]]; then
-    curl -fsSL -H "Authorization: token ${TOKEN}" "$DL_URL" -o "$TMP_FILE"
+    curl -fsSL --http1.1 -H "Authorization: token ${TOKEN}" "$DL_URL" -o "$TMP_FILE"
     DOWNLOADED=true
   fi
 fi
