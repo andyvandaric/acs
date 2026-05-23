@@ -1,32 +1,48 @@
-# ACS (Agnostic Config Suites)
+# ACS — Agnostic Config Suites
 
-Unified installer for the ACS agentic coding stack.
+Unified installer for the agentic coding stack.
 
-## Quick Install
+## Install
+
+### macOS / Linux
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
 ```
 
+### Windows (PowerShell)
+
 ```powershell
-iex (irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1)
+irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
 ```
 
-## What Gets Installed (Phase 1)
+## What Gets Installed
 
-- **9router** — Multi-account routing, RTK compression, auto-fallback
-- **Claude Code** — Interactive AI coding TUI with MCP tools
-- **Hermes Agent** — Autonomous executor with self-learning skills
+- **acs-cli** — single binary, all platforms (Windows/macOS/Linux, amd64/arm64)
+- After install, run `acs-cli setup` to configure the full stack:
+  - 9router (AI model routing)
+  - Claude Code CLI (+ plugins + hooks)
+  - Hermes Agent (+ profile + automation)
+  - Shared skills library
 
-## Stack
+## Requirements
 
-All tools route through 9router (:20128) for:
-- Multi-account rotation
-- RTK input compression (20-40% savings)
-- Caveman output compression (up to 65% savings)
-- 3-tier fallback (subscription → cheap → free)
-- Shared MCP servers (context7, exa, grep_app)
+- Git
+- Internet connection
+- GitHub account with repo access
+
+## After Install
+
+```bash
+acs-cli setup      # Configure everything
+acs-cli doctor     # Verify installation
+acs-cli service start  # Start services
+```
+
+## Troubleshooting
+
+Run `acs-cli doctor --fix` to auto-repair common issues.
 
 ## License
 
-MIT
+Proprietary. Access granted per-user via private repository.
