@@ -302,9 +302,25 @@ $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($currentPath -notlike "*$INSTALL_DIR*") {
     Info "Adding $INSTALL_DIR to user PATH..."
     [Environment]::SetEnvironmentVariable("Path", "$INSTALL_DIR;$currentPath", "User")
-    $env:Path = "$INSTALL_DIR;$env:Path"
-    Ok "Added to PATH (restart terminal for full effect)"
+    Ok "Added to user PATH"
 }
+# Always ensure current session has it (propagates to script scope via [Environment])
+if ($env:Path -notlike "*$INSTALL_DIR*") {
+    $env:Path = "$INSTALL_DIR;$env:Path"
+}
+# Broadcast WM_SETTINGCHANGE so other open shells pick it up
+try {
+    Add-Type -Namespace Win32 -Name NativeMethods -MemberDefinition @"
+[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+public static extern IntPtr SendMessageTimeout(
+    IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam,
+    uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);
+"@
+    $HWND_BROADCAST = [IntPtr]0xffff
+    $WM_SETTINGCHANGE = 0x1a
+    $result = [UIntPtr]::Zero
+    [Win32.NativeMethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
+} catch { }
 
 # ─── Register as service ────────────────────────────────────────────────────
 Write-Host ""
@@ -327,9 +343,11 @@ try {
 Write-Host ""
 $acsVersion = & $acsCli version 2>$null
 if ($acsVersion) {
+    # Strip "acs-cli " prefix if present (avoid "vacs-cli 0.14.0")
+    $acsVersion = $acsVersion -replace '^acs-cli\s*', ''
     Ok "acs-cli v$acsVersion ready!"
 } else {
-    Ok "Installed! Restart your terminal, then run: acs-cli setup"
+    Ok "Installed! Run: acs-cli setup"
 }
 
 Write-Host ""
@@ -352,4 +370,10 @@ try {
     Write-Host "  If this persists, contact support or try:" -ForegroundColor Yellow
     Write-Host "    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1" -ForegroundColor Yellow
     Write-Host ""
+}
+
+# Ensure PATH is available in the caller's session (function scope doesn't propagate)
+$_acsDir = "$env:USERPROFILE\.acs\bin"
+if ((Test-Path "$_acsDir\acs-cli.exe") -and ($env:Path -notlike "*$_acsDir*")) {
+    $env:Path = "$_acsDir;$env:Path"
 }
