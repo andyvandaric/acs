@@ -24,20 +24,66 @@ Write-Host ""
 # ─── Require PowerShell 7+ ────────────────────────────────────────────────────
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     Warn "PowerShell $($PSVersionTable.PSVersion) detected — PS 7+ required."
-    Info "Installing PowerShell 7..."
-    try {
-        winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent
+
+    # Check if pwsh already exists somewhere
+    $pwshPath = $null
+    $pwshCmd = Get-Command pwsh -ErrorAction SilentlyContinue
+    if ($pwshCmd) {
+        $pwshPath = $pwshCmd.Source
+    } elseif (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe") {
         $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
-        if (Test-Path $pwshPath) {
-            Ok "PowerShell 7 installed. Re-launching installer in pwsh..."
-            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
-            return
-        } else {
-            Err "PowerShell 7 install succeeded but pwsh.exe not found. Please restart terminal and re-run installer."
-        }
-    } catch {
-        Err "Failed to install PowerShell 7. Install manually: https://aka.ms/powershell-release then re-run this installer."
     }
+
+    # If not found, try to install
+    if (-not $pwshPath) {
+        Info "PowerShell 7 not found. Attempting install..."
+
+        $installed = $false
+
+        # Method 1: winget (may need admin)
+        if (-not $installed -and (Get-Command winget -ErrorAction SilentlyContinue)) {
+            Info "Trying winget..."
+            try {
+                $wingetOut = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
+                if ($LASTEXITCODE -eq 0) { $installed = $true }
+            } catch { }
+        }
+
+        # Method 2: Direct MSI download (no admin needed for per-user)
+        if (-not $installed) {
+            Info "Trying direct download..."
+            try {
+                $msiUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.msi"
+                $msiPath = Join-Path $env:TEMP "pwsh-install.msi"
+                Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing -TimeoutSec 120
+                # Install per-user (no admin required)
+                $msiArgs = "/i `"$msiPath`" /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0"
+                Start-Process msiexec.exe -ArgumentList $msiArgs -Wait -NoNewWindow
+                if ($LASTEXITCODE -eq 0) { $installed = $true }
+                Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
+            } catch {
+                Warn "MSI install failed: $_"
+            }
+        }
+
+        # Re-check after install attempts
+        if (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe") {
+            $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
+        } elseif (Get-Command pwsh -ErrorAction SilentlyContinue) {
+            $pwshPath = (Get-Command pwsh).Source
+        }
+    }
+
+    # Relaunch in pwsh if available
+    if ($pwshPath) {
+        Ok "PowerShell 7 found at: $pwshPath"
+        Info "Re-launching installer in pwsh..."
+        & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+        return
+    }
+
+    # All methods failed
+    Err "Could not install or find PowerShell 7. Install manually: https://aka.ms/powershell-release then re-run this installer."
 }
 
 # ─── Detect Arch ─────────────────────────────────────────────────────────────
