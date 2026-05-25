@@ -120,10 +120,15 @@ $manifestHeaders = @{
 }
 
 try {
-    $manifestRaw = (Invoke-WebRequest -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/manifest.json?ref=$GITHUB_SOURCE_BRANCH" `
-        -Headers $manifestHeaders -UseBasicParsing -TimeoutSec 30).Content
+    $response = Invoke-WebRequest `
+    -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/manifest.json?ref=$GITHUB_SOURCE_BRANCH" `
+    -Headers $manifestHeaders `
+    -UseBasicParsing `
+    -TimeoutSec 30
+    $manifestRaw = [System.Text.Encoding]::UTF8.GetString($response.Content)
     $manifest = $manifestRaw | ConvertFrom-Json
 } catch {
+    Write-Host $_
     Err "Failed to fetch manifest.json"
 }
 
