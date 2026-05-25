@@ -2,30 +2,16 @@
 # Usage: irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
-# Wrap in a function to prevent exit from killing the host shell
-function Install-ACS {
-$ErrorActionPreference = "Stop"
-
-$GITHUB_SOURCE_REPO = "andyvandaric/andyvand-opencode-config"
-$GITHUB_SOURCE_BRANCH = "main"
-$WHATSAPP_ORDER_URL = "https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya"
-$INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
-
-function Info($msg) { Write-Host "  $msg" }
-function Ok($msg) { Write-Host "✅ $msg" -ForegroundColor Green }
-function Warn($msg) { Write-Host "⚠️  $msg" -ForegroundColor Yellow }
-function Err($msg) { Write-Host "❌ $msg" -ForegroundColor Red; throw $msg }
-
-Write-Host ""
-Write-Host "⚡ ACS CLI — Agnostic Config Suites" -ForegroundColor Cyan
-Write-Host "────────────────────────────────────"
-Write-Host ""
-
-# ─── Require PowerShell 7+ ────────────────────────────────────────────────────
+# ─── PS5 Bootstrap: detect PS version and relaunch in PS7 if needed ───────────
+# This section MUST be parseable by PowerShell 5.1 (no PS7 syntax)
 if ($PSVersionTable.PSVersion.Major -lt 7) {
-    Warn "PowerShell $($PSVersionTable.PSVersion) detected — PS 7+ required."
+    Write-Host ""
+    Write-Host "ACS CLI - Agnostic Config Suites" -ForegroundColor Cyan
+    Write-Host "------------------------------------"
+    Write-Host ""
+    Write-Host "  !! PowerShell $($PSVersionTable.PSVersion) detected - PS 7+ required." -ForegroundColor Yellow
 
-    # Check if pwsh already exists somewhere
+    # Check if pwsh already exists
     $pwshPath = $null
     $pwshCmd = Get-Command pwsh -ErrorAction SilentlyContinue
     if ($pwshCmd) {
@@ -36,37 +22,31 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 
     # If not found, try to install
     if (-not $pwshPath) {
-        Info "PowerShell 7 not found. Attempting install..."
+        Write-Host "  PowerShell 7 not found. Attempting install..." -ForegroundColor Cyan
 
-        $installed = $false
-
-        # Method 1: winget (may need admin)
-        if (-not $installed -and (Get-Command winget -ErrorAction SilentlyContinue)) {
-            Info "Trying winget..."
+        # Method 1: winget
+        if (Get-Command winget -ErrorAction SilentlyContinue) {
+            Write-Host "  Trying winget..." -ForegroundColor Cyan
             try {
-                $wingetOut = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
-                if ($LASTEXITCODE -eq 0) { $installed = $true }
+                $null = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
             } catch { }
         }
 
-        # Method 2: Direct MSI download (no admin needed for per-user)
-        if (-not $installed) {
-            Info "Trying direct download..."
+        # Method 2: Direct MSI download
+        if (-not (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe")) {
+            Write-Host "  Trying direct download..." -ForegroundColor Cyan
             try {
                 $msiUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.msi"
                 $msiPath = Join-Path $env:TEMP "pwsh-install.msi"
                 Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing -TimeoutSec 120
-                # Install per-user (no admin required)
-                $msiArgs = "/i `"$msiPath`" /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0"
-                Start-Process msiexec.exe -ArgumentList $msiArgs -Wait -NoNewWindow
-                if ($LASTEXITCODE -eq 0) { $installed = $true }
+                Start-Process msiexec.exe -ArgumentList "/i `"$msiPath`" /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0" -Wait -NoNewWindow
                 Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
             } catch {
-                Warn "MSI install failed: $_"
+                Write-Host "  !! MSI install failed: $_" -ForegroundColor Yellow
             }
         }
 
-        # Re-check after install attempts
+        # Re-check
         if (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe") {
             $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
         } elseif (Get-Command pwsh -ErrorAction SilentlyContinue) {
@@ -74,20 +54,47 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         }
     }
 
-    # Relaunch in pwsh if available
+    # Relaunch in pwsh
     if ($pwshPath) {
-        Ok "PowerShell 7 found at: $pwshPath"
-        Info "Re-launching installer in pwsh..."
+        Write-Host "  OK PowerShell 7 found at: $pwshPath" -ForegroundColor Green
+        Write-Host "  Re-launching installer in pwsh..." -ForegroundColor Cyan
         & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
-        if ($LASTEXITCODE -ne 0) {
-            throw "PowerShell 7 installer failed with exit code $LASTEXITCODE"
+        # Propagate PATH after pwsh finishes
+        $acsDir = "$env:USERPROFILE\.acs\bin"
+        if ((Test-Path "$acsDir\acs-cli.exe") -and ($env:Path -notlike "*$acsDir*")) {
+            $env:Path = "$acsDir;$env:Path"
         }
         return
     }
 
-    # All methods failed
-    Err "Could not install or find PowerShell 7. Install manually: https://aka.ms/powershell-release then re-run this installer."
+    Write-Host ""
+    Write-Host "  !! Could not install or find PowerShell 7." -ForegroundColor Red
+    Write-Host "  Install manually: https://aka.ms/powershell-release" -ForegroundColor Yellow
+    Write-Host "  Then re-run this installer." -ForegroundColor Yellow
+    Write-Host ""
+    return
 }
+
+# ─── Everything below requires PowerShell 7+ ─────────────────────────────────
+# PS5 will never reach here (it returns above)
+
+function Install-ACS {
+$ErrorActionPreference = "Stop"
+
+$GITHUB_SOURCE_REPO = "andyvandaric/andyvand-opencode-config"
+$GITHUB_SOURCE_BRANCH = "main"
+$WHATSAPP_ORDER_URL = "https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya"
+$INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
+
+function Info($msg) { Write-Host "  $msg" }
+function Ok($msg) { Write-Host "`u{2705} $msg" -ForegroundColor Green }
+function Warn($msg) { Write-Host "`u{26A0}`u{FE0F}  $msg" -ForegroundColor Yellow }
+function Err($msg) { Write-Host "`u{274C} $msg" -ForegroundColor Red; throw $msg }
+
+Write-Host ""
+Write-Host "`u{26A1} ACS CLI `u{2014} Agnostic Config Suites" -ForegroundColor Cyan
+Write-Host "`u{2500}" * 36
+Write-Host ""
 
 # ─── Detect Arch ─────────────────────────────────────────────────────────────
 $arch = if ([Environment]::Is64BitOperatingSystem) {
@@ -159,7 +166,6 @@ try {
 } catch {
     $statusCode = $_.Exception.Response.StatusCode.value__
     if ($statusCode -eq 401 -or $statusCode -eq 403 -or $statusCode -eq 404) {
-        # Try gh API fallback
         $ghCheck = $null
         if (Get-Command gh -ErrorAction SilentlyContinue) {
             $env:GH_TOKEN = $TOKEN
@@ -193,10 +199,10 @@ $manifestHeaders = @{
 
 try {
     $response = Invoke-WebRequest `
-    -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/manifest.json?ref=$GITHUB_SOURCE_BRANCH" `
-    -Headers $manifestHeaders `
-    -UseBasicParsing `
-    -TimeoutSec 30
+        -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/manifest.json?ref=$GITHUB_SOURCE_BRANCH" `
+        -Headers $manifestHeaders `
+        -UseBasicParsing `
+        -TimeoutSec 30
     $manifestRaw = [System.Text.Encoding]::UTF8.GetString($response.Content)
     $manifest = $manifestRaw | ConvertFrom-Json
 } catch {
@@ -227,17 +233,17 @@ $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloaded = $false
 
-# Progress download helper — shows MB downloaded (synchronous, no threading issues)
+# Progress download helper — synchronous stream read with inline progress
 function Download-WithProgress {
     param([string]$Url, [hashtable]$Headers, [string]$OutFile)
-    
+
     try {
         $request = [System.Net.HttpWebRequest]::Create($Url)
         $request.Timeout = 120000
         foreach ($key in $Headers.Keys) {
             $request.Headers.Add($key, $Headers[$key])
         }
-        
+
         $response = $request.GetResponse()
         $totalBytes = $response.ContentLength
         $stream = $response.GetResponseStream()
@@ -246,12 +252,11 @@ function Download-WithProgress {
         $bytesRead = 0
         $totalRead = 0
         $lastReport = 0
-        
+
         while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
             $fileStream.Write($buffer, 0, $bytesRead)
             $totalRead += $bytesRead
             $mb = [math]::Round($totalRead / 1MB, 1)
-            # Report every 1MB
             if ($mb -ge $lastReport + 1) {
                 $lastReport = [math]::Floor($mb)
                 if ($totalBytes -gt 0) {
@@ -262,7 +267,7 @@ function Download-WithProgress {
                 }
             }
         }
-        
+
         $fileStream.Close()
         $stream.Close()
         $response.Close()
@@ -353,18 +358,12 @@ if ($currentPath -notlike "*$INSTALL_DIR*") {
     [Environment]::SetEnvironmentVariable("Path", "$INSTALL_DIR;$currentPath", "User")
     Ok "Added to user PATH"
 }
-# Always ensure current session has it (propagates to script scope via [Environment])
 if ($env:Path -notlike "*$INSTALL_DIR*") {
     $env:Path = "$INSTALL_DIR;$env:Path"
 }
 # Broadcast WM_SETTINGCHANGE so other open shells pick it up
 try {
-    Add-Type -Namespace Win32 -Name NativeMethods -MemberDefinition @"
-[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-public static extern IntPtr SendMessageTimeout(
-    IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam,
-    uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);
-"@
+    Add-Type -Namespace Win32 -Name NativeMethods -MemberDefinition '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)] public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'
     $HWND_BROADCAST = [IntPtr]0xffff
     $WM_SETTINGCHANGE = 0x1a
     $result = [UIntPtr]::Zero
@@ -392,7 +391,6 @@ try {
 Write-Host ""
 $acsVersion = & $acsCli version 2>$null
 if ($acsVersion) {
-    # Strip "acs-cli " prefix if present (avoid "vacs-cli 0.14.0")
     $acsVersion = $acsVersion -replace '^acs-cli\s*', ''
     Ok "acs-cli v$acsVersion ready!"
 } else {
@@ -400,31 +398,28 @@ if ($acsVersion) {
 }
 
 Write-Host ""
-Write-Host "────────────────────────────────────"
+Write-Host "`u{2500}" * 36
 Write-Host "  Next: acs-cli setup" -ForegroundColor Cyan
-Write-Host "────────────────────────────────────"
+Write-Host "`u{2500}" * 36
 Write-Host ""
 
 } # end Install-ACS function
 
-# ─── Run with error capture (prevents exit from killing host shell) ───────────
+# ─── Run with error capture ───────────────────────────────────────────────────
 try {
     Install-ACS
 } catch {
     Write-Host ""
-    Write-Host "────────────────────────────────────" -ForegroundColor Red
+    Write-Host "`u{2500}" * 36 -ForegroundColor Red
     Write-Host "  Installation failed: $_" -ForegroundColor Red
-    Write-Host "────────────────────────────────────" -ForegroundColor Red
+    Write-Host "`u{2500}" * 36 -ForegroundColor Red
     Write-Host ""
     Write-Host "  If this persists, contact support or try:" -ForegroundColor Yellow
     Write-Host "    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1" -ForegroundColor Yellow
     Write-Host ""
-    if ($PSCommandPath) {
-        exit 1
-    }
 }
 
-# Ensure PATH is available in the caller's session (function scope doesn't propagate)
+# Ensure PATH is available in the caller's session
 $_acsDir = "$env:USERPROFILE\.acs\bin"
 if ((Test-Path "$_acsDir\acs-cli.exe") -and ($env:Path -notlike "*$_acsDir*")) {
     $env:Path = "$_acsDir;$env:Path"
