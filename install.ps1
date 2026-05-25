@@ -79,6 +79,9 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         Ok "PowerShell 7 found at: $pwshPath"
         Info "Re-launching installer in pwsh..."
         & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+        if ($LASTEXITCODE -ne 0) {
+            throw "PowerShell 7 installer failed with exit code $LASTEXITCODE"
+        }
         return
     }
 
@@ -370,6 +373,9 @@ try {
     Write-Host "  If this persists, contact support or try:" -ForegroundColor Yellow
     Write-Host "    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1" -ForegroundColor Yellow
     Write-Host ""
+    if ($PSCommandPath) {
+        exit 1
+    }
 }
 
 # Ensure PATH is available in the caller's session (function scope doesn't propagate)
