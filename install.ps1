@@ -17,6 +17,25 @@ Write-Host "⚡ ACS CLI — Agnostic Config Suites" -ForegroundColor Cyan
 Write-Host "────────────────────────────────────"
 Write-Host ""
 
+# ─── Require PowerShell 7+ ────────────────────────────────────────────────────
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Warn "PowerShell $($PSVersionTable.PSVersion) detected — PS 7+ required."
+    Info "Installing PowerShell 7..."
+    try {
+        winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent
+        $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
+        if (Test-Path $pwshPath) {
+            Ok "PowerShell 7 installed. Re-launching installer in pwsh..."
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+            exit $LASTEXITCODE
+        } else {
+            Err "PowerShell 7 install succeeded but pwsh.exe not found. Please restart terminal and re-run installer."
+        }
+    } catch {
+        Err "Failed to install PowerShell 7. Install manually: https://aka.ms/powershell-release then re-run this installer."
+    }
+}
+
 # ─── Detect Arch ─────────────────────────────────────────────────────────────
 $arch = if ([Environment]::Is64BitOperatingSystem) {
     if ($env:PROCESSOR_ARCHITECTURE -eq "ARM64" -or (Get-CimInstance Win32_Processor).Architecture -eq 12) {
