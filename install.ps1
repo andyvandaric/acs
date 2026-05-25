@@ -232,9 +232,26 @@ if ($currentPath -notlike "*$INSTALL_DIR*") {
     Ok "Added to PATH (restart terminal for full effect)"
 }
 
+# ─── Register as service ────────────────────────────────────────────────────
+Write-Host ""
+Info "Registering as persistent service..."
+$acsCli = Join-Path $INSTALL_DIR "acs-cli.exe"
+try {
+    $svcOutput = & $acsCli service install 2>&1
+    if ($LASTEXITCODE -eq 0) {
+        Ok "Service registered (auto-starts on login)"
+    } else {
+        Warn "Service registration skipped: $svcOutput"
+        Info "You can register manually later: acs-cli service install"
+    }
+} catch {
+    Warn "Service registration failed: $_"
+    Info "You can register manually later: acs-cli service install"
+}
+
 # ─── Verify ──────────────────────────────────────────────────────────────────
 Write-Host ""
-$acsVersion = & (Join-Path $INSTALL_DIR "acs-cli.exe") version 2>$null
+$acsVersion = & $acsCli version 2>$null
 if ($acsVersion) {
     Ok "acs-cli v$acsVersion ready!"
 } else {

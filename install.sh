@@ -199,10 +199,12 @@ fi
 
 # Method 2: gh API download (when curl token auth fails)
 if [[ "$DOWNLOADED" != "true" ]] && [[ "$USE_GH_API" == "true" ]]; then
-  gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/${FILE_NAME}?ref=${GITHUB_SOURCE_BRANCH}" \
-    -H "Accept: application/octet-stream" > "$TMP_FILE" 2>/dev/null
-  if [[ -f "$TMP_FILE" ]] && [[ "$(wc -c < "$TMP_FILE")" -gt 1000000 ]]; then
-    DOWNLOADED=true
+  DL_URL="$(gh api "repos/${GITHUB_SOURCE_REPO}/contents/assets/acs/${FILE_NAME}?ref=${GITHUB_SOURCE_BRANCH}" --jq .download_url 2>/dev/null || true)"
+  if [[ -n "$DL_URL" && "$DL_URL" != "null" ]]; then
+    curl -fsSL --http1.1 "$DL_URL" -o "$TMP_FILE" 2>/dev/null
+    if [[ -f "$TMP_FILE" ]] && [[ "$(wc -c < "$TMP_FILE")" -gt 1000000 ]]; then
+      DOWNLOADED=true
+    fi
   fi
 fi
 
@@ -281,6 +283,15 @@ if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   fi
 
   export PATH="${INSTALL_DIR}:$PATH"
+fi
+
+# ─── Register as service ────────────────────────────────────────────────────
+echo ""
+info "Registering as persistent service..."
+if "${INSTALL_DIR}/acs-cli" service install 2>/dev/null; then
+  ok "Service registered (auto-starts on login)"
+else
+  warn "Service registration skipped (run manually: acs-cli service install)"
 fi
 
 # ─── Verify ──────────────────────────────────────────────────────────────────
