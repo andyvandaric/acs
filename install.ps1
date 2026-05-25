@@ -227,38 +227,49 @@ $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloaded = $false
 
-# Progress download helper — shows percentage during download
+# Progress download helper — shows MB downloaded (synchronous, no threading issues)
 function Download-WithProgress {
     param([string]$Url, [hashtable]$Headers, [string]$OutFile)
     
-    $webClient = New-Object System.Net.WebClient
-    foreach ($key in $Headers.Keys) {
-        $webClient.Headers.Add($key, $Headers[$key])
-    }
-    
-    $lastPercent = -1
-    $progressHandler = {
-        param($sender, $e)
-        if ($e.ProgressPercentage -ne $script:lastPercent -and $e.ProgressPercentage % 5 -eq 0) {
-            $script:lastPercent = $e.ProgressPercentage
-            $mb = [math]::Round($e.BytesReceived / 1MB, 1)
-            Write-Host "`r  Downloading... ${mb}MB ($($e.ProgressPercentage)%)" -NoNewline
-        }
-    }
-    $completedHandler = { Write-Host "" }
-    
-    $webClient.add_DownloadProgressChanged($progressHandler)
-    $webClient.add_DownloadFileCompleted($completedHandler)
-    
     try {
-        $uri = New-Object System.Uri($Url)
-        $task = $webClient.DownloadFileTaskAsync($uri, $OutFile)
-        $task.Wait()
+        $request = [System.Net.HttpWebRequest]::Create($Url)
+        $request.Timeout = 120000
+        foreach ($key in $Headers.Keys) {
+            $request.Headers.Add($key, $Headers[$key])
+        }
+        
+        $response = $request.GetResponse()
+        $totalBytes = $response.ContentLength
+        $stream = $response.GetResponseStream()
+        $fileStream = [System.IO.File]::Create($OutFile)
+        $buffer = New-Object byte[] 65536
+        $bytesRead = 0
+        $totalRead = 0
+        $lastReport = 0
+        
+        while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+            $fileStream.Write($buffer, 0, $bytesRead)
+            $totalRead += $bytesRead
+            $mb = [math]::Round($totalRead / 1MB, 1)
+            # Report every 1MB
+            if ($mb -ge $lastReport + 1) {
+                $lastReport = [math]::Floor($mb)
+                if ($totalBytes -gt 0) {
+                    $pct = [math]::Round(($totalRead / $totalBytes) * 100)
+                    Write-Host "`r  Downloading... ${mb}MB / $([math]::Round($totalBytes / 1MB, 1))MB ($pct%)" -NoNewline
+                } else {
+                    Write-Host "`r  Downloading... ${mb}MB" -NoNewline
+                }
+            }
+        }
+        
+        $fileStream.Close()
+        $stream.Close()
+        $response.Close()
+        Write-Host ""
         return $true
     } catch {
         return $false
-    } finally {
-        $webClient.Dispose()
     }
 }
 
