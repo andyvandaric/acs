@@ -1,5 +1,9 @@
 # install.ps1 — Install ACS CLI for Windows
 # Usage: irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+# Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
+
+# Wrap in a function to prevent exit from killing the host shell
+function Install-ACS {
 $ErrorActionPreference = "Stop"
 
 $GITHUB_SOURCE_REPO = "andyvandaric/andyvand-opencode-config"
@@ -10,7 +14,7 @@ $INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
 function Info($msg) { Write-Host "  $msg" }
 function Ok($msg) { Write-Host "✅ $msg" -ForegroundColor Green }
 function Warn($msg) { Write-Host "⚠️  $msg" -ForegroundColor Yellow }
-function Err($msg) { Write-Host "❌ $msg" -ForegroundColor Red; exit 1 }
+function Err($msg) { Write-Host "❌ $msg" -ForegroundColor Red; throw $msg }
 
 Write-Host ""
 Write-Host "⚡ ACS CLI — Agnostic Config Suites" -ForegroundColor Cyan
@@ -27,7 +31,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         if (Test-Path $pwshPath) {
             Ok "PowerShell 7 installed. Re-launching installer in pwsh..."
             & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
-            exit $LASTEXITCODE
+            return
         } else {
             Err "PowerShell 7 install succeeded but pwsh.exe not found. Please restart terminal and re-run installer."
         }
@@ -120,7 +124,7 @@ try {
             Write-Host "  Order ACS: $WHATSAPP_ORDER_URL"
             Write-Host ""
             Start-Process $WHATSAPP_ORDER_URL -ErrorAction SilentlyContinue
-            exit 1
+            throw "No ACS access"
         }
     } elseif (-not $_.Exception.Response) {
         Err "Cannot reach GitHub API. Check network/proxy/firewall."
@@ -287,3 +291,19 @@ Write-Host "──────────────────────�
 Write-Host "  Next: acs-cli setup" -ForegroundColor Cyan
 Write-Host "────────────────────────────────────"
 Write-Host ""
+
+} # end Install-ACS function
+
+# ─── Run with error capture (prevents exit from killing host shell) ───────────
+try {
+    Install-ACS
+} catch {
+    Write-Host ""
+    Write-Host "────────────────────────────────────" -ForegroundColor Red
+    Write-Host "  Installation failed: $_" -ForegroundColor Red
+    Write-Host "────────────────────────────────────" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "  If this persists, contact support or try:" -ForegroundColor Yellow
+    Write-Host "    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1" -ForegroundColor Yellow
+    Write-Host ""
+}
