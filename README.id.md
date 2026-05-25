@@ -22,6 +22,11 @@ Kompatibel dengan Claude Code, Hermes, Kiro, Codex, dan agent MCP-compatible lai
 
 ---
 
+## Release Terbaru
+
+- ACS CLI: `0.15.3`
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+
 ## Install
 
 ### macOS / Linux

@@ -22,6 +22,11 @@ Works with Claude Code, Hermes, Kiro, Codex, and any MCP-compatible agent. Tool-
 
 ---
 
+## Latest Release
+
+- ACS CLI: `0.15.3`
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
+
 ## Install
 
 ### macOS / Linux
