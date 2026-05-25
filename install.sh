@@ -262,25 +262,50 @@ ok "Installed: ${INSTALL_DIR}/acs-cli"
 if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   info "Adding $INSTALL_DIR to PATH..."
 
-  SHELL_RC=""
+  PATH_EXPORT="export PATH=\"${INSTALL_DIR}:\$PATH\""
+  PATH_COMMENT="# ACS CLI"
+
+  # Determine shell RC files to update
+  RC_FILES=()
   case "${SHELL:-/bin/bash}" in
-    */zsh) SHELL_RC="$HOME/.zshrc" ;;
-    */bash) SHELL_RC="$HOME/.bashrc" ;;
-    */fish) SHELL_RC="$HOME/.config/fish/config.fish" ;;
+    */zsh)
+      RC_FILES=("$HOME/.zshrc")
+      ;;
+    */bash)
+      RC_FILES=("$HOME/.bashrc")
+      # Also add to .profile for login shells (Ubuntu WSL, SSH, etc.)
+      # .profile is sourced by login shells but .bashrc often isn't
+      if [[ -f "$HOME/.profile" ]] || [[ ! -f "$HOME/.bash_profile" ]]; then
+        RC_FILES+=("$HOME/.profile")
+      else
+        RC_FILES+=("$HOME/.bash_profile")
+      fi
+      ;;
+    */fish)
+      RC_FILES=("$HOME/.config/fish/config.fish")
+      ;;
+    *)
+      # Unknown shell — try both common files
+      RC_FILES=("$HOME/.bashrc" "$HOME/.profile")
+      ;;
   esac
 
-  if [[ -n "$SHELL_RC" ]]; then
-    if ! grep -q "$INSTALL_DIR" "$SHELL_RC" 2>/dev/null; then
-      echo "" >> "$SHELL_RC"
-      echo "# ACS CLI" >> "$SHELL_RC"
-      if [[ "$SHELL_RC" == *fish* ]]; then
-        echo "set -gx PATH $INSTALL_DIR \$PATH" >> "$SHELL_RC"
-      else
-        echo "export PATH=\"${INSTALL_DIR}:\$PATH\"" >> "$SHELL_RC"
-      fi
-      ok "Added to $SHELL_RC"
+  for RC_FILE in "${RC_FILES[@]}"; do
+    if [[ -z "$RC_FILE" ]]; then continue; fi
+    if grep -q "$INSTALL_DIR" "$RC_FILE" 2>/dev/null; then continue; fi
+
+    # Create file if it doesn't exist (e.g. fresh Ubuntu)
+    touch "$RC_FILE" 2>/dev/null || continue
+
+    echo "" >> "$RC_FILE"
+    echo "$PATH_COMMENT" >> "$RC_FILE"
+    if [[ "$RC_FILE" == *fish* ]]; then
+      echo "set -gx PATH $INSTALL_DIR \$PATH" >> "$RC_FILE"
+    else
+      echo "$PATH_EXPORT" >> "$RC_FILE"
     fi
-  fi
+    ok "Added to $RC_FILE"
+  done
 
   export PATH="${INSTALL_DIR}:$PATH"
 fi
@@ -299,7 +324,12 @@ echo ""
 if command -v acs-cli >/dev/null 2>&1; then
   ok "acs-cli v$(acs-cli version 2>/dev/null || echo "$VERSION") ready!"
 else
-  ok "Installed! Restart your shell or run: export PATH=\"${INSTALL_DIR}:\$PATH\""
+  ok "acs-cli v${VERSION} installed to ${INSTALL_DIR}/acs-cli"
+  echo ""
+  warn "Shell needs to reload PATH. Run one of:"
+  echo "    source ~/.profile"
+  echo "    source ~/.bashrc"
+  echo "    # or just open a new terminal"
 fi
 
 echo ""
