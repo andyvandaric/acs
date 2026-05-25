@@ -1,32 +1,32 @@
 {
   "name": "acs-cli",
   "version": "0.14.1",
-  "commit": "3005a95",
-  "build_time": "2026-05-25T09:56:25Z",
+  "commit": "8924cf5",
+  "build_time": "2026-05-25T10:05:45Z",
   "artifacts": {
     "linux-amd64": {
       "file": "acs-cli-linux-amd64",
-      "sha256": "a85a0269d346acfa617b95770399ab1c1692c6741da4a591a453dba663ac1425"
+      "sha256": "3eede240d5e16d497feeb90bcc3401532f38036fe2de3d86ced9c91a3613e0d9"
     },
     "linux-arm64": {
       "file": "acs-cli-linux-arm64",
-      "sha256": "b416032e4ce91ccc9e13c1be381706230782aff1eb750a7d654c1e74ec0d88b7"
+      "sha256": "d2b15f634a1bf0a0f049898a29623d0a6f9f2c222be281270db40dcbfb7db86a"
     },
     "windows-amd64": {
       "file": "acs-cli-windows-amd64.exe",
-      "sha256": "7f0d81df719c16d37e00d6b7f2180996cf0026d9f5a33a37b60ffa2e8be19048"
+      "sha256": "80c88bcbffe3418bac8e63498caf792056236c71759b048885987beb90423a04"
     },
     "windows-arm64": {
       "file": "acs-cli-windows-arm64.exe",
-      "sha256": "8dd9146efd57d339000bc5694cd93bb8bdb639a73e2b28dd4011ff0baeb2c609"
+      "sha256": "72a292f0a9cf38bdb7052fbf75301f8445c51b62d27c8c2a5dc511ba5303968d"
     },
     "darwin-amd64": {
       "file": "acs-cli-darwin-amd64",
-      "sha256": "90450e9c2b657b26e1210a136b4a65ad26f5a5954de0d3697410e735345d2a25"
+      "sha256": "45317421250903a292bf93cc1d7adffc4835e821f81462410bb25a54c77de017"
     },
     "darwin-arm64": {
       "file": "acs-cli-darwin-arm64",
-      "sha256": "76229dcb69f799ae17a883ebfd8b422968b253620b27b098fe70d7aa69f8ba20"
+      "sha256": "8c095882f1d2277eecd00edec9ca9a77510aa7954a362966272df016ae517133"
     }
   }
 }

@@ -227,6 +227,41 @@ $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloaded = $false
 
+# Progress download helper — shows percentage during download
+function Download-WithProgress {
+    param([string]$Url, [hashtable]$Headers, [string]$OutFile)
+    
+    $webClient = New-Object System.Net.WebClient
+    foreach ($key in $Headers.Keys) {
+        $webClient.Headers.Add($key, $Headers[$key])
+    }
+    
+    $lastPercent = -1
+    $progressHandler = {
+        param($sender, $e)
+        if ($e.ProgressPercentage -ne $script:lastPercent -and $e.ProgressPercentage % 5 -eq 0) {
+            $script:lastPercent = $e.ProgressPercentage
+            $mb = [math]::Round($e.BytesReceived / 1MB, 1)
+            Write-Host "`r  Downloading... ${mb}MB ($($e.ProgressPercentage)%)" -NoNewline
+        }
+    }
+    $completedHandler = { Write-Host "" }
+    
+    $webClient.add_DownloadProgressChanged($progressHandler)
+    $webClient.add_DownloadFileCompleted($completedHandler)
+    
+    try {
+        $uri = New-Object System.Uri($Url)
+        $task = $webClient.DownloadFileTaskAsync($uri, $OutFile)
+        $task.Wait()
+        return $true
+    } catch {
+        return $false
+    } finally {
+        $webClient.Dispose()
+    }
+}
+
 # Method 1: GitHub Contents API
 try {
     $contentsUrl = "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/${FILE_NAME}?ref=$GITHUB_SOURCE_BRANCH"
@@ -236,8 +271,8 @@ try {
 
     if ($dlUrl) {
         $dlHeaders = @{ "Authorization" = "token $TOKEN" }
-        Invoke-WebRequest -Uri $dlUrl -Headers $dlHeaders -OutFile $TMP_FILE -UseBasicParsing -TimeoutSec 120
-        $downloaded = $true
+        $result = Download-WithProgress -Url $dlUrl -Headers $dlHeaders -OutFile $TMP_FILE
+        if ($result) { $downloaded = $true }
     }
 } catch {
     # Fallback below
