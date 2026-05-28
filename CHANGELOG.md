@@ -1,5 +1,14 @@
 # ACS Installer Changelog
 
+
+## [0.16.0] - 2026-05-29
+
+### Updated
+- ACS CLI updated to v0.16.0.
+- Added global config management, AI skill merge, broker auto-compose.
+- Added dashboard preset manager, skill sync, toolset config, mobile paginator.
+- Fixed service stack management.
+
 ## [0.15.3] - 2026-05-25
 
 ### Fixed
