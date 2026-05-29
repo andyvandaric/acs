@@ -1,6 +1,13 @@
 # ACS Installer Changelog
 
 
+## [0.16.1] - 2026-05-29
+
+### Fixed
+- Skill sync health endpoint per-skill states.
+- Dashboard createEffect import fix.
+- Claude config panel and model routing refactored.
+
 ## [0.16.0] - 2026-05-29
 
 ### Updated
