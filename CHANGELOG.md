@@ -1,6 +1,14 @@
 # ACS Installer Changelog
 
 
+## [0.16.2] - 2026-05-29
+
+### Fixed
+- Gateway wiring: `mergedMaskedAllowedUsers` dedup by raw value — prevents mask collision where short IDs all collapse to single masked entry.
+
+### Added
+- 6 wiring E2E tests covering full gateway pipeline (create→file, create→DB, update preserves secrets, get reads file, copy shared env, stale state detection).
+
 ## [0.16.1] - 2026-05-29
 
 ### Fixed
