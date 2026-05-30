@@ -144,10 +144,20 @@ if ($env:GITHUB_TOKEN) {
 }
 
 if (-not $TOKEN) {
-    Warn "No GitHub token found."
-    Info "Install GitHub CLI and login: gh auth login"
-    Info "Or set GITHUB_TOKEN environment variable."
-    Err "Cannot proceed without GitHub authentication."
+    Write-Host ""
+    Write-Host "  ┌─────────────────────────────────────────────┐" -ForegroundColor Cyan
+    Write-Host "  │  GitHub authentication required.             │" -ForegroundColor Cyan
+    Write-Host "  │                                              │" -ForegroundColor Cyan
+    Write-Host "  │  Sudah punya akses ACS?                      │" -ForegroundColor Cyan
+    Write-Host "  │  → Install gh CLI: https://cli.github.com    │" -ForegroundColor Cyan
+    Write-Host "  │  → Lalu jalankan: gh auth login              │" -ForegroundColor Cyan
+    Write-Host "  │                                              │" -ForegroundColor Cyan
+    Write-Host "  │  Belum punya akses?                          │" -ForegroundColor Cyan
+    Write-Host "  │  → Order ACS: wa.me/6281289731212            │" -ForegroundColor Cyan
+    Write-Host "  └─────────────────────────────────────────────┘" -ForegroundColor Cyan
+    Write-Host ""
+    Start-Process $WHATSAPP_ORDER_URL -ErrorAction SilentlyContinue
+    throw "GitHub authentication required"
 }
 
 # ─── Verify repo access ─────────────────────────────────────────────────────
@@ -214,13 +224,30 @@ $VERSION = $manifest.version
 Ok "Latest version: v$VERSION"
 
 # ─── Determine artifact ──────────────────────────────────────────────────────
-$artifact = $manifest.artifacts.$PLATFORM
-if (-not $artifact) {
-    Err "No artifact found for platform: $PLATFORM"
+# Support both manifest formats:
+# Format A (new): {"files": {"acs-cli-windows-amd64.exe": "sha256"}}
+# Format B (legacy): {"artifacts": {"windows-amd64": {"file": "...", "sha256": "..."}}}
+$FILE_NAME = $null
+$EXPECTED_SHA = $null
+
+if ($manifest.files) {
+    $key = "acs-cli-$PLATFORM"
+    if ($manifest.files.PSObject.Properties[$key]) {
+        $FILE_NAME = $key
+        $EXPECTED_SHA = $manifest.files.$key
+    } elseif ($manifest.files.PSObject.Properties["$key.exe"]) {
+        $FILE_NAME = "$key.exe"
+        $EXPECTED_SHA = $manifest.files."$key.exe"
+    }
+} elseif ($manifest.artifacts -and $manifest.artifacts.$PLATFORM) {
+    $artifact = $manifest.artifacts.$PLATFORM
+    $FILE_NAME = $artifact.file
+    $EXPECTED_SHA = $artifact.sha256
 }
 
-$FILE_NAME = $artifact.file
-$EXPECTED_SHA = $artifact.sha256
+if (-not $FILE_NAME) {
+    Err "No artifact found for platform: $PLATFORM"
+}
 Info "Artifact: $FILE_NAME"
 
 # ─── Download binary ─────────────────────────────────────────────────────────
