@@ -81,7 +81,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 function Install-ACS {
 $ErrorActionPreference = "Stop"
 
-$GITHUB_SOURCE_REPO = "andyvandaric/andyvand-opencode-config"
+$GITHUB_SOURCE_REPO = "andyvandaric/agnostic-config-suites"
 $GITHUB_SOURCE_BRANCH = "main"
 $WHATSAPP_ORDER_URL = "https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya"
 $INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
