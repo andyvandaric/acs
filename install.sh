@@ -150,7 +150,16 @@ FILE_NAME="$(echo "$MANIFEST" | python3 -c "
 import sys, json
 m = json.load(sys.stdin)
 p = '${PLATFORM}'
-if p in m['artifacts']:
+# Support both manifest formats:
+# Format A (new): {\"files\": {\"acs-cli-linux-amd64\": \"sha256\"}}
+# Format B (legacy): {\"artifacts\": {\"linux-amd64\": {\"file\": \"...\", \"sha256\": \"...\"}}}
+if 'files' in m:
+    key = 'acs-cli-' + p
+    if key in m['files']:
+        print(key)
+    elif key + '.exe' in m['files']:
+        print(key + '.exe')
+elif 'artifacts' in m and p in m['artifacts']:
     print(m['artifacts'][p]['file'])
 " 2>/dev/null || true)"
 
@@ -158,7 +167,13 @@ EXPECTED_SHA="$(echo "$MANIFEST" | python3 -c "
 import sys, json
 m = json.load(sys.stdin)
 p = '${PLATFORM}'
-if p in m['artifacts']:
+if 'files' in m:
+    key = 'acs-cli-' + p
+    if key in m['files']:
+        print(m['files'][key])
+    elif key + '.exe' in m['files']:
+        print(m['files'][key + '.exe'])
+elif 'artifacts' in m and p in m['artifacts']:
     print(m['artifacts'][p]['sha256'])
 " 2>/dev/null || true)"
 
