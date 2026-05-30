@@ -86,10 +86,21 @@ elif command -v gh >/dev/null 2>&1; then
 fi
 
 if [[ -z "$TOKEN" ]]; then
-  warn "No GitHub token found."
-  info "Install GitHub CLI and login: gh auth login"
-  info "Or set GITHUB_TOKEN environment variable."
-  err "Cannot proceed without GitHub authentication."
+  echo ""
+  echo "  ┌─────────────────────────────────────────────┐"
+  echo "  │  GitHub authentication required.             │"
+  echo "  │                                              │"
+  echo "  │  Sudah punya akses ACS?                      │"
+  echo "  │  → Install gh CLI: https://cli.github.com    │"
+  echo "  │  → Lalu jalankan: gh auth login              │"
+  echo "  │                                              │"
+  echo "  │  Belum punya akses?                          │"
+  echo "  │  → Order ACS: wa.me/6281289731212            │"
+  echo "  └─────────────────────────────────────────────┘"
+  echo ""
+  if command -v xdg-open >/dev/null 2>&1; then xdg-open "$WHATSAPP_ORDER_URL" 2>/dev/null || true
+  elif command -v open >/dev/null 2>&1; then open "$WHATSAPP_ORDER_URL" 2>/dev/null || true; fi
+  exit 1
 fi
 
 # ─── Verify repo access ─────────────────────────────────────────────────────
