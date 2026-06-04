@@ -12,20 +12,17 @@ The agentic coding stack that makes AI work for you — not the other way around
 
 - **Multi-model routing** — 9router proxy connects all providers (OpenAI, Anthropic, Google, local) through one endpoint, auto-fallback when a provider goes down
 - **Agent gateway** — deploy AI agents to Telegram, run 24/7, receive tasks from chat anytime
+- **Self-healing infrastructure** — watchdog auto-restarts crashed services, gateway respawn, stale lock detection, 9router backoff recovery
+- **Reactive dashboard** — Tide-powered UI with instant cache hydration, skeleton loading, WebSocket live updates, and prefetch on hover
 - **30+ battle-tested skills** — spec writing, architecture, TDD, security review, git workflow — all activate automatically based on context
-- **Web dashboard** — monitor all agents, gateways, model usage, health status from your browser
-- **Self-healing** — auto-detect stale processes, restart crashed gateways, sweep dead locks
-- **Auto-update** — binary updates automatically with zero downtime, rollback on failure
+- **Codex multi-auth** — manage multiple AI accounts, switch contexts seamlessly
+- **Sync & snapshots** — pre-sync backup, snapshot browser, quick undo, overlap detection with progress streaming
+- **Auto-update** — binary updates automatically with realtime progress bar, SHA-256 verification, zero downtime, rollback on failure
 - **Zero config routing** — set up once, all agents (Claude Code, Hermes, Kiro, Codex) connect to the same model pool
 
 Works with Claude Code, Hermes, Kiro, Codex, and any MCP-compatible agent. Tool-agnostic by design.
 
 ---
-
-## Latest Release
-
-- ACS CLI: `0.18.0`
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Install
 
@@ -43,7 +40,7 @@ irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
 
 The installer automatically:
 - Detects your platform (Windows/macOS/Linux, amd64/arm64)
-- Downloads the binary (~33MB) from the private repo via GitHub auth
+- Downloads the binary from the private repo via GitHub auth
 - Verifies SHA-256 integrity
 - Installs to `~/.acs/bin/`
 - Registers as a persistent service (auto-start on login)
@@ -51,11 +48,11 @@ The installer automatically:
 ## What Gets Installed
 
 - **acs-cli** — single binary, all platforms, all features
-- **9router** — LLM proxy with multi-provider routing + combo fallback
+- **9router** — LLM proxy with multi-provider routing, combo fallback, PID management, and health checks
 - **30+ agent skills** — architecture, security, TDD, release, marketing, and more
-- **Web dashboard** — monitoring + management UI (port 20130)
-- **Scheduler** — background tasks: health checks, auto-update, gateway monitoring
-- **Gateway manager** — deploy agents to Telegram in seconds
+- **Web dashboard** — Tide-powered monitoring + management UI (port 20130)
+- **Scheduler** — background tasks: health checks, auto-update, gateway monitoring, respawn
+- **Gateway manager** — deploy agents to Telegram in seconds, self-healing with auto-restart
 
 ## Setup
 
@@ -79,6 +76,8 @@ Setup is **idempotent** — safe to run multiple times. What it configures:
 | shared-skills | Deploy 30+ agent skills |
 | mcp-servers | Configure MCP tool servers |
 | automation | Deploy hooks + scheduled tasks |
+| tooling-deps | Validate and auto-fix tooling dependencies |
+| git-credential | Provision .gitconfig per Hermes profile |
 
 ## Stack Architecture
 
@@ -92,13 +91,18 @@ Setup is **idempotent** — safe to run multiple times. What it configures:
 │  │ :20128   │  │ Manager  │  │     :20130       │  │
 │  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
 │       │              │                 │            │
-│  Multi-model    Telegram bot      Web UI +          │
-│  routing +      deploy +          monitoring        │
-│  fallback       24/7 agent                          │
+│  Multi-model    Telegram bot      Tide reactive     │
+│  routing +      deploy +          UI + WebSocket    │
+│  fallback       self-heal         live updates      │
 │                                                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
 │  │Scheduler │  │  Skills  │  │   Auto-Update    │  │
-│  │(background)│ │  (30+)   │  │   (6h check)     │  │
+│  │(watchdog) │  │  (30+)   │  │  (realtime bar)  │  │
+│  └──────────┘  └──────────┘  └──────────────────┘  │
+│                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
+│  │  Sync    │  │  Kanban  │  │   Multi-Auth     │  │
+│  │(snapshots)│  │  Board   │  │   (Codex/Claude) │  │
 │  └──────────┘  └──────────┘  └──────────────────┘  │
 │                                                     │
 └─────────────────────────────────────────────────────┘
@@ -129,11 +133,16 @@ acs-cli service start    # Start everything (9router + gateway + dashboard + sch
 
 Open `http://localhost:20130` — dashboard features:
 
-- **Gateway Manager** — start/stop/create/delete agent gateways, real-time status
+- **Command Center** — summary cards, announcements, experimental feature banners
+- **Stack Manager** — start/stop/restart individual services with auto-start config
+- **Gateway Manager** — start/stop/create/delete agent gateways, real-time status, self-heal indicators
 - **Model Routing** — view active combos, provider status, usage metrics
 - **Health Monitor** — warning system for duplicate tokens, stale locks, process issues
-- **Agent Sessions** — agent conversation history
+- **Sync & Snapshots** — browse config snapshots, restore previous state, quick undo
+- **Scheduler** — view background tasks, gateway respawn status, update checks
 - **Settings** — API keys, preferences, theme (dark/light)
+
+Responsive layout: 2-col mobile, 3-col tablet, 4-col desktop. Full mobile support with swipe pagination and auto-hide sidebar.
 
 ## Gateway: AI Agent via Telegram
 
@@ -152,6 +161,8 @@ acs-cli gateway list
 
 Each gateway = 1 Telegram bot = 1 AI agent with its own personality and skills.
 
+Self-healing: if a gateway dies, the scheduler detects it and restarts automatically. Telegram notification on auto-heal.
+
 ## Auto-Update
 
 ACS CLI checks for updates automatically every 6 hours. For manual updates:
@@ -160,7 +171,7 @@ ACS CLI checks for updates automatically every 6 hours. For manual updates:
 acs-cli update
 ```
 
-Update flow: download new binary → verify SHA-256 → swap binary → restart service. Zero downtime.
+Update flow: download new binary → realtime progress bar → verify SHA-256 → swap binary → restart service. Zero downtime.
 
 ## Uninstall
 

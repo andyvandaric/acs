@@ -24,33 +24,86 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
     if (-not $pwshPath) {
         Write-Host "  PowerShell 7 not found. Attempting install..." -ForegroundColor Cyan
 
-        # Method 1: winget
+        # Check if running as admin (needed for MSI install)
+        $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+        # Method 1: winget (works without admin if --scope user, but PS7 needs machine scope)
+        $wingetInstalled = $false
         if (Get-Command winget -ErrorAction SilentlyContinue) {
             Write-Host "  Trying winget..." -ForegroundColor Cyan
             try {
-                $null = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
-            } catch { }
+                $wingetOut = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
+                if ($LASTEXITCODE -eq 0) {
+                    $wingetInstalled = $true
+                } else {
+                    Write-Host "  winget install returned code $LASTEXITCODE" -ForegroundColor Yellow
+                }
+            } catch {
+                Write-Host "  winget failed: $_" -ForegroundColor Yellow
+            }
         }
 
-        # Method 2: Direct MSI download
-        if (-not (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe")) {
+        # Method 2: Direct MSI download (requires elevation)
+        if (-not $wingetInstalled -and -not (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe")) {
             Write-Host "  Trying direct download..." -ForegroundColor Cyan
             try {
                 $msiUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.msi"
                 $msiPath = Join-Path $env:TEMP "pwsh-install.msi"
+
+                # TLS 1.2 required for GitHub downloads on PS5
+                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                Write-Host "  Downloading PowerShell 7..." -ForegroundColor Cyan
                 Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing -TimeoutSec 120
-                Start-Process msiexec.exe -ArgumentList "/i `"$msiPath`" /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0" -Wait -NoNewWindow
-                Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
+
+                if (Test-Path $msiPath) {
+                    $msiArgs = "/i `"$msiPath`" /quiet /norestart ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0 ADD_PATH=1"
+
+                    if ($isAdmin) {
+                        # Already elevated — run directly
+                        Write-Host "  Installing (admin)..." -ForegroundColor Cyan
+                        $proc = Start-Process msiexec.exe -ArgumentList $msiArgs -Wait -PassThru -NoNewWindow
+                        if ($proc.ExitCode -ne 0) {
+                            Write-Host "  MSI exited with code $($proc.ExitCode)" -ForegroundColor Yellow
+                        }
+                    } else {
+                        # Need elevation — use RunAs verb (will show UAC prompt)
+                        Write-Host "  Requesting admin permission to install PowerShell 7..." -ForegroundColor Cyan
+                        Write-Host "  (A UAC prompt may appear — please approve it)" -ForegroundColor Yellow
+                        try {
+                            $proc = Start-Process msiexec.exe -ArgumentList $msiArgs -Verb RunAs -Wait -PassThru
+                            if ($proc.ExitCode -ne 0) {
+                                Write-Host "  MSI exited with code $($proc.ExitCode)" -ForegroundColor Yellow
+                            }
+                        } catch {
+                            Write-Host "  !! Elevation denied or failed: $_" -ForegroundColor Yellow
+                        }
+                    }
+                    Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
+                }
             } catch {
-                Write-Host "  !! MSI install failed: $_" -ForegroundColor Yellow
+                Write-Host "  !! Download/install failed: $_" -ForegroundColor Yellow
             }
         }
 
-        # Re-check
-        if (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe") {
-            $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
-        } elseif (Get-Command pwsh -ErrorAction SilentlyContinue) {
-            $pwshPath = (Get-Command pwsh).Source
+        # Re-check — MSI installs to Program Files, refresh PATH awareness
+        $candidatePaths = @(
+            "$env:ProgramFiles\PowerShell\7\pwsh.exe",
+            "${env:SystemDrive}\Program Files\PowerShell\7\pwsh.exe"
+        )
+        foreach ($candidate in $candidatePaths) {
+            if (Test-Path $candidate) {
+                $pwshPath = $candidate
+                break
+            }
+        }
+        if (-not $pwshPath) {
+            # Also try refreshed PATH (winget may have added it)
+            $refreshedPath = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
+            $env:Path = $refreshedPath
+            $pwshCmd = Get-Command pwsh -ErrorAction SilentlyContinue
+            if ($pwshCmd) {
+                $pwshPath = $pwshCmd.Source
+            }
         }
     }
 
@@ -58,7 +111,21 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
     if ($pwshPath) {
         Write-Host "  OK PowerShell 7 found at: $pwshPath" -ForegroundColor Green
         Write-Host "  Re-launching installer in pwsh..." -ForegroundColor Cyan
-        & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+
+        # Save the installer script to a temp file to avoid re-download issues
+        $tempScript = Join-Path $env:TEMP "acs-install-relaunch.ps1"
+        try {
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $tempScript
+        } catch {
+            # Fallback: pipe method if file download fails
+            Write-Host "  Retrying with pipe method..." -ForegroundColor Yellow
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+        } finally {
+            Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
+        }
+
         # Propagate PATH after pwsh finishes
         $acsDir = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
         if ((Test-Path "$acsDir\acs-cli.exe") -and ($env:Path -notlike "*$acsDir*")) {
@@ -69,8 +136,13 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 
     Write-Host ""
     Write-Host "  !! Could not install or find PowerShell 7." -ForegroundColor Red
-    Write-Host "  Install manually: https://aka.ms/powershell-release" -ForegroundColor Yellow
-    Write-Host "  Then re-run this installer." -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  Install manually:" -ForegroundColor Yellow
+    Write-Host "    winget install --id Microsoft.PowerShell --source winget" -ForegroundColor White
+    Write-Host "  Or download from: https://aka.ms/powershell-release" -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  Then re-run:" -ForegroundColor Yellow
+    Write-Host "    irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex" -ForegroundColor White
     Write-Host ""
     return
 }
