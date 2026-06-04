@@ -60,7 +60,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         Write-Host "  Re-launching installer in pwsh..." -ForegroundColor Cyan
         & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
         # Propagate PATH after pwsh finishes
-        $acsDir = "$env:USERPROFILE\.acs\bin"
+        $acsDir = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
         if ((Test-Path "$acsDir\acs-cli.exe") -and ($env:Path -notlike "*$acsDir*")) {
             $env:Path = "$acsDir;$env:Path"
         }
@@ -84,7 +84,7 @@ $ErrorActionPreference = "Stop"
 $GITHUB_SOURCE_REPO = "andyvandaric/agnostic-config-suites"
 $GITHUB_SOURCE_BRANCH = "main"
 $WHATSAPP_ORDER_URL = "https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya"
-$INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
+$INSTALL_DIR = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
 
 function Info($msg) { Write-Host "  $msg" }
 function Ok($msg) { Write-Host "`u{2705} $msg" -ForegroundColor Green }
@@ -456,7 +456,7 @@ try {
 }
 
 # Ensure PATH is available in the caller's session
-$_acsDir = "$env:USERPROFILE\.acs\bin"
+$_acsDir = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
 if ((Test-Path "$_acsDir\acs-cli.exe") -and ($env:Path -notlike "*$_acsDir*")) {
     $env:Path = "$_acsDir;$env:Path"
 }
