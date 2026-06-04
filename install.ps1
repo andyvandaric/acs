@@ -373,6 +373,15 @@ if ($EXPECTED_SHA) {
 Write-Host ""
 Info "Installing to $INSTALL_DIR..."
 
+# Stop running acs-cli processes before overwriting binary (handles reinstall/update)
+$acsProcs = Get-Process -Name "acs-cli" -ErrorAction SilentlyContinue
+if ($acsProcs) {
+    Info "Stopping running acs-cli processes..."
+    $acsProcs | Stop-Process -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 2
+    Ok "Processes stopped"
+}
+
 New-Item -ItemType Directory -Path $INSTALL_DIR -Force | Out-Null
 Copy-Item $TMP_FILE (Join-Path $INSTALL_DIR "acs-cli.exe") -Force
 Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue

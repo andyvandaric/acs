@@ -279,6 +279,14 @@ fi
 echo ""
 info "Installing to $INSTALL_DIR..."
 
+# Stop running acs-cli processes before overwriting binary (handles reinstall/update)
+if pgrep -x acs-cli >/dev/null 2>&1; then
+  info "Stopping running acs-cli processes..."
+  pkill -x acs-cli 2>/dev/null || true
+  sleep 2
+  ok "Processes stopped"
+fi
+
 mkdir -p "$INSTALL_DIR"
 cp "$TMP_FILE" "${INSTALL_DIR}/acs-cli"
 chmod +x "${INSTALL_DIR}/acs-cli"
