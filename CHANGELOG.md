@@ -1,5 +1,29 @@
 # ACS Installer Changelog
 
+## [0.20.0] - 2026-06-04
+
+### Added
+- Tide realtime data framework (createTide, skeleton components, TideProvider)
+- Stack Manager & Scheduler pages with live WebSocket data
+- Dashboard Command Center redesign with 3-column layout
+- Self-healing daemon with hermes auto-patch system
+- AI-powered release pipeline (13 gates via 9router)
+- AnnouncementCard responsive UI component
+- Auto version bump from conventional commits
+- Justfile shortcuts for dev/release workflows
+- Pipeline unit tests (74 pytest, mypy strict, ruff, bandit)
+
+### Changed
+- Repo restructured: apps/acs/cli/ → src/
+- Garble build without -literals (3x faster, 40% smaller)
+- UPX skips arm64 (unsupported)
+- Hardening gate relaxed for buyer repo URL references
+
+### Fixed
+- Gateway crash loop (datetime naive vs aware in hermes)
+- Frontend API response parsing for nested {success, data} format
+- Windows cp1252 encoding in pipeline subprocess calls
+
 
 ## [0.16.2] - 2026-05-29
 
