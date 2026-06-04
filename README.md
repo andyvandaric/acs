@@ -60,9 +60,18 @@ The installer automatically:
 # Full setup (all components)
 acs-cli setup
 
+# With WezTerm terminal (Windows, recommended)
+acs-cli setup --wezterm
+
 # With Telegram bot (optional)
 acs-cli setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
 ```
+
+The `--wezterm` flag installs WezTerm as your dedicated standalone terminal (Windows only):
+- Installs via winget
+- Creates Desktop shortcut (launches directly, no intermediate shell)
+- Adds right-click "Open in WezTerm" context menu
+- Generates config with auto-detected shell (pwsh or powershell)
 
 Setup is **idempotent** — safe to run multiple times. What it configures:
 
