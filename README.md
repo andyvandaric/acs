@@ -10,11 +10,11 @@ The agentic coding stack that makes AI work for you — not the other way around
 
 **Agent Capability System** — a single binary that turns any AI coding agent into a full engineering team:
 
+- **Native MCP Support** — Instantly connect to Model Context Protocol endpoints for limitless tool integrations
 - **Multi-model routing** — 9router proxy connects all providers (OpenAI, Anthropic, Google, local) through one endpoint, auto-fallback when a provider goes down
 - **Agent gateway** — deploy AI agents to Telegram, run 24/7, receive tasks from chat anytime
 - **Self-healing infrastructure** — watchdog auto-restarts crashed services, gateway respawn, stale lock detection, 9router backoff recovery
-- **Reactive dashboard** — Tide-powered UI with instant cache hydration, skeleton loading, WebSocket live updates, and prefetch on hover
-- **30+ battle-tested skills** — spec writing, architecture, TDD, security review, git workflow — all activate automatically based on context
+- **Reactive dashboard** — Tide-powered UI with instant cache hydration, WebSocket live updates, and prefetch on hover
 - **Codex multi-auth** — manage multiple AI accounts, switch contexts seamlessly
 - **Sync & snapshots** — pre-sync backup, snapshot browser, quick undo, overlap detection with progress streaming
 - **Auto-update** — binary updates automatically with realtime progress bar, SHA-256 verification, zero downtime, rollback on failure

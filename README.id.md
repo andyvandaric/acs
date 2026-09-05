@@ -10,6 +10,7 @@ Stack agentic coding yang bikin AI kerja buat kamu — bukan sebaliknya.
 
 **Agent Capability System** — single binary yang mengubah AI coding agent manapun jadi tim engineering lengkap:
 
+- **Dukungan MCP Bawaan** — Hubungkan langsung ke endpoint Model Context Protocol untuk integrasi alat tanpa batas
 - **Multi-model routing** — 9router proxy menghubungkan semua provider (OpenAI, Anthropic, Google, local) dalam satu endpoint, auto-fallback kalau satu provider down
 - **Agent gateway** — deploy AI agent ke Telegram, jalankan 24/7, terima task dari chat kapanpun
 - **30+ battle-tested skills** — spec writing, architecture, TDD, security review, git workflow — semua otomatis aktif sesuai konteks

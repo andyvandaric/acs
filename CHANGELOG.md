@@ -1,5 +1,13 @@
 # ACS Installer Changelog
 
+## [1.0.1] - 2026-09-06
+
+### Added
+- Native Model Context Protocol (MCP) support for limitless tool integrations.
+
+### Changed
+- Updated documentation and CLI command parity with the dashboard (`acs-cli service start`, `acs-cli mcp`, `acs-cli agent`).
+
 ## [0.20.0] - 2026-06-04
 
 ### Added
