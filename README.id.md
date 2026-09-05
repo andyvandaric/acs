@@ -58,6 +58,41 @@ Installer otomatis:
 - **Scheduler** — background tasks: health check, auto-update, gateway monitoring
 - **Gateway manager** — deploy agent ke Telegram dalam hitungan detik
 
+## Perintah (CLI Commands)
+
+**Operasi Inti:**
+- `acs-cli service [start|stop|restart|status]` — Mengelola stack ACS
+- `acs-cli setup` — Menginstal/memperbarui lingkungan ACS
+- `acs-cli update` — Memperbarui ACS CLI ke versi terbaru
+- `acs-cli doctor` — Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
+- `acs-cli uninstall` — Menghapus ACS dari sistem
+
+**Kontrol Komponen:**
+- `acs-cli dashboard` — Operasi server dashboard
+- `acs-cli scheduler` — Penjadwal tugas latar belakang (background)
+- `acs-cli gateway` — Mengelola gateway API
+- `acs-cli router` — Operasi 9router
+
+**Ekosistem & MCP:**
+- `acs-cli mcp` — Mengelola Server & alat MCP (Model Context Protocol)
+- `acs-cli accounts` — Mengelola KeyPool & akun provider
+- `acs-cli articles` — Mesin artikel pengetahuan tersintesis
+- `acs-cli kanban` — Pelacakan tugas visual lokal
+- `acs-cli sessions` — Mengelola riwayat sesi agen
+- `acs-cli logs` — Melihat log teragregasi secara real-time
+
+**Kecerdasan Agen:**
+- `acs-cli agent` — AcsAgentManager (konfigurasi agen & soul)
+- `acs-cli toolprofile (tp)` — Mengelola profil alat AI (tool profiles)
+- `acs-cli workspace` — Operasi ruleset ruang kerja
+- `acs-cli hook` — Hook runtime Antigravity
+
+**Utilitas:**
+- `acs-cli status` — Menampilkan status diagnostik sistem
+- `acs-cli license` — Manajemen kunci lisensi
+- `acs-cli docs` — Manajer dokumentasi
+- `acs-cli completion` — Auto-completion shell
+
 ## Setup
 
 ```bash

@@ -6,7 +6,7 @@
 - Native Model Context Protocol (MCP) support for limitless tool integrations.
 
 ### Changed
-- Updated documentation and CLI command parity with the dashboard (`acs-cli service start`, `acs-cli mcp`, `acs-cli agent`).
+- Updated documentation and CLI command parity with the dashboard (added `acs-cli service`, `acs-cli setup`, `acs-cli update`, `acs-cli doctor`, `acs-cli uninstall`, `acs-cli mcp`, `acs-cli agent`, `acs-cli toolprofile`, and categorized core operations).
 
 ## [0.20.0] - 2026-06-04
 

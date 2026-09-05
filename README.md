@@ -54,6 +54,41 @@ The installer automatically:
 - **Scheduler** — background tasks: health checks, auto-update, gateway monitoring, respawn
 - **Gateway manager** — deploy agents to Telegram in seconds, self-healing with auto-restart
 
+## CLI Commands
+
+**Core Operations:**
+- `acs-cli service [start|stop|restart|status]` — Manage ACS stack
+- `acs-cli setup` — Install/update ACS environments
+- `acs-cli update` — Self-update ACS CLI to latest version
+- `acs-cli doctor` — Run health checks and auto-fix issues
+- `acs-cli uninstall` — Remove ACS from system
+
+**Component Control:**
+- `acs-cli dashboard` — Dashboard server operations
+- `acs-cli scheduler` — Background task scheduler
+- `acs-cli gateway` — Manage API gateways
+- `acs-cli router` — 9router operations
+
+**Ecosystem & MCP:**
+- `acs-cli mcp` — Manage MCP Servers & tools
+- `acs-cli accounts` — Manage KeyPool & provider accounts
+- `acs-cli articles` — Synthesized knowledge articles engine
+- `acs-cli kanban` — Local visual task tracking
+- `acs-cli sessions` — Manage agent session history
+- `acs-cli logs` — View real-time aggregated logs
+
+**Agent Intelligence:**
+- `acs-cli agent` — AcsAgentManager (agents & soul configuration)
+- `acs-cli toolprofile (tp)` — Manage AI tool profiles
+- `acs-cli workspace` — Workspace ruleset operations
+- `acs-cli hook` — Antigravity runtime hooks
+
+**Utilities:**
+- `acs-cli status` — Show system diagnostic status
+- `acs-cli license` — License key management
+- `acs-cli docs` — Documentation manager
+- `acs-cli completion` — Shell completions
+
 ## Setup
 
 ```bash
