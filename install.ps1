@@ -165,7 +165,7 @@ function Err($msg) { Write-Host "`u{274C} $msg" -ForegroundColor Red; throw $msg
 
 Write-Host ""
 Write-Host "`u{26A1} ACS CLI `u{2014} Agnostic Config Suites" -ForegroundColor Cyan
-Write-Host "`u{2500}" * 36
+Write-Host ("`u{2500}" * 36)
 Write-Host ""
 
 # ─── Detect Arch ─────────────────────────────────────────────────────────────
@@ -506,9 +506,9 @@ if ($acsVersion) {
 }
 
 Write-Host ""
-Write-Host "`u{2500}" * 36
+Write-Host ("`u{2500}" * 36)
 Write-Host "  Next: acs-cli setup" -ForegroundColor Cyan
-Write-Host "`u{2500}" * 36
+Write-Host ("`u{2500}" * 36)
 Write-Host ""
 
 } # end Install-ACS function
@@ -518,9 +518,9 @@ try {
     Install-ACS
 } catch {
     Write-Host ""
-    Write-Host "`u{2500}" * 36 -ForegroundColor Red
+    Write-Host ("`u{2500}" * 36) -ForegroundColor Red
     Write-Host "  Installation failed: $_" -ForegroundColor Red
-    Write-Host "`u{2500}" * 36 -ForegroundColor Red
+    Write-Host ("`u{2500}" * 36) -ForegroundColor Red
     Write-Host ""
     Write-Host "  If this persists, contact support or try:" -ForegroundColor Yellow
     Write-Host "    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1" -ForegroundColor Yellow
