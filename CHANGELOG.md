@@ -1,5 +1,21 @@
 # ACS Installer Changelog
 
+## [1.2.0] - 2026-09-09
+
+### Added
+- Autonomous Earliest Deadline First (EDF) quota scheduler with dual-threshold hysteresis (anti-flapping & prompt cache preservation).
+- AST-driven refactoring protocol with tree-sitter pattern replacement and LSP semantic rename.
+- Safety confirmation modal for Nuclear Reset and W3C design tokens compliance on Global Setup page.
+
+### Fixed
+- Stabilized Vitest test runner on Windows with adaptive worker concurrency and isolated heap memory.
+- Synchronized Biome linter configuration and resolved TypeScript diagnostics across frontend modules.
+- Preserved user-customized presets and environment configurations across service and system reboots.
+- Bypassed server write timeout on MCP SSE streams via connection hijacking.
+
+### Changed
+- Standardized MCP server registry with auto-purge of disabled servers from runtime agent configuration.
+
 ## [1.0.1] - 2026-09-06
 
 ### Added
