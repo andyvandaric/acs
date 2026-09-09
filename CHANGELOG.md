@@ -1,5 +1,15 @@
 # ACS Installer Changelog
 
+## [1.2.1] - 2026-09-09
+
+### Added
+- Interactive controls on Accounts dashboard for toggling autonomous account quota management.
+- 9router Proxy Pool integration panel with dead proxy cleanup and 1:1 connection rotation.
+- Interactive uninstaller workflow with options to keep configuration data or perform a full purge.
+
+### Fixed
+- Dashboard UI consistency and missing physical toggles on account and proxy views.
+
 ## [1.2.0] - 2026-09-09
 
 ### Added
