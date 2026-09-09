@@ -29,13 +29,13 @@ Works with Claude Code, Hermes, Kiro, Codex, and any MCP-compatible agent. Tool-
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
+curl -fsSL https://uikode.com/acs/install.sh | bash
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+irm https://uikode.com/acs/install.ps1 | iex
 ```
 
 The installer automatically:

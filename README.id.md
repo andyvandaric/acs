@@ -33,13 +33,13 @@ Kompatibel dengan Claude Code, Hermes, Kiro, Codex, dan agent MCP-compatible lai
 ### macOS / Linux
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
+curl -fsSL https://uikode.com/acs/install.sh | bash
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+irm https://uikode.com/acs/install.ps1 | iex
 ```
 
 Installer otomatis:

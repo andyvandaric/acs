@@ -1,5 +1,5 @@
 # install.ps1 — Install ACS CLI for Windows
-# Usage: irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+# Usage: irm https://uikode.com/acs/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
 # ─── PS5 Bootstrap: detect PS version and relaunch in PS7 if needed ───────────
@@ -116,12 +116,12 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         $tempScript = Join-Path $env:TEMP "acs-install-relaunch.ps1"
         try {
             [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+            Invoke-WebRequest -Uri "https://uikode.com/acs/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
             & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $tempScript
         } catch {
             # Fallback: pipe method if file download fails
             Write-Host "  Retrying with pipe method..." -ForegroundColor Yellow
-            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex"
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "irm https://uikode.com/acs/install.ps1 | iex"
         } finally {
             Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
         }
@@ -142,7 +142,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
     Write-Host "  Or download from: https://aka.ms/powershell-release" -ForegroundColor Yellow
     Write-Host ""
     Write-Host "  Then re-run:" -ForegroundColor Yellow
-    Write-Host "    irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex" -ForegroundColor White
+    Write-Host "    irm https://uikode.com/acs/install.ps1 | iex" -ForegroundColor White
     Write-Host ""
     return
 }
@@ -153,9 +153,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 function Install-ACS {
 $ErrorActionPreference = "Stop"
 
-$GITHUB_SOURCE_REPO = "andyvandaric/agnostic-config-suites"
-$GITHUB_SOURCE_BRANCH = "main"
-$WHATSAPP_ORDER_URL = "https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya"
+$CDN_BASE = "https://dl.uikode.com"
 $INSTALL_DIR = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
 
 function Info($msg) { Write-Host "  $msg" }
@@ -180,261 +178,82 @@ $arch = if ([Environment]::Is64BitOperatingSystem) {
 }
 
 $PLATFORM = "windows-$arch"
+$FILE_NAME = "acs-cli-$PLATFORM.exe"
 Info "Platform: $PLATFORM"
 
-# ─── Resolve GitHub token ────────────────────────────────────────────────────
-Write-Host ""
-Info "Resolving GitHub auth..."
-
-$TOKEN = ""
-
-if ($env:GITHUB_TOKEN) {
-    $TOKEN = $env:GITHUB_TOKEN.Trim()
-    Info "Auth: using GITHUB_TOKEN env var"
-} elseif (Get-Command gh -ErrorAction SilentlyContinue) {
-    $ghStatus = gh auth status 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        $TOKEN = (gh auth token 2>$null)
-        if ($TOKEN) {
-            $TOKEN = $TOKEN.Trim()
-            Info "Auth: using gh CLI token"
-        } else {
-            Info "Auth: using gh CLI session"
-        }
-    } else {
-        Info "gh CLI found but not authenticated. Attempting login..."
-        gh auth login
-        if ($LASTEXITCODE -eq 0) {
-            gh auth refresh -h github.com --scopes repo 2>$null
-            $TOKEN = (gh auth token 2>$null)
-            if ($TOKEN) { $TOKEN = $TOKEN.Trim() }
-            Ok "GitHub login successful"
-        } else {
-            Warn "gh auth login failed"
-        }
-    }
-}
-
-if (-not $TOKEN) {
-    Write-Host ""
-    Write-Host "  ┌─────────────────────────────────────────────┐" -ForegroundColor Cyan
-    Write-Host "  │  GitHub authentication required.             │" -ForegroundColor Cyan
-    Write-Host "  │                                              │" -ForegroundColor Cyan
-    Write-Host "  │  Sudah punya akses ACS?                      │" -ForegroundColor Cyan
-    Write-Host "  │  → Install gh CLI: https://cli.github.com    │" -ForegroundColor Cyan
-    Write-Host "  │  → Lalu jalankan: gh auth login              │" -ForegroundColor Cyan
-    Write-Host "  │                                              │" -ForegroundColor Cyan
-    Write-Host "  │  Belum punya akses?                          │" -ForegroundColor Cyan
-    Write-Host "  │  → Order ACS: wa.me/6281289731212            │" -ForegroundColor Cyan
-    Write-Host "  └─────────────────────────────────────────────┘" -ForegroundColor Cyan
-    Write-Host ""
-    Start-Process $WHATSAPP_ORDER_URL -ErrorAction SilentlyContinue
-    throw "GitHub authentication required"
-}
-
-# ─── Verify repo access ─────────────────────────────────────────────────────
-Write-Host ""
-Info "Verifying access..."
-
-$headers = @{
-    "Authorization" = "token $TOKEN"
-    "Accept" = "application/vnd.github+json"
-}
-
-try {
-    $response = Invoke-WebRequest -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs?ref=$GITHUB_SOURCE_BRANCH" `
-        -Headers $headers -UseBasicParsing -TimeoutSec 30 -ErrorAction Stop
-    Ok "Repo access verified"
-} catch {
-    $statusCode = $_.Exception.Response.StatusCode.value__
-    if ($statusCode -eq 401 -or $statusCode -eq 403 -or $statusCode -eq 404) {
-        $ghCheck = $null
-        if (Get-Command gh -ErrorAction SilentlyContinue) {
-            $env:GH_TOKEN = $TOKEN
-            $ghCheck = gh api "repos/$GITHUB_SOURCE_REPO/contents/assets/acs?ref=$GITHUB_SOURCE_BRANCH" 2>$null
-        }
-        if ($ghCheck) {
-            Ok "Repo access verified (via gh)"
-        } else {
-            Warn "You do not have ACS access yet (HTTP $statusCode)."
-            Write-Host ""
-            Write-Host "  Order ACS: $WHATSAPP_ORDER_URL"
-            Write-Host ""
-            Start-Process $WHATSAPP_ORDER_URL -ErrorAction SilentlyContinue
-            throw "No ACS access"
-        }
-    } elseif (-not $_.Exception.Response) {
-        Err "Cannot reach GitHub API. Check network/proxy/firewall."
-    } else {
-        Err "Unexpected GitHub API response (HTTP $statusCode)"
-    }
-}
-
-# ─── Fetch manifest ──────────────────────────────────────────────────────────
+# ─── Fetch manifest for SHA-256 integrity ────────────────────────────────────
 Write-Host ""
 Info "Fetching release manifest..."
 
-$manifestHeaders = @{
-    "Authorization" = "token $TOKEN"
-    "Accept" = "application/vnd.github.raw"
-}
+$DOWNLOAD_URL = "$CDN_BASE/$FILE_NAME"
+$MANIFEST_URL = "$CDN_BASE/manifest.json"
+$EXPECTED_SHA = $null
+$VERSION = $null
 
 try {
-    $response = Invoke-WebRequest `
-        -Uri "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/manifest.json?ref=$GITHUB_SOURCE_BRANCH" `
-        -Headers $manifestHeaders `
-        -UseBasicParsing `
-        -TimeoutSec 30
-    $manifestRaw = [System.Text.Encoding]::UTF8.GetString($response.Content)
-    $manifest = $manifestRaw | ConvertFrom-Json
-} catch {
-    Write-Host $_
-    Err "Failed to fetch manifest.json"
-}
-
-$VERSION = $manifest.version
-Ok "Latest version: v$VERSION"
-
-# ─── Determine artifact ──────────────────────────────────────────────────────
-# Support both manifest formats:
-# Format A (new): {"files": {"acs-cli-windows-amd64.exe": "sha256"}}
-# Format B (legacy): {"artifacts": {"windows-amd64": {"file": "...", "sha256": "..."}}}
-$FILE_NAME = $null
-$EXPECTED_SHA = $null
-
-if ($manifest.files) {
-    $key = "acs-cli-$PLATFORM"
-    if ($manifest.files.PSObject.Properties[$key]) {
-        $FILE_NAME = $key
-        $EXPECTED_SHA = $manifest.files.$key
-    } elseif ($manifest.files.PSObject.Properties["$key.exe"]) {
-        $FILE_NAME = "$key.exe"
-        $EXPECTED_SHA = $manifest.files."$key.exe"
+    $manifest = Invoke-RestMethod -Uri $MANIFEST_URL -UseBasicParsing -TimeoutSec 15
+    if ($manifest.version) {
+        $VERSION = $manifest.version
+        Ok "Latest version: v$VERSION"
     }
-} elseif ($manifest.artifacts -and $manifest.artifacts.$PLATFORM) {
-    $artifact = $manifest.artifacts.$PLATFORM
-    $FILE_NAME = $artifact.file
-    $EXPECTED_SHA = $artifact.sha256
+    # Support both manifest formats:
+    # Format A (new): {"files": {"acs-cli-windows-amd64.exe": "sha256"}}
+    # Format B (legacy): {"artifacts": {"windows-amd64": {"file": "...", "sha256": "..."}}}
+    if ($manifest.files) {
+        if ($manifest.files.PSObject.Properties[$FILE_NAME]) {
+            $EXPECTED_SHA = $manifest.files.$FILE_NAME
+        } elseif ($manifest.files.PSObject.Properties["acs-cli-$PLATFORM"]) {
+            $EXPECTED_SHA = $manifest.files."acs-cli-$PLATFORM"
+        }
+    } elseif ($manifest.artifacts) {
+        if ($manifest.artifacts.PSObject.Properties[$PLATFORM]) {
+            $EXPECTED_SHA = $manifest.artifacts.$PLATFORM.sha256
+        } else {
+            $matched = $manifest.artifacts | Where-Object { $_.file -eq $FILE_NAME }
+            if ($matched) {
+                $EXPECTED_SHA = $matched.sha256
+            }
+        }
+    }
+} catch {
+    Warn "Could not fetch manifest for hash verification ($($_.Exception.Message)). Proceeding..."
 }
 
-if (-not $FILE_NAME) {
-    Err "No artifact found for platform: $PLATFORM"
-}
 Info "Artifact: $FILE_NAME"
 
-# ─── Download binary ─────────────────────────────────────────────────────────
+# ─── Download binary directly from Fast CDN (Zero-Auth) ──────────────────────
 Write-Host ""
-Info "Downloading $FILE_NAME..."
+Info "Downloading $FILE_NAME from Cloudflare Global CDN..."
 
 $TMP_DIR = Join-Path $env:TEMP "acs-install-$(Get-Random)"
 New-Item -ItemType Directory -Path $TMP_DIR -Force | Out-Null
 $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
-$downloaded = $false
-
-# Progress download helper — synchronous stream read with inline progress
-function Download-WithProgress {
-    param([string]$Url, [hashtable]$Headers, [string]$OutFile)
-
-    try {
-        $request = [System.Net.HttpWebRequest]::Create($Url)
-        $request.Timeout = 120000
-        foreach ($key in $Headers.Keys) {
-            $request.Headers.Add($key, $Headers[$key])
-        }
-
-        $response = $request.GetResponse()
-        $totalBytes = $response.ContentLength
-        $stream = $response.GetResponseStream()
-        $fileStream = [System.IO.File]::Create($OutFile)
-        $buffer = New-Object byte[] 65536
-        $bytesRead = 0
-        $totalRead = 0
-        $lastReport = 0
-
-        while (($bytesRead = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
-            $fileStream.Write($buffer, 0, $bytesRead)
-            $totalRead += $bytesRead
-            $mb = [math]::Round($totalRead / 1MB, 1)
-            if ($mb -ge $lastReport + 1) {
-                $lastReport = [math]::Floor($mb)
-                if ($totalBytes -gt 0) {
-                    $pct = [math]::Round(($totalRead / $totalBytes) * 100)
-                    Write-Host "`r  Downloading... ${mb}MB / $([math]::Round($totalBytes / 1MB, 1))MB ($pct%)" -NoNewline
-                } else {
-                    Write-Host "`r  Downloading... ${mb}MB" -NoNewline
-                }
-            }
-        }
-
-        $fileStream.Close()
-        $stream.Close()
-        $response.Close()
-        Write-Host ""
-        return $true
-    } catch {
-        return $false
-    }
-}
-
-# Method 1: GitHub Contents API
 try {
-    $contentsUrl = "https://api.github.com/repos/$GITHUB_SOURCE_REPO/contents/assets/acs/${FILE_NAME}?ref=$GITHUB_SOURCE_BRANCH"
-    $contentsResp = Invoke-WebRequest -Uri $contentsUrl -Headers $headers -UseBasicParsing -TimeoutSec 30
-    $contentsJson = $contentsResp.Content | ConvertFrom-Json
-    $dlUrl = $contentsJson.download_url
-
-    if ($dlUrl) {
-        $dlHeaders = @{ "Authorization" = "token $TOKEN" }
-        $result = Download-WithProgress -Url $dlUrl -Headers $dlHeaders -OutFile $TMP_FILE
-        if ($result) { $downloaded = $true }
-    }
+    Invoke-WebRequest -Uri $DOWNLOAD_URL -OutFile $TMP_FILE -UseBasicParsing -TimeoutSec 120
 } catch {
-    # Fallback below
-}
-
-# Method 2: Git LFS sparse checkout
-if (-not $downloaded -and (Get-Command git -ErrorAction SilentlyContinue)) {
-    $lfsCheck = git lfs version 2>$null
-    if ($LASTEXITCODE -eq 0) {
-        $lfsDir = Join-Path $TMP_DIR "lfs-clone"
-        git clone --no-checkout --depth 1 --branch $GITHUB_SOURCE_BRANCH `
-            "https://x-access-token:${TOKEN}@github.com/${GITHUB_SOURCE_REPO}.git" `
-            $lfsDir 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            Push-Location $lfsDir
-            git sparse-checkout set "assets/acs/$FILE_NAME" 2>$null
-            git checkout 2>$null
-            git lfs pull --include="assets/acs/$FILE_NAME" 2>$null
-            Pop-Location
-            $lfsFile = Join-Path $lfsDir "assets\acs\$FILE_NAME"
-            if ((Test-Path $lfsFile) -and (Get-Item $lfsFile).Length -gt 1000000) {
-                Copy-Item $lfsFile $TMP_FILE
-                $downloaded = $true
-            }
-        }
-        Remove-Item -Recurse -Force $lfsDir -ErrorAction SilentlyContinue
-    }
-}
-
-if (-not $downloaded -or -not (Test-Path $TMP_FILE)) {
     Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-    Err "Download failed. Try again or check your network."
+    Err "Failed to download $DOWNLOAD_URL. Check your connection: $($_.Exception.Message)"
+}
+
+if (-not (Test-Path $TMP_FILE)) {
+    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+    Err "Download failed: file not found at $TMP_FILE"
 }
 
 $dlSize = (Get-Item $TMP_FILE).Length
 if ($dlSize -lt 1000000) {
     Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-    Err "Download failed: file too small ($dlSize bytes). May be a Git LFS pointer."
+    Err "Download failed: file too small ($dlSize bytes)."
 }
 $dlMB = [math]::Round($dlSize / 1MB, 1)
-Ok "Downloaded: $dlMB MB"
+Ok "Download complete ($dlMB MB)"
 
 # ─── Verify SHA-256 ──────────────────────────────────────────────────────────
 if ($EXPECTED_SHA) {
-    Info "Verifying integrity..."
+    Info "Verifying SHA-256 integrity..."
     $actualSha = (Get-FileHash -Path $TMP_FILE -Algorithm SHA256).Hash.ToLower()
-    if ($actualSha -ne $EXPECTED_SHA) {
+    if ($actualSha -ne $EXPECTED_SHA.ToLower()) {
         Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
         Err "SHA-256 mismatch! Expected: $EXPECTED_SHA, Got: $actualSha"
     }
@@ -495,20 +314,23 @@ try {
     Info "You can register manually later: acs-cli service install"
 }
 
-# ─── Verify ──────────────────────────────────────────────────────────────────
+# ─── Verify & Next Steps ─────────────────────────────────────────────────────
 Write-Host ""
 $acsVersion = & $acsCli version 2>$null
 if ($acsVersion) {
     $acsVersion = $acsVersion -replace '^acs-cli\s*', ''
     Ok "acs-cli v$acsVersion ready!"
 } else {
-    Ok "Installed! Run: acs-cli setup"
+    Ok "Installed successfully!"
 }
 
 Write-Host ""
-Write-Host ("-" * 36)
-Write-Host "  Next: acs-cli setup" -ForegroundColor Cyan
-Write-Host ("-" * 36)
+Write-Host ("-" * 42)
+Write-Host "  ACS CLI Installed Successfully!" -ForegroundColor Green
+Write-Host ""
+Write-Host "  Next Step: Activate your license:" -ForegroundColor Cyan
+Write-Host "    acs-cli activate <YOUR_LICENSE_KEY>" -ForegroundColor Yellow
+Write-Host ("-" * 42)
 Write-Host ""
 
 } # end Install-ACS function
