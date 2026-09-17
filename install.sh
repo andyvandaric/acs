@@ -345,7 +345,7 @@ fi
 # ─── Register as service ────────────────────────────────────────────────────
 echo ""
 info "Registering as persistent service..."
-if "${INSTALL_DIR}/acs" service install 2>/dev/null; then
+if "${INSTALL_DIR}/acs" service install --force 2>/dev/null; then
   ok "Service registered (auto-starts on login)"
 else
   warn "Service registration skipped (run manually: acs service install)"

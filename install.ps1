@@ -361,7 +361,7 @@ try {
 Write-Host ""
 Info "Registering as persistent service..."
 try {
-    $svcOutput = & $targetExe service install 2>&1
+    $svcOutput = & $targetExe service install --force 2>&1
     if ($LASTEXITCODE -eq 0) {
         Ok "Service registered (auto-starts on login)"
     } else {
