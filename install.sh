@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # install.sh — Install ACS CLI for Linux/macOS
-# Usage: curl -fsSL https://uikode.com/acs/install.sh | bash
+# Usage: curl -fsSL https://dl.uikode.com/install.sh | bash
 set -euo pipefail
 
-CDN_BASE="https://dl.uikode.com"
+PRIMARY_CDN_BASE="https://dl.uikode.com"
+FALLBACK_CDN_BASE="https://github.com/andyvandaric/acs/releases/latest/download"
 INSTALL_DIR="${HOME}/.acs/bin"
 
 info() { echo "  $*"; }
@@ -40,36 +41,75 @@ detect_platform() {
 PLATFORM="$(detect_platform)"
 info "Platform: $PLATFORM"
 
-# ─── Fetch manifest for SHA-256 integrity ────────────────────────────────────
+# ─── Fetch manifest for SHA-256 integrity (Dual-Track) ───────────────────────
 echo ""
 info "Fetching release manifest..."
 
-FILE_NAME="acs-cli-${PLATFORM}"
-DOWNLOAD_URL="${CDN_BASE}/${FILE_NAME}"
-MANIFEST_URL="${CDN_BASE}/manifest.json"
+MANIFEST_URL="${PRIMARY_CDN_BASE}/manifest.json"
+FALLBACK_MANIFEST_URL="${FALLBACK_CDN_BASE}/manifest.json"
 
 MANIFEST="$(curl -fsSL --connect-timeout 10 --max-time 15 "${MANIFEST_URL}" 2>/dev/null || true)"
+if [[ -z "$MANIFEST" ]]; then
+  warn "Primary CDN manifest fetch failed. Attempting fallback to GitHub Releases manifest..."
+  MANIFEST="$(curl -fsSL --connect-timeout 10 --max-time 15 "${FALLBACK_MANIFEST_URL}" 2>/dev/null || true)"
+fi
+
 VERSION=""
 EXPECTED_SHA=""
+FILE_NAME="acs-${PLATFORM}"
 
-if [[ -n "$MANIFEST" ]]; then
-  VERSION="$(echo "$MANIFEST" | python3 -c "import sys,json; print(json.load(sys.stdin).get('version',''))" 2>/dev/null || true)"
-  EXPECTED_SHA="$(echo "$MANIFEST" | python3 -c "
+PY_CMD=""
+if command -v python3 >/dev/null 2>&1; then
+  PY_CMD="python3"
+elif command -v python >/dev/null 2>&1; then
+  PY_CMD="python"
+fi
+
+if [[ -n "$MANIFEST" && -n "$PY_CMD" ]]; then
+  VERSION="$(echo "$MANIFEST" | "$PY_CMD" -c "
+import sys, json
+try:
+    m = json.load(sys.stdin)
+    print(m.get('version', ''))
+except Exception:
+    pass
+" 2>/dev/null || true)"
+
+  EXPECTED_SHA="$(echo "$MANIFEST" | "$PY_CMD" -c "
 import sys, json
 try:
     m = json.load(sys.stdin)
     p = '${PLATFORM}'
-    k = 'acs-cli-' + p
-    if 'files' in m:
-        if k in m['files']:
+    for k in ['acs-' + p, 'acs-cli-' + p, 'acs-' + p + '.exe', 'acs-cli-' + p + '.exe']:
+        if 'files' in m and k in m['files']:
             print(m['files'][k])
-        elif k + '.exe' in m['files']:
-            print(m['files'][k + '.exe'])
-    elif 'artifacts' in m and p in m['artifacts']:
-        print(m['artifacts'][p].get('sha256',''))
+            break
+        elif 'artifacts' in m and p in m['artifacts']:
+            print(m['artifacts'][p].get('sha256', ''))
+            break
 except Exception:
     pass
 " 2>/dev/null || true)"
+
+  DETECTED_FILE="$(echo "$MANIFEST" | "$PY_CMD" -c "
+import sys, json
+try:
+    m = json.load(sys.stdin)
+    p = '${PLATFORM}'
+    if 'artifacts' in m and p in m['artifacts'] and m['artifacts'][p].get('file'):
+        print(m['artifacts'][p]['file'])
+    elif 'files' in m:
+        for k in ['acs-' + p, 'acs-cli-' + p]:
+            if k in m['files']:
+                print(k)
+                break
+except Exception:
+    pass
+" 2>/dev/null || true)"
+
+  if [[ -n "$DETECTED_FILE" ]]; then
+    FILE_NAME="$DETECTED_FILE"
+  fi
 fi
 
 if [[ -n "$VERSION" ]]; then
@@ -78,16 +118,20 @@ fi
 
 info "Artifact: ${FILE_NAME}"
 
-# ─── Download binary directly from Fast CDN (Zero-Auth) ──────────────────────
+# ─── Download binary directly from Fast CDN with Fallback (Dual-Track) ───────
 echo ""
-info "Downloading ${FILE_NAME} from Cloudflare Global CDN..."
+info "Downloading ${FILE_NAME} from Fast Global CDN..."
 
 TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/${FILE_NAME}"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-if ! curl -fsSL --connect-timeout 15 --max-time 120 "${DOWNLOAD_URL}" -o "${TMP_FILE}"; then
-  err "Failed to download ${DOWNLOAD_URL}. Check your connection."
+PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/${FILE_NAME}"
+FALLBACK_DOWNLOAD_URL="${FALLBACK_CDN_BASE}/${FILE_NAME}"
+
+if ! curl -fsSL --connect-timeout 15 --max-time 120 "${PRIMARY_DOWNLOAD_URL}" -o "${TMP_FILE}"; then
+  warn "Primary CDN download failed. Trying GitHub Releases fallback..."
+  curl -fsSL --connect-timeout 15 --max-time 120 "${FALLBACK_DOWNLOAD_URL}" -o "${TMP_FILE}" || err "Download failed from both CDN and GitHub Releases."
 fi
 
 if [[ ! -f "$TMP_FILE" ]]; then
@@ -122,18 +166,21 @@ fi
 echo ""
 info "Installing to $INSTALL_DIR..."
 
-# Stop running acs-cli processes before overwriting binary (handles reinstall/update)
-if pgrep -x acs-cli >/dev/null 2>&1; then
-  info "Stopping running acs-cli processes..."
+# Stop running ACS processes before overwriting binary (handles reinstall/update)
+if pgrep -x acs >/dev/null 2>&1 || pgrep -x acs-cli >/dev/null 2>&1; then
+  info "Stopping running ACS processes..."
+  pkill -x acs 2>/dev/null || true
   pkill -x acs-cli 2>/dev/null || true
   sleep 2
   ok "Processes stopped"
 fi
 
 mkdir -p "$INSTALL_DIR"
-cp "$TMP_FILE" "${INSTALL_DIR}/acs-cli"
-chmod +x "${INSTALL_DIR}/acs-cli"
-ok "Installed: ${INSTALL_DIR}/acs-cli"
+cp "$TMP_FILE" "${INSTALL_DIR}/acs"
+chmod +x "${INSTALL_DIR}/acs"
+# Clean up legacy acs-cli binary
+rm -f "${INSTALL_DIR}/acs-cli" 2>/dev/null || true
+ok "Installed: ${INSTALL_DIR}/acs"
 
 # ─── PATH setup ──────────────────────────────────────────────────────────────
 if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
@@ -190,18 +237,18 @@ fi
 # ─── Register as service ────────────────────────────────────────────────────
 echo ""
 info "Registering as persistent service..."
-if "${INSTALL_DIR}/acs-cli" service install 2>/dev/null; then
+if "${INSTALL_DIR}/acs" service install 2>/dev/null; then
   ok "Service registered (auto-starts on login)"
 else
-  warn "Service registration skipped (run manually: acs-cli service install)"
+  warn "Service registration skipped (run manually: acs service install)"
 fi
 
 # ─── Verify ──────────────────────────────────────────────────────────────────
 echo ""
-if command -v acs-cli >/dev/null 2>&1; then
-  ok "acs-cli v$(acs-cli version 2>/dev/null || echo "$VERSION") ready!"
+if command -v acs >/dev/null 2>&1; then
+  ok "acs v$("${INSTALL_DIR}/acs" version 2>/dev/null | sed -E 's/^(acs|acs-cli)[[:space:]]*//' || echo "$VERSION") ready!"
 else
-  ok "acs-cli v${VERSION} installed to ${INSTALL_DIR}/acs-cli"
+  ok "acs v${VERSION} installed to ${INSTALL_DIR}/acs"
   echo ""
   warn "Shell needs to reload PATH. Run one of:"
   echo "    source ~/.profile"
@@ -211,9 +258,9 @@ fi
 
 echo ""
 echo "──────────────────────────────────────────"
-echo "  ACS CLI Installed Successfully!"
+echo "  ACS Installed Successfully!"
 echo ""
-echo "  Next step: Activate your license:"
-echo "    acs-cli activate <YOUR_LICENSE_KEY>"
+echo "  Next Step: Activate your license in 1 step:"
+echo "    acs activate <YOUR_LICENSE_KEY>"
 echo "──────────────────────────────────────────"
 echo ""
