@@ -1,4 +1,4 @@
-﻿# install.ps1 - Install ACS for Windows
+# install.ps1 - Install ACS for Windows
 # Usage: irm https://dl.uikode.com/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
@@ -12,13 +12,18 @@ param(
     [switch]$Help
 )
 
+# Enable TLS 1.2 for older Windows 10 / PowerShell 5.1 environments
+try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+} catch {}
+
 if ($env:ACS_LIST -eq "1" -or $env:ACS_LIST -eq "true") {
     $ListVersions = $true
 }
 
 if ($Help) {
     Write-Host ""
-    Write-Host "ACS — Universal Installer" -ForegroundColor Cyan
+    Write-Host "ACS - Universal Installer" -ForegroundColor Cyan
     Write-Host "------------------------------------"
     Write-Host "Usage:"
     Write-Host "  .\install.ps1 [options]"
@@ -38,7 +43,7 @@ if ($Help) {
 
 if ($ListVersions) {
     Write-Host ""
-    Write-Host "ACS — Available Releases" -ForegroundColor Cyan
+    Write-Host "ACS - Available Releases" -ForegroundColor Cyan
     Write-Host ("-" * 36)
     Write-Host ""
     $vData = $null
@@ -52,7 +57,7 @@ if ($ListVersions) {
         Write-Host "  Available Releases:"
         foreach ($v in $vData.versions) {
             $marker = if ($v -eq $vData.latest) { " (latest)" } else { "" }
-            Write-Host "    • $v$marker"
+            Write-Host "    - $v$marker"
         }
     } else {
         Write-Host "  Latest Version: v1.6.0" -ForegroundColor Green
@@ -83,96 +88,11 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         $pwshPath = $pwshCmd.Source
     } elseif (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe") {
         $pwshPath = "$env:ProgramFiles\PowerShell\7\pwsh.exe"
+    } elseif (Test-Path "${env:ProgramFiles(x86)}\PowerShell\7\pwsh.exe") {
+        $pwshPath = "${env:ProgramFiles(x86)}\PowerShell\7\pwsh.exe"
     }
 
-    # If not found, try to install
-    if (-not $pwshPath) {
-        Write-Host "  PowerShell 7 not found. Attempting install..." -ForegroundColor Cyan
-
-        # Check if running as admin (needed for MSI install)
-        $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-
-        # Method 1: winget (works without admin if --scope user, but PS7 needs machine scope)
-        $wingetInstalled = $false
-        if (Get-Command winget -ErrorAction SilentlyContinue) {
-            Write-Host "  Trying winget..." -ForegroundColor Cyan
-            try {
-                $wingetOut = winget install --id Microsoft.PowerShell --source winget --accept-package-agreements --accept-source-agreements --silent 2>&1
-                if ($LASTEXITCODE -eq 0) {
-                    $wingetInstalled = $true
-                } else {
-                    Write-Host "  winget install returned code $LASTEXITCODE" -ForegroundColor Yellow
-                }
-            } catch {
-                Write-Host "  winget failed: $_" -ForegroundColor Yellow
-            }
-        }
-
-        # Method 2: Direct MSI download (requires elevation)
-        if (-not $wingetInstalled -and -not (Test-Path "$env:ProgramFiles\PowerShell\7\pwsh.exe")) {
-            Write-Host "  Trying direct download..." -ForegroundColor Cyan
-            try {
-                $msiUrl = "https://github.com/PowerShell/PowerShell/releases/download/v7.4.7/PowerShell-7.4.7-win-x64.msi"
-                $msiPath = Join-Path $env:TEMP "pwsh-install.msi"
-
-                # TLS 1.2 required for GitHub downloads on PS5
-                [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                Write-Host "  Downloading PowerShell 7..." -ForegroundColor Cyan
-                Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath -UseBasicParsing -TimeoutSec 120
-
-                if (Test-Path $msiPath) {
-                    $msiArgs = "/i `"$msiPath`" /quiet /norestart ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=0 REGISTER_MANIFEST=0 USE_MU=0 ENABLE_MU=0 ADD_PATH=1"
-
-                    if ($isAdmin) {
-                        # Already elevated - run directly
-                        Write-Host "  Installing (admin)..." -ForegroundColor Cyan
-                        $proc = Start-Process msiexec.exe -ArgumentList $msiArgs -Wait -PassThru -NoNewWindow
-                        if ($proc.ExitCode -ne 0) {
-                            Write-Host "  MSI exited with code $($proc.ExitCode)" -ForegroundColor Yellow
-                        }
-                    } else {
-                        # Need elevation - use RunAs verb (will show UAC prompt)
-                        Write-Host "  Requesting admin permission to install PowerShell 7..." -ForegroundColor Cyan
-                        Write-Host "  (A UAC prompt may appear - please approve it)" -ForegroundColor Yellow
-                        try {
-                            $proc = Start-Process msiexec.exe -ArgumentList $msiArgs -Verb RunAs -Wait -PassThru
-                            if ($proc.ExitCode -ne 0) {
-                                Write-Host "  MSI exited with code $($proc.ExitCode)" -ForegroundColor Yellow
-                            }
-                        } catch {
-                            Write-Host "  !! Elevation denied or failed: $_" -ForegroundColor Yellow
-                        }
-                    }
-                    Remove-Item $msiPath -Force -ErrorAction SilentlyContinue
-                }
-            } catch {
-                Write-Host "  !! Download/install failed: $_" -ForegroundColor Yellow
-            }
-        }
-
-        # Re-check - MSI installs to Program Files, refresh PATH awareness
-        $candidatePaths = @(
-            "$env:ProgramFiles\PowerShell\7\pwsh.exe",
-            "${env:SystemDrive}\Program Files\PowerShell\7\pwsh.exe"
-        )
-        foreach ($candidate in $candidatePaths) {
-            if (Test-Path $candidate) {
-                $pwshPath = $candidate
-                break
-            }
-        }
-        if (-not $pwshPath) {
-            # Also try refreshed PATH (winget may have added it)
-            $refreshedPath = [Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [Environment]::GetEnvironmentVariable("Path", "User")
-            $env:Path = $refreshedPath
-            $pwshCmd = Get-Command pwsh -ErrorAction SilentlyContinue
-            if ($pwshCmd) {
-                $pwshPath = $pwshCmd.Source
-            }
-        }
-    }
-
-    # Relaunch in pwsh
+    # Relaunch in pwsh if available
     if ($pwshPath) {
         Write-Host "  OK PowerShell 7 found at: $pwshPath" -ForegroundColor Green
         Write-Host "  Re-launching installer in pwsh..." -ForegroundColor Cyan
@@ -211,21 +131,10 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         return
     }
 
-    Write-Host ""
-    Write-Host "  !! Could not install or find PowerShell 7." -ForegroundColor Red
-    Write-Host ""
-    Write-Host "  Install manually:" -ForegroundColor Yellow
-    Write-Host "    winget install --id Microsoft.PowerShell --source winget" -ForegroundColor White
-    Write-Host "  Or download from: https://aka.ms/powershell-release" -ForegroundColor Yellow
-    Write-Host ""
-    Write-Host "  Then re-run:" -ForegroundColor Yellow
-    Write-Host "    irm https://dl.uikode.com/install.ps1 | iex" -ForegroundColor White
-    Write-Host ""
-    return
+    Write-Host "  PowerShell 7 not found. Continuing directly with Windows PowerShell..." -ForegroundColor Cyan
 }
 
-# --- Everything below requires PowerShell 7+ ---------------------------------
-# PS5 will never reach here (it returns above)
+# --- Install-ACS: Compatible with PowerShell 5.1 and 7+ -----------------------
 
 function Install-ACS {
 param([string]$TargetVersion)
@@ -241,13 +150,19 @@ if ($TargetVersion) {
 }
 $INSTALL_DIR = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
 
+$isPS7 = ($PSVersionTable.PSVersion.Major -ge 7)
+$markOk = if ($isPS7) { "`u{2705} " } else { "[OK] " }
+$markWarn = if ($isPS7) { "`u{26A0}`u{FE0F}  " } else { "[WARN] " }
+$markErr = if ($isPS7) { "`u{274C} " } else { "[ERR] " }
+$markBolt = if ($isPS7) { "`u{26A1} " } else { ">> " }
+
 function Info($msg) { Write-Host "  $msg" }
-function Ok($msg) { Write-Host "`u{2705} $msg" -ForegroundColor Green }
-function Warn($msg) { Write-Host "`u{26A0}`u{FE0F}  $msg" -ForegroundColor Yellow }
-function Err($msg) { Write-Host "`u{274C} $msg" -ForegroundColor Red; throw $msg }
+function Ok($msg) { Write-Host "$script:markOk$msg" -ForegroundColor Green }
+function Warn($msg) { Write-Host "$script:markWarn$msg" -ForegroundColor Yellow }
+function Err($msg) { Write-Host "$script:markErr$msg" -ForegroundColor Red; throw $msg }
 
 Write-Host ""
-Write-Host "`u{26A1} ACS `u{2014} Agnostic Config Suites" -ForegroundColor Cyan
+Write-Host "$markBolt ACS - Agnostic Config Suites" -ForegroundColor Cyan
 Write-Host ("-" * 36)
 Write-Host ""
 
@@ -377,7 +292,19 @@ Ok "Download complete ($dlMB MB)"
 # --- Verify SHA-256 ----------------------------------------------------------
 if ($EXPECTED_SHA) {
     Info "Verifying SHA-256 integrity..."
-    $actualSha = (Get-FileHash -Path $TMP_FILE -Algorithm SHA256).Hash.ToLower()
+    $actualSha = $null
+    if (Get-Command Get-FileHash -ErrorAction SilentlyContinue) {
+        $actualSha = (Get-FileHash -Path $TMP_FILE -Algorithm SHA256).Hash.ToLower()
+    } else {
+        $stream = [System.IO.File]::OpenRead($TMP_FILE)
+        try {
+            $sha = [System.Security.Cryptography.SHA256]::Create()
+            $bytes = $sha.ComputeHash($stream)
+            $actualSha = (-join ($bytes | ForEach-Object { "{0:x2}" -f $_ })).ToLower()
+        } finally {
+            $stream.Close()
+        }
+    }
     if ($actualSha -ne $EXPECTED_SHA.ToLower()) {
         Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
         Err "SHA-256 mismatch! Expected: $EXPECTED_SHA, Got: $actualSha"
