@@ -25,7 +25,7 @@ Kompatibel dengan Claude Code, Hermes, Kiro, Codex, dan agent MCP-compatible lai
 
 ## Release Terbaru
 
-- ACS CLI: `0.18.0`
+- ACS: `0.18.0`
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Install
@@ -51,7 +51,7 @@ Installer otomatis:
 
 ## Yang Terinstall
 
-- **acs-cli** — single binary, semua platform, semua fitur
+- **acs** — single binary, semua platform, semua fitur
 - **9router** — LLM proxy dengan multi-provider routing + combo fallback
 - **30+ agent skills** — architecture, security, TDD, release, marketing, dan lainnya
 - **Web dashboard** — monitoring + management UI (port 20130)
@@ -61,46 +61,46 @@ Installer otomatis:
 ## Perintah (CLI Commands)
 
 **Operasi Inti:**
-- `acs-cli service [start|stop|restart|status]` — Mengelola stack ACS
-- `acs-cli setup` — Menginstal/memperbarui lingkungan ACS
-- `acs-cli update` — Memperbarui ACS CLI ke versi terbaru
-- `acs-cli doctor` — Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
-- `acs-cli uninstall` — Menghapus ACS dari sistem
+- `acs service [start|stop|restart|status]` — Mengelola stack ACS
+- `acs setup` — Menginstal/memperbarui lingkungan ACS
+- `acs update` — Memperbarui ACS ke versi terbaru
+- `acs doctor` — Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
+- `acs uninstall` — Menghapus ACS dari sistem
 
 **Kontrol Komponen:**
-- `acs-cli dashboard` — Operasi server dashboard
-- `acs-cli scheduler` — Penjadwal tugas latar belakang (background)
-- `acs-cli gateway` — Mengelola gateway API
-- `acs-cli router` — Operasi 9router
+- `acs dashboard` — Operasi server dashboard
+- `acs scheduler` — Penjadwal tugas latar belakang (background)
+- `acs gateway` — Mengelola gateway API
+- `acs router` — Operasi 9router
 
 **Ekosistem & MCP:**
-- `acs-cli mcp` — Mengelola Server & alat MCP (Model Context Protocol)
-- `acs-cli accounts` — Mengelola KeyPool & akun provider
-- `acs-cli articles` — Mesin artikel pengetahuan tersintesis
-- `acs-cli kanban` — Pelacakan tugas visual lokal
-- `acs-cli sessions` — Mengelola riwayat sesi agen
-- `acs-cli logs` — Melihat log teragregasi secara real-time
+- `acs mcp` — Mengelola Server & alat MCP (Model Context Protocol)
+- `acs accounts` — Mengelola KeyPool & akun provider
+- `acs articles` — Mesin artikel pengetahuan tersintesis
+- `acs kanban` — Pelacakan tugas visual lokal
+- `acs sessions` — Mengelola riwayat sesi agen
+- `acs logs` — Melihat log teragregasi secara real-time
 
 **Kecerdasan Agen:**
-- `acs-cli agent` — AcsAgentManager (konfigurasi agen & soul)
-- `acs-cli toolprofile (tp)` — Mengelola profil alat AI (tool profiles)
-- `acs-cli workspace` — Operasi ruleset ruang kerja
-- `acs-cli hook` — Hook runtime Antigravity
+- `acs agent` — AcsAgentManager (konfigurasi agen & soul)
+- `acs toolprofile (tp)` — Mengelola profil alat AI (tool profiles)
+- `acs workspace` — Operasi ruleset ruang kerja
+- `acs hook` — Hook runtime Antigravity
 
 **Utilitas:**
-- `acs-cli status` — Menampilkan status diagnostik sistem
-- `acs-cli license` — Manajemen kunci lisensi
-- `acs-cli docs` — Manajer dokumentasi
-- `acs-cli completion` — Auto-completion shell
+- `acs status` — Menampilkan status diagnostik sistem
+- `acs license` — Manajemen kunci lisensi
+- `acs docs` — Manajer dokumentasi
+- `acs completion` — Auto-completion shell
 
 ## Setup
 
 ```bash
 # Setup lengkap (semua komponen)
-acs-cli setup
+acs setup
 
 # Dengan Telegram bot (opsional)
-acs-cli setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
+acs setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
 ```
 
 Setup bersifat **idempotent** — aman dijalankan berulang kali. Yang dikonfigurasi:
@@ -120,7 +120,7 @@ Setup bersifat **idempotent** — aman dijalankan berulang kali. Yang dikonfigur
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   ACS CLI (single binary)            │
+│                   ACS (single binary)            │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
@@ -160,7 +160,7 @@ Setiap skill mencakup: trigger conditions, step-by-step execution, context requi
 ## Dashboard
 
 ```bash
-acs-cli service start    # Start semua (9router + gateway + dashboard + scheduler)
+acs service start    # Start semua (9router + gateway + dashboard + scheduler)
 ```
 
 Buka `http://localhost:20130` — fitur dashboard:
@@ -177,23 +177,23 @@ Deploy agent yang bisa diajak chat 24/7:
 
 ```bash
 # Buat gateway baru
-acs-cli gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
+acs gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
 
 # Start
-acs-cli gateway start my-agent
+acs gateway start my-agent
 
 # Lihat semua gateway
-acs-cli gateway list
+acs gateway list
 ```
 
 Setiap gateway = 1 Telegram bot = 1 AI agent dengan personality dan skills sendiri.
 
 ## Auto-Update
 
-ACS CLI cek update otomatis setiap 6 jam. Untuk update manual:
+ACS cek update otomatis setiap 6 jam. Untuk update manual:
 
 ```bash
-acs-cli update
+acs update
 ```
 
 Update flow: download binary baru → verify SHA-256 → swap binary → restart service. Zero downtime.
@@ -238,9 +238,9 @@ powershell -Command "& { irm https://raw.githubusercontent.com/andyvandaric/acs/
 ## Setelah Install
 
 ```bash
-acs-cli setup          # Konfigurasi semua komponen
-acs-cli doctor         # Verifikasi instalasi
-acs-cli service start  # Start background service
+acs setup          # Konfigurasi semua komponen
+acs doctor         # Verifikasi instalasi
+acs service start  # Start background service
 ```
 
 Buka dashboard: `http://localhost:20130`
@@ -248,8 +248,8 @@ Buka dashboard: `http://localhost:20130`
 ## Troubleshooting
 
 ```bash
-acs-cli doctor         # Diagnosa masalah
-acs-cli doctor --fix   # Auto-repair masalah umum
+acs doctor         # Diagnosa masalah
+acs doctor --fix   # Auto-repair masalah umum
 ```
 
 ---

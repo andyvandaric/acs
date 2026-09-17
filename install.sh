@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# install.sh — Install ACS CLI for Linux/macOS
+# install.sh — Install ACS for Linux/macOS
 # Usage: curl -fsSL https://dl.uikode.com/install.sh | bash
-set -euo pipefail
+set -eu
+set -o pipefail 2>/dev/null || true
 
 PRIMARY_CDN_BASE="https://dl.uikode.com"
 FALLBACK_CDN_BASE="https://github.com/andyvandaric/acs/releases/latest/download"
@@ -12,10 +13,113 @@ ok() { echo "✅ $*"; }
 warn() { echo "⚠️  $*" >&2; }
 err() { echo "❌ $*" >&2; exit 1; }
 
+VERSION_ARG=""
+LIST_VERSIONS=false
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -v|--version)
+      VERSION_ARG="${2:-}"
+      shift 2
+      ;;
+    -l|--list|--list-versions)
+      LIST_VERSIONS=true
+      shift
+      ;;
+    -h|--help)
+      echo "ACS — Universal Installer"
+      echo ""
+      echo "Usage:"
+      echo "  ./install.sh [options]"
+      echo "  curl -fsSL https://dl.uikode.com/install.sh | [VARS] bash [options]"
+      echo ""
+      echo "Options:"
+      echo "  -v, --version <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
+      echo "  -l, --list, --list-versions List all available releases on CDN"
+      echo "  -h, --help                  Show this help message"
+      echo ""
+      echo "Environment variables:"
+      echo "  ACS_VERSION=<version>       Target version (for piped curl execution)"
+      echo "  ACS_LIST=1                  List versions (for piped curl execution)"
+      exit 0
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+if [[ -n "${ACS_VERSION:-}" && -z "$VERSION_ARG" ]]; then
+  VERSION_ARG="$ACS_VERSION"
+fi
+
+if [[ "${ACS_LIST:-}" == "1" || "${ACS_LIST:-}" == "true" ]]; then
+  LIST_VERSIONS=true
+fi
+
+if [[ "$LIST_VERSIONS" == "true" ]]; then
+  echo ""
+  echo "⚡ ACS — Available Releases"
+  echo "────────────────────────────────────"
+  echo ""
+  VERSIONS_JSON="$(curl -fsSL --connect-timeout 10 --max-time 15 "https://dl.uikode.com/versions.json" 2>/dev/null || true)"
+  PY_BIN=""
+  if command -v python3 >/dev/null 2>&1; then
+    PY_BIN="python3"
+  elif command -v python >/dev/null 2>&1; then
+    PY_BIN="python"
+  fi
+
+  if [[ -n "$VERSIONS_JSON" && -n "$PY_BIN" ]]; then
+    echo "$VERSIONS_JSON" | "$PY_BIN" -c '
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    latest = data.get("latest", "")
+    versions = data.get("versions", [])
+    if latest:
+        print("  Latest Version: " + str(latest))
+        print("")
+    print("  Available Releases:")
+    for v in versions:
+        marker = " (latest)" if v == latest else ""
+        print("    - " + str(v) + marker)
+except Exception:
+    pass
+' 2>/dev/null || true
+  else
+    echo "  Latest Version: v1.6.0"
+    echo ""
+    echo "  Available Releases:"
+    echo "    - v1.6.0 (latest)"
+    echo "    - v1.4.0"
+  fi
+  echo ""
+  echo "  To install or rollback to a specific version:"
+  echo "    curl -fsSL https://dl.uikode.com/install.sh | ACS_VERSION=v1.4.0 bash"
+  echo "    ./install.sh --version v1.4.0"
+  echo "────────────────────────────────────"
+  echo ""
+  exit 0
+fi
+
+if [[ -n "$VERSION_ARG" ]]; then
+  case "$VERSION_ARG" in
+    v*) TAG="$VERSION_ARG" ;;
+    *)  TAG="v$VERSION_ARG" ;;
+  esac
+  PRIMARY_CDN_BASE="https://dl.uikode.com/${TAG}"
+  FALLBACK_CDN_BASE="https://github.com/andyvandaric/acs/releases/download/${TAG}"
+fi
+
 echo ""
-echo "⚡ ACS CLI — Agnostic Config Suites"
+echo "⚡ ACS — Agnostic Config Suites"
 echo "────────────────────────────────────"
 echo ""
+
+if [[ -n "$VERSION_ARG" ]]; then
+  info "Target Version: ${TAG} (Pinned)"
+fi
 
 # ─── Detect OS/Arch ──────────────────────────────────────────────────────────
 detect_platform() {
@@ -126,7 +230,11 @@ TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/${FILE_NAME}"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/${FILE_NAME}"
+if [[ -n "$VERSION" && -z "$VERSION_ARG" ]]; then
+  PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/v${VERSION}/${FILE_NAME}"
+else
+  PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/${FILE_NAME}"
+fi
 FALLBACK_DOWNLOAD_URL="${FALLBACK_CDN_BASE}/${FILE_NAME}"
 
 if ! curl -fsSL --connect-timeout 15 --max-time 120 "${PRIMARY_DOWNLOAD_URL}" -o "${TMP_FILE}"; then
@@ -187,7 +295,7 @@ if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   info "Adding $INSTALL_DIR to PATH..."
 
   PATH_EXPORT="export PATH=\"${INSTALL_DIR}:\$PATH\""
-  PATH_COMMENT="# ACS CLI"
+  PATH_COMMENT="# ACS"
 
   # Determine shell RC files to update
   RC_FILES=()

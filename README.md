@@ -47,7 +47,7 @@ The installer automatically:
 
 ## What Gets Installed
 
-- **acs-cli** — single binary, all platforms, all features
+- **acs** — single binary, all platforms, all features
 - **9router** — LLM proxy with multi-provider routing, combo fallback, PID management, and health checks
 - **30+ agent skills** — architecture, security, TDD, release, marketing, and more
 - **Web dashboard** — Tide-powered monitoring + management UI (port 20130)
@@ -57,49 +57,49 @@ The installer automatically:
 ## CLI Commands
 
 **Core Operations:**
-- `acs-cli service [start|stop|restart|status]` — Manage ACS stack
-- `acs-cli setup` — Install/update ACS environments
-- `acs-cli update` — Self-update ACS CLI to latest version
-- `acs-cli doctor` — Run health checks and auto-fix issues
-- `acs-cli uninstall` — Remove ACS from system
+- `acs service [start|stop|restart|status]` — Manage ACS stack
+- `acs setup` — Install/update ACS environments
+- `acs update` — Self-update ACS to latest version
+- `acs doctor` — Run health checks and auto-fix issues
+- `acs uninstall` — Remove ACS from system
 
 **Component Control:**
-- `acs-cli dashboard` — Dashboard server operations
-- `acs-cli scheduler` — Background task scheduler
-- `acs-cli gateway` — Manage API gateways
-- `acs-cli router` — 9router operations
+- `acs dashboard` — Dashboard server operations
+- `acs scheduler` — Background task scheduler
+- `acs gateway` — Manage API gateways
+- `acs router` — 9router operations
 
 **Ecosystem & MCP:**
-- `acs-cli mcp` — Manage MCP Servers & tools
-- `acs-cli accounts` — Manage KeyPool & provider accounts
-- `acs-cli articles` — Synthesized knowledge articles engine
-- `acs-cli kanban` — Local visual task tracking
-- `acs-cli sessions` — Manage agent session history
-- `acs-cli logs` — View real-time aggregated logs
+- `acs mcp` — Manage MCP Servers & tools
+- `acs accounts` — Manage KeyPool & provider accounts
+- `acs articles` — Synthesized knowledge articles engine
+- `acs kanban` — Local visual task tracking
+- `acs sessions` — Manage agent session history
+- `acs logs` — View real-time aggregated logs
 
 **Agent Intelligence:**
-- `acs-cli agent` — AcsAgentManager (agents & soul configuration)
-- `acs-cli toolprofile (tp)` — Manage AI tool profiles
-- `acs-cli workspace` — Workspace ruleset operations
-- `acs-cli hook` — Antigravity runtime hooks
+- `acs agent` — AcsAgentManager (agents & soul configuration)
+- `acs toolprofile (tp)` — Manage AI tool profiles
+- `acs workspace` — Workspace ruleset operations
+- `acs hook` — Antigravity runtime hooks
 
 **Utilities:**
-- `acs-cli status` — Show system diagnostic status
-- `acs-cli license` — License key management
-- `acs-cli docs` — Documentation manager
-- `acs-cli completion` — Shell completions
+- `acs status` — Show system diagnostic status
+- `acs license` — License key management
+- `acs docs` — Documentation manager
+- `acs completion` — Shell completions
 
 ## Setup
 
 ```bash
 # Full setup (all components)
-acs-cli setup
+acs setup
 
 # With WezTerm terminal (Windows, recommended)
-acs-cli setup --wezterm
+acs setup --wezterm
 
 # With Telegram bot (optional)
-acs-cli setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
+acs setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
 ```
 
 The `--wezterm` flag installs WezTerm as your dedicated standalone terminal (Windows only):
@@ -127,7 +127,7 @@ Setup is **idempotent** — safe to run multiple times. What it configures:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   ACS CLI (single binary)            │
+│                   ACS (single binary)            │
 ├─────────────────────────────────────────────────────┤
 │                                                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
@@ -172,7 +172,7 @@ Each skill includes: trigger conditions, step-by-step execution, context require
 ## Dashboard
 
 ```bash
-acs-cli service start    # Start everything (9router + gateway + dashboard + scheduler)
+acs service start    # Start everything (9router + gateway + dashboard + scheduler)
 ```
 
 Open `http://localhost:20130` — dashboard features:
@@ -194,13 +194,13 @@ Deploy an agent you can chat with 24/7:
 
 ```bash
 # Create a new gateway
-acs-cli gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
+acs gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
 
 # Start it
-acs-cli gateway start my-agent
+acs gateway start my-agent
 
 # List all gateways
-acs-cli gateway list
+acs gateway list
 ```
 
 Each gateway = 1 Telegram bot = 1 AI agent with its own personality and skills.
@@ -209,10 +209,10 @@ Self-healing: if a gateway dies, the scheduler detects it and restarts automatic
 
 ## Auto-Update
 
-ACS CLI checks for updates automatically every 6 hours. For manual updates:
+ACS checks for updates automatically every 6 hours. For manual updates:
 
 ```bash
-acs-cli update
+acs update
 ```
 
 Update flow: download new binary → realtime progress bar → verify SHA-256 → swap binary → restart service. Zero downtime.
@@ -257,9 +257,9 @@ powershell -Command "& { irm https://raw.githubusercontent.com/andyvandaric/acs/
 ## After Install
 
 ```bash
-acs-cli setup          # Configure all components
-acs-cli doctor         # Verify installation
-acs-cli service start  # Start background service
+acs setup          # Configure all components
+acs doctor         # Verify installation
+acs service start  # Start background service
 ```
 
 Open dashboard: `http://localhost:20130`
@@ -267,8 +267,8 @@ Open dashboard: `http://localhost:20130`
 ## Troubleshooting
 
 ```bash
-acs-cli doctor         # Diagnose issues
-acs-cli doctor --fix   # Auto-repair common problems
+acs doctor         # Diagnose issues
+acs doctor --fix   # Auto-repair common problems
 ```
 
 ---

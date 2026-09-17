@@ -104,6 +104,20 @@ Assert-Test "Post-install activation instruction uses acs activate" {
     $content -match 'acs\s+activate\s+<YOUR_LICENSE_KEY>'
 }
 
+# 6. Version pinning & listing capabilities
+Assert-Test "Supports -Version parameter and $env:ACS_VERSION" {
+    $content -match 'param\s*\(' -and $content -match '\$Version\s*=\s*\$env:ACS_VERSION' -and
+    $content -match '\$PRIMARY_CDN_BASE\s*=\s*"https://dl\.uikode\.com/\$tag"'
+}
+
+Assert-Test "Supports -ListVersions parameter and $env:ACS_LIST" {
+    $content -match '\$ListVersions' -and $content -match 'https://dl\.uikode\.com/versions\.json'
+}
+
+Assert-Test "Standardizes branding to ACS instead of obsolete acs-cli" {
+    $content -match 'ACS `u{2014} Agnostic Config Suites' -or $content -match 'ACS — Agnostic Config Suites' -or $content -match 'ACS - Agnostic Config Suites'
+}
+
 Write-Host ""
 Write-Host "----------------------------------------------------"
 Write-Host "Total Tests: $($testsPassed + $testsFailed) | Passed: $testsPassed | Failed: $testsFailed"

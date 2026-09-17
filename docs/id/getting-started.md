@@ -1,8 +1,8 @@
-# Panduan Instalasi ACS CLI
+# Panduan Instalasi ACS
 
 Mulai cepat — install, setup, dan jalankan ACS dalam hitungan menit.
 
-> **Catatan:** ACS CLI didistribusikan melalui private GitHub repository.
+> **Catatan:** ACS didistribusikan melalui private GitHub repository.
 > Kamu perlu akses yang sudah di-approve sebelum install.
 > Hubungi [WhatsApp](https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya) untuk pembelian dan mendapatkan undangan.
 
@@ -54,7 +54,7 @@ curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | 
 2. ✅ Autentikasi via GitHub CLI token
 3. ✅ Download binary dari private repo (~33MB)
 4. ✅ Verifikasi integritas (SHA-256)
-5. ✅ Install ke `~/.acs/bin/acs-cli`
+5. ✅ Install ke `~/.acs/bin/acs`
 6. ✅ Tambahkan ke PATH
 7. ✅ Register sebagai persistent service (auto-start saat login)
 
@@ -65,7 +65,7 @@ curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | 
 Setelah install, jalankan setup untuk konfigurasi environment:
 
 ```bash
-acs-cli setup
+acs setup
 ```
 
 Setup bersifat **idempotent** — aman dijalankan berulang kali.
@@ -88,7 +88,7 @@ Setup bersifat **idempotent** — aman dijalankan berulang kali.
 ### Setup dengan Telegram Gateway (opsional)
 
 ```bash
-acs-cli setup --telegram-token "123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+acs setup --telegram-token "123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ---
@@ -97,18 +97,18 @@ acs-cli setup --telegram-token "123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 ```bash
 # Cek versi
-acs-cli version
+acs version
 
 # Cek kesehatan sistem
-acs-cli doctor
+acs doctor
 
 # Lihat status stack
-acs-cli service status
+acs service status
 ```
 
 **Output yang diharapkan:**
 ```
-[acs-cli] Stack status:
+[acs] Stack status:
   ✅ 9router          running (PID 12345, port 20128)
   ✅ gateway          3/3 running [acs-default, acs-coder, acs-reviewer]
   ✅ dashboard        running (PID 67890, port 20130)
@@ -122,7 +122,7 @@ acs-cli service status
 Buka dashboard web:
 
 ```bash
-acs-cli dashboard
+acs dashboard
 ```
 
 Atau langsung ke `http://localhost:20130` di browser.
@@ -131,10 +131,10 @@ Atau langsung ke `http://localhost:20130` di browser.
 
 ## Update
 
-ACS CLI cek update otomatis setiap 6 jam. Untuk update manual:
+ACS cek update otomatis setiap 6 jam. Untuk update manual:
 
 ```bash
-acs-cli update
+acs update
 ```
 
 Atau jalankan ulang installer — otomatis download versi terbaru.
@@ -157,8 +157,8 @@ curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh 
 
 Atau via CLI:
 ```bash
-acs-cli uninstall          # Hapus service + binary
-acs-cli uninstall --purge  # Hapus semua termasuk data
+acs uninstall          # Hapus service + binary
+acs uninstall --purge  # Hapus semua termasuk data
 ```
 
 ---
@@ -171,8 +171,8 @@ acs-cli uninstall --purge  # Hapus semua termasuk data
 | `404 Not Found` saat verifikasi akses | Akun belum di-invite ke repo. Hubungi support. |
 | "Access denied" saat setup legacy-services | Normal di non-admin shell. Abaikan atau jalankan sebagai admin. |
 | Binary terlalu kecil (< 1MB) | Git LFS pointer ter-download. Pastikan `gh auth status` benar. |
-| Service tidak auto-start | Jalankan `acs-cli service install` lalu `acs-cli service start` |
-| "file being used by another process" | Stop service dulu: `acs-cli service stop --force`, lalu install ulang |
+| Service tidak auto-start | Jalankan `acs service install` lalu `acs service start` |
+| "file being used by another process" | Stop service dulu: `acs service stop --force`, lalu install ulang |
 | PowerShell error `Unexpected token` | Kamu di PS5. Installer otomatis re-launch ke PS7, tapi jika gagal: `winget install Microsoft.PowerShell` |
 
 ---
@@ -180,9 +180,9 @@ acs-cli uninstall --purge  # Hapus semua termasuk data
 ## Bantuan
 
 ```bash
-acs-cli help              # Semua commands
-acs-cli <command> --help  # Help per command
-acs-cli doctor            # Diagnosa + auto-fix
+acs help              # Semua commands
+acs <command> --help  # Help per command
+acs doctor            # Diagnosa + auto-fix
 ```
 
 ---

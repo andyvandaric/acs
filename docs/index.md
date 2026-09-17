@@ -22,6 +22,6 @@ ACS adalah lapisan konfigurasi dan manajemen terpadu untuk perangkat AI coding:
 
 - [Project Watchdog dengan Hermes Agent](/id/project-watchdog-with-hermes) — Pantau project buyer dengan Hermes cron dan alert saat gagal
 - [Memulai](/id/getting-started) — Instalasi dan konfigurasi ACS
-- [Referensi CLI](/id/cli/commands) — Semua perintah `acs-cli`
+- [Referensi CLI](/id/cli/commands) — Semua perintah `acs`
 - [Arsitektur](/id/architecture/overview) — Cara komponen saling terhubung
 - [Changelog](/id/changelog) — Riwayat versi

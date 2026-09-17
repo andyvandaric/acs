@@ -1,12 +1,77 @@
-﻿# install.ps1 - Install ACS CLI for Windows
+﻿# install.ps1 - Install ACS for Windows
 # Usage: irm https://dl.uikode.com/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
+
+[CmdletBinding()]
+param(
+    [Alias("v")]
+    [string]$Version = $env:ACS_VERSION,
+    [Alias("l", "list")]
+    [switch]$ListVersions,
+    [Alias("h")]
+    [switch]$Help
+)
+
+if ($env:ACS_LIST -eq "1" -or $env:ACS_LIST -eq "true") {
+    $ListVersions = $true
+}
+
+if ($Help) {
+    Write-Host ""
+    Write-Host "ACS — Universal Installer" -ForegroundColor Cyan
+    Write-Host "------------------------------------"
+    Write-Host "Usage:"
+    Write-Host "  .\install.ps1 [options]"
+    Write-Host "  irm https://dl.uikode.com/install.ps1 | iex"
+    Write-Host ""
+    Write-Host "Options:"
+    Write-Host "  -Version, -v <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
+    Write-Host "  -ListVersions, -l          List all available releases on CDN"
+    Write-Host "  -Help, -h                  Show this help screen"
+    Write-Host ""
+    Write-Host "Environment Variables:"
+    Write-Host "  `$env:ACS_VERSION = 'v1.4.0' Pinned version for piped iex execution"
+    Write-Host "  `$env:ACS_LIST = '1'         List available versions"
+    Write-Host ""
+    return
+}
+
+if ($ListVersions) {
+    Write-Host ""
+    Write-Host "ACS — Available Releases" -ForegroundColor Cyan
+    Write-Host ("-" * 36)
+    Write-Host ""
+    $vData = $null
+    try {
+        $vData = Invoke-RestMethod -Uri "https://dl.uikode.com/versions.json" -UseBasicParsing -TimeoutSec 10
+    } catch {}
+
+    if ($vData -and $vData.versions) {
+        Write-Host "  Latest Version: $($vData.latest)" -ForegroundColor Green
+        Write-Host ""
+        Write-Host "  Available Releases:"
+        foreach ($v in $vData.versions) {
+            $marker = if ($v -eq $vData.latest) { " (latest)" } else { "" }
+            Write-Host "    • $v$marker"
+        }
+    } else {
+        Write-Host "  Latest Version: v1.6.0" -ForegroundColor Green
+        Write-Host "  Available Releases: v1.6.0, v1.4.0"
+    }
+    Write-Host ""
+    Write-Host "  To install or rollback to a specific version:" -ForegroundColor Cyan
+    Write-Host "    `$env:ACS_VERSION = 'v1.4.0'; irm https://dl.uikode.com/install.ps1 | iex" -ForegroundColor White
+    Write-Host "    pwsh -File install.ps1 -Version v1.4.0" -ForegroundColor White
+    Write-Host ("-" * 36)
+    Write-Host ""
+    return
+}
 
 # --- PS5 Bootstrap: detect PS version and relaunch in PS7 if needed -----------
 # This section MUST be parseable by PowerShell 5.1 (no PS7 syntax)
 if ($PSVersionTable.PSVersion.Major -lt 7) {
     Write-Host ""
-    Write-Host "ACS CLI - Agnostic Config Suites" -ForegroundColor Cyan
+    Write-Host "ACS - Agnostic Config Suites" -ForegroundColor Cyan
     Write-Host "------------------------------------"
     Write-Host ""
     Write-Host "  !! PowerShell $($PSVersionTable.PSVersion) detected - PS 7+ required." -ForegroundColor Yellow
@@ -121,7 +186,9 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
             } catch {
                 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
             }
-            & $pwshPath -NoProfile -ExecutionPolicy Bypass -File $tempScript
+            $childArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tempScript)
+            if ($Version) { $childArgs += @("-Version", $Version) }
+            & $pwshPath @childArgs
             if ($LASTEXITCODE -ne 0) {
                 throw "PowerShell 7 child execution failed with exit code $LASTEXITCODE"
             }
@@ -161,10 +228,17 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 # PS5 will never reach here (it returns above)
 
 function Install-ACS {
+param([string]$TargetVersion)
 $ErrorActionPreference = "Stop"
 
-$PRIMARY_CDN_BASE = "https://dl.uikode.com"
-$FALLBACK_CDN_BASE = "https://github.com/andyvandaric/acs/releases/latest/download"
+if ($TargetVersion) {
+    $tag = if ($TargetVersion.StartsWith("v")) { $TargetVersion } else { "v$TargetVersion" }
+    $PRIMARY_CDN_BASE = "https://dl.uikode.com/$tag"
+    $FALLBACK_CDN_BASE = "https://github.com/andyvandaric/acs/releases/download/$tag"
+} else {
+    $PRIMARY_CDN_BASE = "https://dl.uikode.com"
+    $FALLBACK_CDN_BASE = "https://github.com/andyvandaric/acs/releases/latest/download"
+}
 $INSTALL_DIR = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
 
 function Info($msg) { Write-Host "  $msg" }
@@ -173,9 +247,13 @@ function Warn($msg) { Write-Host "`u{26A0}`u{FE0F}  $msg" -ForegroundColor Yello
 function Err($msg) { Write-Host "`u{274C} $msg" -ForegroundColor Red; throw $msg }
 
 Write-Host ""
-Write-Host "`u{26A1} ACS CLI `u{2014} Agnostic Config Suites" -ForegroundColor Cyan
+Write-Host "`u{26A1} ACS `u{2014} Agnostic Config Suites" -ForegroundColor Cyan
 Write-Host ("-" * 36)
 Write-Host ""
+
+if ($TargetVersion) {
+    Info "Target Version: $tag (Pinned)"
+}
 
 # --- Detect Arch -------------------------------------------------------------
 $arch = if ([Environment]::Is64BitOperatingSystem) {
@@ -257,7 +335,7 @@ New-Item -ItemType Directory -Path $TMP_DIR -Force | Out-Null
 $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloadSuccess = $false
-$primaryUrl = "$PRIMARY_CDN_BASE/$FILE_NAME"
+$primaryUrl = if ($VERSION -and -not $TargetVersion) { "$PRIMARY_CDN_BASE/v$VERSION/$FILE_NAME" } else { "$PRIMARY_CDN_BASE/$FILE_NAME" }
 $fallbackUrl = "$FALLBACK_CDN_BASE/$FILE_NAME"
 
 Info "Downloading $FILE_NAME from Fast Global CDN..."
@@ -391,7 +469,7 @@ Write-Host ""
 
 # --- Run with error capture ---------------------------------------------------
 try {
-    Install-ACS
+    Install-ACS -TargetVersion $Version
 } catch {
     Write-Host ""
     Write-Host ("-" * 36) -ForegroundColor Red

@@ -146,6 +146,26 @@ test_next_step() {
 }
 assert_test "Next step activation instructions use acs activate" test_next_step
 
+# 7. Version Pinning and Listing Capabilities
+test_version_pinning() {
+  grep -q 'ACS_VERSION' "${INSTALL_SH}" && \
+  grep -q -- '-v|--version' "${INSTALL_SH}" && \
+  grep -q 'PRIMARY_CDN_BASE="https://dl.uikode.com/\${TAG}"' "${INSTALL_SH}"
+}
+assert_test "Supports --version parameter and ACS_VERSION env var" test_version_pinning
+
+test_list_versions() {
+  grep -q -- '-l|--list|--list-versions' "${INSTALL_SH}" && \
+  grep -q 'https://dl.uikode.com/versions.json' "${INSTALL_SH}"
+}
+assert_test "Supports --list-versions parameter and ACS_LIST env var" test_list_versions
+
+test_acs_branding() {
+  grep -q '⚡ ACS — Agnostic Config Suites' "${INSTALL_SH}" && \
+  grep -q 'PATH_COMMENT="# ACS"' "${INSTALL_SH}"
+}
+assert_test "Standardizes branding to ACS instead of obsolete acs-cli" test_acs_branding
+
 echo ""
 echo "----------------------------------------------------"
 echo "Total Tests: $((TESTS_PASSED + TESTS_FAILED)) | Passed: ${TESTS_PASSED} | Failed: ${TESTS_FAILED}"
