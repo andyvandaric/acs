@@ -1,294 +1,175 @@
-# ACS — Agnostic Config Suites
+# ACS: Agnostic Config Suites
+*(The Local Sovereign Operating System & Control Cockpit for Autonomous AI Agents)*
 
-> **🌐 Language:** [English](README.md) | [Bahasa Indonesia](README.id.md)
+<div align="center">
+<img src="assets/logo.svg" width="200" alt="ACS Logo">
 
-The agentic coding stack that makes AI work for you — not the other way around.
+![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
+![oh-my-claudecode](https://img.shields.io/badge/oh--my--claudecode-5.3.0-green?style=for-the-badge)
+![Antigravity](https://img.shields.io/badge/Antigravity-Integrated-purple?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Copyrighted-red.svg?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.2.0-orange?style=for-the-badge)
 
----
+**Stop burning tokens. Stop freezing terminals. Take back control.**<br>
+*(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali.)*
 
-## Why ACS?
-
-**Agent Capability System** — a single binary that turns any AI coding agent into a full engineering team:
-
-- **Native MCP Support** — Instantly connect to Model Context Protocol endpoints for limitless tool integrations
-- **Multi-model routing** — 9router proxy connects all providers (OpenAI, Anthropic, Google, local) through one endpoint, auto-fallback when a provider goes down
-- **Agent gateway** — deploy AI agents to Telegram, run 24/7, receive tasks from chat anytime
-- **Self-healing infrastructure** — watchdog auto-restarts crashed services, gateway respawn, stale lock detection, 9router backoff recovery
-- **Reactive dashboard** — Tide-powered UI with instant cache hydration, WebSocket live updates, and prefetch on hover
-- **Codex multi-auth** — manage multiple AI accounts, switch contexts seamlessly
-- **Sync & snapshots** — pre-sync backup, snapshot browser, quick undo, overlap detection with progress streaming
-- **Auto-update** — binary updates automatically with realtime progress bar, SHA-256 verification, zero downtime, rollback on failure
-- **Zero config routing** — set up once, all agents (Claude Code, Hermes, Kiro, Codex) connect to the same model pool
-
-Works with Claude Code, Hermes, Kiro, Codex, and any MCP-compatible agent. Tool-agnostic by design.
+[English](#english) | [Bahasa Indonesia](#bahasa-indonesia)
+</div>
 
 ---
 
-## Install
+<a id="english"></a>
+## 🇺🇸 English
 
-### macOS / Linux
+### 📖 About
+**The AI Revolution Needs a Sovereign Foundation**
 
-```bash
-curl -fsSL https://uikode.com/acs/install.sh | bash
-```
+You bought an AI coding agent to write world-class code, not to spend your nights untangling disjointed JSON configs or watching your context window evaporate before line 1. 
 
-### Windows (PowerShell)
+Welcome to **Agnostic Config Suites (ACS)** — not a thin API wrapper, but a **Local Sovereign Operating System**. We transform fragile, unpredictable AI agents into a deterministic, cost-efficient, and unbreakable autonomous powerhouse.
 
+### ✨ Features (6 Reasons Why ACS Changes Everything)
+1. **🔌 Native Model Context Protocol (MCP)**: Instantly connect your AI agents to external tools, APIs, and filesystems through our standardized MCP integrations. *Result:* Seamless context injection and limitless tool expansion.
+2. **⚡ The Zero-Idle-Token Architecture**: Injects skills and rules *only* when needed. *Result:* Cuts idle context bloat by 89%, expanding your available reasoning space.
+3. **🛡️ The Anti-Freeze Guarantee (Self-Healing Proxies)**: Smart Circuit Breaker monitors every route and instantly falls back to a direct connection if a node fails 3 times.
+4. **🥷 Stealth Multi-Tier Browser Automation**: A 4-Tier Browser Synergy handling everything from background stealth crawling to bypassing Turnstile protections.
+5. **🔄 60-Second Setup vs. 45-Minute JSON Hell**: Universal 1-Click Multi-Agent Sync for all your tool profiles, env variables, and MCP servers. Zero drift.
+6. **🕒 Autonomous EDF Smart Relay**: Earliest Deadline First (EDF) engine prioritizes your API accounts closest to reset, chaining them seamlessly.
+
+### 📦 Installation
+**Windows** (PowerShell):
 ```powershell
-irm https://uikode.com/acs/install.ps1 | iex
+irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
 ```
 
-The installer automatically:
-- Detects your platform (Windows/macOS/Linux, amd64/arm64)
-- Downloads the binary from the private repo via GitHub auth
-- Verifies SHA-256 integrity
-- Installs to `~/.acs/bin/`
-- Registers as a persistent service (auto-start on login)
+**Linux / macOS** (Bash):
+```bash
+curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
+```
 
-## What Gets Installed
+### ⚡ Quick Start
+After installation, set up your ACS environment by running:
+```bash
+acs-cli setup
+```
 
-- **acs** — single binary, all platforms, all features
-- **9router** — LLM proxy with multi-provider routing, combo fallback, PID management, and health checks
-- **30+ agent skills** — architecture, security, TDD, release, marketing, and more
-- **Web dashboard** — Tide-powered monitoring + management UI (port 20130)
-- **Scheduler** — background tasks: health checks, auto-update, gateway monitoring, respawn
-- **Gateway manager** — deploy agents to Telegram in seconds, self-healing with auto-restart
-
-## CLI Commands
-
+### 💻 Commands
 **Core Operations:**
-- `acs service [start|stop|restart|status]` — Manage ACS stack
-- `acs setup` — Install/update ACS environments
-- `acs update` — Self-update ACS to latest version
-- `acs doctor` — Run health checks and auto-fix issues
-- `acs uninstall` — Remove ACS from system
+- `acs-cli service [start|stop|restart|status]`: Manage ACS stack
+- `acs-cli setup`: Install/update ACS environments
+- `acs-cli update`: Self-update ACS CLI to latest version
+- `acs-cli doctor`: Run health checks and auto-fix issues
+- `acs-cli uninstall`: Remove ACS from system
 
 **Component Control:**
-- `acs dashboard` — Dashboard server operations
-- `acs scheduler` — Background task scheduler
-- `acs gateway` — Manage API gateways
-- `acs router` — 9router operations
+- `acs-cli dashboard`: Dashboard server operations
+- `acs-cli scheduler`: Background task scheduler
+- `acs-cli gateway`: Manage API gateways
+- `acs-cli router`: 9router operations
 
 **Ecosystem & MCP:**
-- `acs mcp` — Manage MCP Servers & tools
-- `acs accounts` — Manage KeyPool & provider accounts
-- `acs articles` — Synthesized knowledge articles engine
-- `acs kanban` — Local visual task tracking
-- `acs sessions` — Manage agent session history
-- `acs logs` — View real-time aggregated logs
+- `acs-cli mcp`: Manage MCP Servers & tools
+- `acs-cli accounts`: Manage KeyPool & provider accounts
+- `acs-cli articles`: Synthesized knowledge articles engine
+- `acs-cli kanban`: Local visual task tracking
+- `acs-cli sessions`: Manage agent session history
+- `acs-cli logs`: View real-time aggregated logs
 
 **Agent Intelligence:**
-- `acs agent` — AcsAgentManager (agents & soul configuration)
-- `acs toolprofile (tp)` — Manage AI tool profiles
-- `acs workspace` — Workspace ruleset operations
-- `acs hook` — Antigravity runtime hooks
+- `acs-cli agent`: AcsAgentManager (agents & soul configuration)
+- `acs-cli toolprofile`: Manage AI tool profiles
+- `acs-cli workspace`: Workspace ruleset operations
+- `acs-cli hook`: Antigravity runtime hooks
 
 **Utilities:**
-- `acs status` — Show system diagnostic status
-- `acs license` — License key management
-- `acs docs` — Documentation manager
-- `acs completion` — Shell completions
+- `acs-cli status`: Show system diagnostic status
+- `acs-cli license`: License key management
+- `acs-cli docs`: Documentation manager
+- `acs-cli completion`: Shell completions
 
-## Setup
+*(For a full list of development commands, see `just` inside the repository).*
 
-```bash
-# Full setup (all components)
-acs setup
-
-# With WezTerm terminal (Windows, recommended)
-acs setup --wezterm
-
-# With Telegram bot (optional)
-acs setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
-```
-
-The `--wezterm` flag installs WezTerm as your dedicated standalone terminal (Windows only):
-- Installs via winget
-- Creates Desktop shortcut (launches directly, no intermediate shell)
-- Adds right-click "Open in WezTerm" context menu
-- Generates config with auto-detected shell (pwsh or powershell)
-
-Setup is **idempotent** — safe to run multiple times. What it configures:
-
-| Step | Function |
-|------|----------|
-| prerequisites | Check & install tools (git, bun, python) |
-| 9router | Install LLM proxy + seed model database + generate API key |
-| claude-code | Deploy config + MCP servers + hooks |
-| hermes-agent | Deploy profiles + SOUL + automation |
-| gateway | Set up Telegram bot gateway (if token provided) |
-| shared-skills | Deploy 30+ agent skills |
-| mcp-servers | Configure MCP tool servers |
-| automation | Deploy hooks + scheduled tasks |
-| tooling-deps | Validate and auto-fix tooling dependencies |
-| git-credential | Provision .gitconfig per Hermes profile |
-
-## Stack Architecture
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   ACS (single binary)            │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ 9router  │  │ Gateway  │  │    Dashboard     │  │
-│  │ :20128   │  │ Manager  │  │     :20130       │  │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
-│       │              │                 │            │
-│  Multi-model    Telegram bot      Tide reactive     │
-│  routing +      deploy +          UI + WebSocket    │
-│  fallback       self-heal         live updates      │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │Scheduler │  │  Skills  │  │   Auto-Update    │  │
-│  │(watchdog) │  │  (30+)   │  │  (realtime bar)  │  │
-│  └──────────┘  └──────────┘  └──────────────────┘  │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │  Sync    │  │  Kanban  │  │   Multi-Auth     │  │
-│  │(snapshots)│  │  Board   │  │   (Codex/Claude) │  │
-│  └──────────┘  └──────────┘  └──────────────────┘  │
-│                                                     │
-└─────────────────────────────────────────────────────┘
-         ↕                ↕                ↕
-   OpenAI / Anthropic   Telegram      Claude Code
-   Google / Local       Bot API       Hermes / Kiro
-```
-
-## Agent Capability System
-
-Skills activate automatically based on task context. No manual invocation needed.
-
-| Category | Skills |
-|----------|--------|
-| **Dev Workflow** | spec-writer, architecture-blueprint, code-review, tdd-regression-guard, git-workflow, parallel-orchestration |
-| **Security** | security-review (OWASP, secrets, input validation, auth/authz) |
-| **Quality** | runtime-validation, markdown-autofix, tooling-bootstrap, investigation-protocol |
-| **Frontend** | frontend-ui-ux (styling, a11y, responsive, dark/light mode) |
-| **Business** | pitch-deck, funnel-builder, gtm-launch, technical-copy-seo, product-marketing, seo-audit, outbound-sequence, cro-audit, dx-onboarding |
-
-Each skill includes: trigger conditions, step-by-step execution, context requirements, and quality gates.
-
-## Dashboard
-
-```bash
-acs service start    # Start everything (9router + gateway + dashboard + scheduler)
-```
-
-Open `http://localhost:20130` — dashboard features:
-
-- **Command Center** — summary cards, announcements, experimental feature banners
-- **Stack Manager** — start/stop/restart individual services with auto-start config
-- **Gateway Manager** — start/stop/create/delete agent gateways, real-time status, self-heal indicators
-- **Model Routing** — view active combos, provider status, usage metrics
-- **Health Monitor** — warning system for duplicate tokens, stale locks, process issues
-- **Sync & Snapshots** — browse config snapshots, restore previous state, quick undo
-- **Scheduler** — view background tasks, gateway respawn status, update checks
-- **Settings** — API keys, preferences, theme (dark/light)
-
-Responsive layout: 2-col mobile, 3-col tablet, 4-col desktop. Full mobile support with swipe pagination and auto-hide sidebar.
-
-## Gateway: AI Agent via Telegram
-
-Deploy an agent you can chat with 24/7:
-
-```bash
-# Create a new gateway
-acs gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
-
-# Start it
-acs gateway start my-agent
-
-# List all gateways
-acs gateway list
-```
-
-Each gateway = 1 Telegram bot = 1 AI agent with its own personality and skills.
-
-Self-healing: if a gateway dies, the scheduler detects it and restarts automatically. Telegram notification on auto-heal.
-
-## Auto-Update
-
-ACS checks for updates automatically every 6 hours. For manual updates:
-
-```bash
-acs update
-```
-
-Update flow: download new binary → realtime progress bar → verify SHA-256 → swap binary → restart service. Zero downtime.
-
-## Uninstall
-
-### Safe (keep skills, configs, data)
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh | bash
-
-# Windows
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.ps1 | iex
-```
-
-### Full Purge (remove everything)
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh | bash -s -- --purge
-
-# Windows
-powershell -Command "& { irm https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.ps1 | iex } -Purge"
-```
-
-| Item | Safe | Purge |
-|------|:----:|:-----:|
-| Service + automation | ✓ | ✓ |
-| Hooks + cron scripts | ✓ | ✓ |
-| Skills | — | ✓ |
-| Configs (Hermes, Claude) | — | ✓ |
-| Database + logs | — | ✓ |
-| Binary + PATH | — | ✓ |
-
-## Requirements
-
-- Git
-- Internet connection
-- GitHub account with private repo access (granted after purchase)
-
-## After Install
-
-```bash
-acs setup          # Configure all components
-acs doctor         # Verify installation
-acs service start  # Start background service
-```
-
-Open dashboard: `http://localhost:20130`
-
-## Troubleshooting
-
-```bash
-acs doctor         # Diagnose issues
-acs doctor --fix   # Auto-repair common problems
-```
+### 🛠️ Usage & The Cockpit Experience
+Manage everything from our **Dashboard Cockpit**:
+- **Visual Kanban Hub**: See exactly what your agent is working on.
+- **1-Click Rollback**: Revert to a stable version instantly.
+- **Unified Proxy Monitor**: Real-time insights into your self-healing network.
 
 ---
 
-## Don't have access yet?
+<a id="bahasa-indonesia"></a>
+## 🇮🇩 Bahasa Indonesia
 
-ACS is distributed via private repository. Every buyer gets collaborator access + lifetime updates.
+### 📖 Tentang
+**Revolusi AI Membutuhkan Fondasi Kedaulatan (Sovereign Foundation)**
 
-<p align="center">
-  <a href="https://wa.me/6281289731212?text=I%20want%20to%20order%20ACS%2C%20please%20send%20me%20the%20details">
-    <img src="https://img.shields.io/badge/Order%20Now-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Order via WhatsApp">
-  </a>
-</p>
+Anda membeli agen AI coding untuk menulis kode kelas dunia, bukan untuk menghabiskan malam-malam Anda mengurai konfigurasi JSON yang berantakan atau melihat *context window* Anda menguap habis sebelum baris pertama.
 
-<p align="center">
-  <em>One-time payment. Lifetime updates. No subscription.</em>
-</p>
+Selamat datang di **Agnostic Config Suites (ACS)** — bukan sekadar wrapper API tipis, melainkan sebuah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)**. Kami mengubah agen AI yang rentan dan tak terduga menjadi mesin otonom yang tangguh, hemat biaya, dan deterministik.
 
----
+### ✨ Fitur (6 Alasan Mengapa ACS Mengubah Segalanya)
+1. **🔌 Integrasi Model Context Protocol (MCP) Bawaan**: Hubungkan agen AI Anda secara instan dengan alat eksternal, API, dan sistem file melalui integrasi MCP standar kami. *Hasil:* Injeksi konteks yang mulus dan ekspansi alat tanpa batas.
+2. **⚡ Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Menyuntikkan skill dan aturan *hanya* saat dibutuhkan. *Hasil:* Memotong pemborosan konteks siaga sebesar 89%, memperluas ruang penalaran (reasoning space) yang tersedia.
+3. **🛡️ Jaminan Anti-Beku (Proxy Pemulihan Otomatis)**: Smart Circuit Breaker memonitor setiap rute dan secara instan beralih ke koneksi langsung jika sebuah node gagal 3 kali.
+4. **🥷 Otomatisasi Browser Multi-Tier Tersembunyi (Stealth)**: Sinergi 4 Lapis Browser (DevTools + ACS CloakBrowser + Camoufox + SeleniumBase UC Mode) yang menangani perayapan (crawling) di background hingga menembus proteksi kelas militer Turnstile.
+5. **🔄 Setup 60 Detik vs. 45 Menit Konfigurasi JSON**: Sinkronisasi Multi-Agen Universal 1-Klik untuk semua profil tool Anda, environment variables, dan server MCP. Tanpa deviasi (zero drift).
+6. **🕒 Relay Pintar Otonom EDF**: Mesin *Earliest Deadline First* (EDF) memprioritaskan akun API Anda yang paling dekat dengan waktu reset, dan menggabungkannya dengan mulus untuk kapasitas tak terbatas.
 
-## License
+### 📦 Instalasi
+**Windows** (PowerShell):
+```powershell
+irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+```
 
-Proprietary. Access granted per-user via private repository.
+**Linux / macOS** (Bash):
+```bash
+curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
+```
+
+### ⚡ Mulai Cepat (Quick Start)
+Setelah instalasi, jalankan setup untuk lingkungan ACS Anda dengan perintah:
+```bash
+acs-cli setup
+```
+
+### 💻 Perintah (Commands)
+**Operasi Inti:**
+- `acs-cli service [start|stop|restart|status]`: Mengelola stack ACS
+- `acs-cli setup`: Menginstal/memperbarui lingkungan ACS
+- `acs-cli update`: Memperbarui ACS CLI ke versi terbaru
+- `acs-cli doctor`: Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
+- `acs-cli uninstall`: Menghapus ACS dari sistem
+
+**Kontrol Komponen:**
+- `acs-cli dashboard`: Operasi server dashboard
+- `acs-cli scheduler`: Penjadwal tugas latar belakang (background)
+- `acs-cli gateway`: Mengelola gateway API
+- `acs-cli router`: Operasi 9router
+
+**Ekosistem & MCP:**
+- `acs-cli mcp`: Mengelola Server & alat MCP (Model Context Protocol)
+- `acs-cli accounts`: Mengelola KeyPool & akun provider
+- `acs-cli articles`: Mesin artikel pengetahuan tersintesis
+- `acs-cli kanban`: Pelacakan tugas visual lokal
+- `acs-cli sessions`: Mengelola riwayat sesi agen
+- `acs-cli logs`: Melihat log teragregasi secara real-time
+
+**Kecerdasan Agen:**
+- `acs-cli agent`: AcsAgentManager (konfigurasi agen & soul)
+- `acs-cli toolprofile`: Mengelola profil alat AI (tool profiles)
+- `acs-cli workspace`: Operasi ruleset ruang kerja
+- `acs-cli hook`: Hook runtime Antigravity
+
+**Utilitas:**
+- `acs-cli status`: Menampilkan status diagnostik sistem
+- `acs-cli license`: Manajemen kunci lisensi
+- `acs-cli docs`: Manajer dokumentasi
+- `acs-cli completion`: Auto-completion shell
+
+*(Untuk melihat daftar lengkap perintah development, gunakan `just` di dalam root repositori).*
+
+### 🛠️ Penggunaan & Pengalaman Kokpit
+Kelola semuanya dari **Dashboard Cockpit** kami:
+- **Visual Kanban Hub**: Lihat dengan tepat apa yang sedang dikerjakan oleh agen Anda.
+- **Rollback 1-Klik**: Kembalikan ke versi stabil secara instan jika ada update yang bermasalah.
+- **Monitor Proxy Terpadu**: Pantau jaringan pemulihan-otomatis Anda secara real-time.
