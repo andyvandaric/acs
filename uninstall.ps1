@@ -276,7 +276,21 @@ if ($Purge) {
         Ok "Removed 9router database"
     }
 
-    # 7. Remove entire ~/.acs directory (license, database, binaries, logs)
+    # 7. Remove legacy acs-cli directories
+    $legacyDirs = @(
+        "$env:LOCALAPPDATA\acs-cli",
+        (Join-Path $ACS_DIR ".acs-cli"),
+        (Join-Path $ACS_DIR ".acs-cli-dev"),
+        (Join-Path $ACS_DIR ".acs-cli-staging")
+    )
+    foreach ($ld in $legacyDirs) {
+        if (Test-Path $ld) {
+            if (-not $DryRun) { Remove-Item $ld -Recurse -Force -ErrorAction SilentlyContinue }
+            Ok "Removed legacy directory: $ld"
+        }
+    }
+
+    # 8. Remove entire ~/.acs directory (license, database, binaries, logs)
     if (Test-Path $ACS_DIR) {
         if (-not $DryRun) {
             # Try removing binaries first

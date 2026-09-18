@@ -245,7 +245,15 @@ except Exception:
     fi
   done
 
-  # 6. Remove entire ~/.acs directory
+  # 6. Remove legacy acs-cli directories
+  for ldir in "${XDG_DATA_HOME:-${HOME}/.local/share}/acs-cli" "${ACS_DIR}/.acs-cli" "${ACS_DIR}/.acs-cli-dev" "${ACS_DIR}/.acs-cli-staging"; do
+    if [[ -d "$ldir" && "$DRY_RUN" != "true" ]]; then
+      rm -rf "$ldir"
+      ok "Removed legacy directory: $(basename "$ldir")"
+    fi
+  done
+
+  # 7. Remove entire ~/.acs directory
   if [[ -d "$ACS_DIR" && "$DRY_RUN" != "true" ]]; then
     rm -rf "$ACS_DIR"
     ok "Purged entire ~/.acs directory"
