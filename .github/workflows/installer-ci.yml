@@ -1,0 +1,62 @@
+name: Installer CI
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'install.sh'
+      - 'install.ps1'
+      - 'uninstall.sh'
+      - 'uninstall.ps1'
+      - 'tests/**'
+      - '.github/workflows/installer-ci.yml'
+  pull_request:
+    paths:
+      - 'install.sh'
+      - 'install.ps1'
+      - 'uninstall.sh'
+      - 'uninstall.ps1'
+      - 'tests/**'
+      - '.github/workflows/installer-ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: installer-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-linux:
+    name: Bash Syntax & Probe (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run Bash Syntax & Structure Tests
+        run: bash tests/verify-syntax.sh
+
+      - name: Test install.sh help probe
+        run: bash install.sh --help
+
+  test-windows:
+    name: PowerShell Syntax & AST (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run PowerShell AST & Syntax Tests
+        shell: pwsh
+        run: pwsh -NoProfile -ExecutionPolicy Bypass -File tests/verify-syntax.ps1
+
+      - name: Test install.ps1 help probe
+        shell: pwsh
+        run: pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1 -Help
