@@ -22,6 +22,10 @@ while [[ $# -gt 0 ]]; do
       VERSION_ARG="${2:-}"
       shift 2
       ;;
+    -k|--license-key|--key)
+      LICENSE_KEY="${2:-}"
+      shift 2
+      ;;
     -l|--list|--list-versions)
       LIST_VERSIONS=true
       shift
@@ -35,11 +39,13 @@ while [[ $# -gt 0 ]]; do
       echo ""
       echo "Options:"
       echo "  -v, --version <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
+      echo "  -k, --license-key <key>     ACS license key (or set ACS_LICENSE_KEY)"
       echo "  -l, --list, --list-versions List all available releases on CDN"
       echo "  -h, --help                  Show this help message"
       echo ""
       echo "Environment variables:"
       echo "  ACS_VERSION=<version>       Target version (for piped curl execution)"
+      echo "  ACS_LICENSE_KEY=<key>       ACS license key (for piped curl execution)"
       echo "  ACS_LIST=1                  List versions (for piped curl execution)"
       exit 0
       ;;
@@ -51,6 +57,10 @@ done
 
 if [[ -n "${ACS_VERSION:-}" && -z "$VERSION_ARG" ]]; then
   VERSION_ARG="$ACS_VERSION"
+fi
+
+if [[ -n "${ACS_LICENSE_KEY:-}" && -z "${LICENSE_KEY:-}" ]]; then
+  LICENSE_KEY="$ACS_LICENSE_KEY"
 fi
 
 if [[ "${ACS_LIST:-}" == "1" || "${ACS_LIST:-}" == "true" ]]; then
@@ -342,33 +352,53 @@ if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   export PATH="${INSTALL_DIR}:$PATH"
 fi
 
-# ─── Register as service ────────────────────────────────────────────────────
+# ─── Configure Stack with License Verification ─────────────────────────────
 echo ""
-info "Registering as persistent service..."
-if "${INSTALL_DIR}/acs" service install --force 2>/dev/null; then
-  ok "Service registered (auto-starts on login)"
-else
-  warn "Service registration skipped (run manually: acs service install)"
+info "Configuring ACS agentic stack..."
+SETUP_ARGS=()
+if [[ -n "${LICENSE_KEY:-}" ]]; then
+  SETUP_ARGS+=("--license-key" "$LICENSE_KEY")
 fi
 
-# ─── Verify ──────────────────────────────────────────────────────────────────
-echo ""
-if command -v acs >/dev/null 2>&1; then
-  ok "acs v$("${INSTALL_DIR}/acs" version 2>/dev/null | sed -E 's/^(acs|acs-cli)[[:space:]]*//' || echo "$VERSION") ready!"
-else
-  ok "acs v${VERSION} installed to ${INSTALL_DIR}/acs"
+if "${INSTALL_DIR}/acs" setup "${SETUP_ARGS[@]}"; then
+  # ─── Register as persistent service only after setup succeeds ────────────
   echo ""
-  warn "Shell needs to reload PATH. Run one of:"
-  echo "    source ~/.profile"
-  echo "    source ~/.bashrc"
-  echo "    # or just open a new terminal"
-fi
+  info "Registering as persistent service..."
+  if "${INSTALL_DIR}/acs" service install --force 2>/dev/null; then
+    ok "Service registered (auto-starts on login)"
+  else
+    warn "Service registration skipped (run manually: acs service install)"
+  fi
 
-echo ""
-echo "──────────────────────────────────────────"
-echo "  ACS Installed Successfully!"
-echo ""
-echo "  Next Step: Activate your license in 1 step:"
-echo "    acs activate <YOUR_LICENSE_KEY>"
-echo "──────────────────────────────────────────"
-echo ""
+  # Start background stack
+  "${INSTALL_DIR}/acs" start 2>/dev/null || true
+  ok "ACS background services started"
+
+  # ─── Verify & Status ─────────────────────────────────────────────────────
+  echo ""
+  if command -v acs >/dev/null 2>&1; then
+    ok "acs v$("${INSTALL_DIR}/acs" version 2>/dev/null | sed -E 's/^(acs|acs-cli)[[:space:]]*//' || echo "$VERSION") ready!"
+  else
+    ok "acs v${VERSION} installed to ${INSTALL_DIR}/acs"
+    echo ""
+    warn "Shell needs to reload PATH. Run one of:"
+    echo "    source ~/.profile"
+    echo "    source ~/.bashrc"
+    echo "    # or just open a new terminal"
+  fi
+
+  echo ""
+  echo "──────────────────────────────────────────"
+  printf "  ${GREEN}ACS Installed & Configured Successfully!${NC}\n"
+  printf "  ${CYAN}Dashboard: http://localhost:20130${NC}\n"
+  echo "──────────────────────────────────────────"
+  echo ""
+else
+  echo ""
+  warn "ACS binary installed, but stack setup was not completed."
+  info "To complete setup and activate your license, run:"
+  printf "    ${YELLOW}acs setup${NC}\n"
+  printf "  or: ${YELLOW}acs setup --license-key <YOUR_KEY>${NC}\n"
+  printf "  or: ${YELLOW}acs activate <YOUR_LICENSE_KEY>${NC}\n"
+  echo ""
+fi

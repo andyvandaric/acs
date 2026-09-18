@@ -6,6 +6,8 @@
 param(
     [Alias("v")]
     [string]$Version = $env:ACS_VERSION,
+    [Alias("k", "key")]
+    [string]$LicenseKey = $env:ACS_LICENSE_KEY,
     [Alias("l", "list")]
     [switch]$ListVersions,
     [Alias("h")]
@@ -31,11 +33,13 @@ if ($Help) {
     Write-Host ""
     Write-Host "Options:"
     Write-Host "  -Version, -v <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
+    Write-Host "  -LicenseKey, -k <key>      ACS license key (or set `$env:ACS_LICENSE_KEY)"
     Write-Host "  -ListVersions, -l          List all available releases on CDN"
     Write-Host "  -Help, -h                  Show this help screen"
     Write-Host ""
     Write-Host "Environment Variables:"
     Write-Host "  `$env:ACS_VERSION = 'v1.4.0' Pinned version for piped iex execution"
+    Write-Host "  `$env:ACS_LICENSE_KEY = 'KEY' ACS license key for automated activation"
     Write-Host "  `$env:ACS_LIST = '1'         List available versions"
     Write-Host ""
     return
@@ -137,7 +141,10 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 # --- Install-ACS: Compatible with PowerShell 5.1 and 7+ -----------------------
 
 function Install-ACS {
-param([string]$TargetVersion)
+param(
+    [string]$TargetVersion,
+    [string]$LicenseKey
+)
 $ErrorActionPreference = "Stop"
 
 if ($TargetVersion) {
@@ -357,46 +364,76 @@ try {
     [Win32.NativeMethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
 } catch { }
 
-# --- Register as service ----------------------------------------------------
+# --- Configure Stack with License Verification -------------------------------
 Write-Host ""
-Info "Registering as persistent service..."
+Info "Configuring ACS agentic stack..."
+$setupArgs = @()
+if ($LicenseKey) {
+    $setupArgs += "--license-key", $LicenseKey
+}
+
+$setupExitCode = 1
 try {
-    $svcOutput = & $targetExe service install --force 2>&1
-    if ($LASTEXITCODE -eq 0) {
-        Ok "Service registered (auto-starts on login)"
-    } else {
-        Warn "Service registration skipped: $svcOutput"
+    & $targetExe setup @setupArgs
+    $setupExitCode = $LASTEXITCODE
+} catch {
+    $setupExitCode = 1
+}
+
+if ($setupExitCode -eq 0) {
+    # --- Register as persistent service only after setup succeeds -----------
+    Write-Host ""
+    Info "Registering as persistent service..."
+    try {
+        $svcOutput = & $targetExe service install --force 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            Ok "Service registered (auto-starts on login)"
+        } else {
+            Warn "Service registration skipped: $svcOutput"
+            Info "You can register manually later: acs service install"
+        }
+    } catch {
+        Warn "Service registration failed: $_"
         Info "You can register manually later: acs service install"
     }
-} catch {
-    Warn "Service registration failed: $_"
-    Info "You can register manually later: acs service install"
-}
 
-# --- Verify & Next Steps -----------------------------------------------------
-Write-Host ""
-$acsVersion = & $targetExe version 2>$null
-if ($acsVersion) {
-    $acsVersion = $acsVersion -replace '^(acs|acs-cli)\s*', ''
-    Ok "acs v$acsVersion ready!"
+    # Auto-start background stack
+    try {
+        & $targetExe start 2>&1 | Out-Null
+        Ok "ACS background services started"
+    } catch { }
+
+    # --- Verify & Status -----------------------------------------------------
+    Write-Host ""
+    $acsVersion = & $targetExe version 2>$null
+    if ($acsVersion) {
+        $acsVersion = $acsVersion -replace '^(acs|acs-cli)\s*', ''
+        Ok "acs v$acsVersion ready!"
+    } else {
+        Ok "Installed successfully!"
+    }
+
+    Write-Host ""
+    Write-Host ("-" * 42)
+    Write-Host "  ACS Installed & Configured Successfully!" -ForegroundColor Green
+    Write-Host "  Dashboard: http://localhost:20130" -ForegroundColor Cyan
+    Write-Host ("-" * 42)
+    Write-Host ""
 } else {
-    Ok "Installed successfully!"
+    Write-Host ""
+    Warn "ACS binary installed, but stack setup was not completed."
+    Info "To complete setup and activate your license, run:"
+    Write-Host "    acs setup" -ForegroundColor Yellow
+    Write-Host "  or: acs setup --license-key <YOUR_KEY>" -ForegroundColor Yellow
+    Write-Host "  or: acs activate <YOUR_LICENSE_KEY>" -ForegroundColor Yellow
+    Write-Host ""
 }
-
-Write-Host ""
-Write-Host ("-" * 42)
-Write-Host "  ACS Installed Successfully!" -ForegroundColor Green
-Write-Host ""
-Write-Host "  Next Step: Activate your license in 1 step:" -ForegroundColor Cyan
-Write-Host "    acs activate <YOUR_LICENSE_KEY>" -ForegroundColor Yellow
-Write-Host ("-" * 42)
-Write-Host ""
 
 } # end Install-ACS function
 
 # --- Run with error capture ---------------------------------------------------
 try {
-    Install-ACS -TargetVersion $Version
+    Install-ACS -TargetVersion $Version -LicenseKey $LicenseKey
 } catch {
     Write-Host ""
     Write-Host ("-" * 36) -ForegroundColor Red
