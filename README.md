@@ -2,13 +2,13 @@
 *(The Local Sovereign Operating System & Control Cockpit for Autonomous AI Agents)*
 
 <div align="center">
-<img src="assets/logo.svg" width="200" alt="ACS Logo">
+<img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
 ![oh-my-claudecode](https://img.shields.io/badge/oh--my--claudecode-5.3.0-green?style=for-the-badge)
 ![Antigravity](https://img.shields.io/badge/Antigravity-Integrated-purple?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Copyrighted-red.svg?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.2.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.12.0-orange?style=for-the-badge)
 
 **Stop burning tokens. Stop freezing terminals. Take back control.**<br>
 *(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali.)*
