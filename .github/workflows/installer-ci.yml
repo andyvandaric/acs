@@ -41,10 +41,15 @@ jobs:
           python-version: '3.12'
 
       - name: Run Bash Syntax & Structure Tests
-        run: bash tests/verify-syntax.sh
+        run: |
+          bash tests/verify-syntax.sh
+          bash tests/verify-uninstall-syntax.sh
 
       - name: Test install.sh help probe
         run: bash install.sh --help
+
+      - name: Test uninstall.sh help probe
+        run: bash uninstall.sh --help
 
   test-windows:
     name: PowerShell Syntax & AST (Windows)
@@ -55,8 +60,14 @@ jobs:
 
       - name: Run PowerShell AST & Syntax Tests
         shell: pwsh
-        run: pwsh -NoProfile -ExecutionPolicy Bypass -File tests/verify-syntax.ps1
+        run: |
+          pwsh -NoProfile -ExecutionPolicy Bypass -File tests/verify-syntax.ps1
+          pwsh -NoProfile -ExecutionPolicy Bypass -File tests/verify-uninstall-syntax.ps1
 
       - name: Test install.ps1 help probe
         shell: pwsh
         run: pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1 -Help
+
+      - name: Test uninstall.ps1 help probe
+        shell: pwsh
+        run: pwsh -NoProfile -ExecutionPolicy Bypass -File uninstall.ps1 -Help
