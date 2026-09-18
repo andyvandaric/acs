@@ -23,9 +23,9 @@
 ### 📖 Tentang ACS
 **Revolusi AI Coding Membutuhkan Fondasi Kedaulatan (Sovereign Foundation)**
 
-Anda menggunakan agen AI coding untuk membangun software kelas dunia, bukan untuk membuang berjam-jam waktu Anda mengurai file JSON yang berantakan atau melihat *context window* Anda lenyap habis sebelum baris kode pertama ditulis.
+Anda menggunakan agen AI coding untuk membangun software kelas dunia, bukan untuk membuang berjam-jam waktu Anda mengurai file konfigurasi atau melihat *context window* Anda lenyap sebelum baris kode pertama ditulis.
 
-**Agnostic Config Suites (ACS)** adalah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)** berperforma tinggi yang dibangun dengan Go. ACS mengubah agen AI yang rapuh dan boros token menjadi mesin rekayasa perangkat lunak otonom yang tangguh, hemat biaya, dan deterministik.
+**Agnostic Config Suites (ACS)** adalah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)** berperforma tinggi. ACS mengubah agen AI yang rentan dan boros token menjadi mesin rekayasa perangkat lunak otonom yang tangguh, hemat biaya, dan deterministik.
 
 ---
 
@@ -43,29 +43,27 @@ irm https://dl.uikode.com/install.ps1 | iex
 curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
-*(Mirror failover tersedia otomatis melalui GitHub Releases dan infrastruktur UIKode Edge).*
-
 ---
 
 ### ⚡ Panduan Cepat & Aktivasi Lisensi
 
-ACS dilindungi oleh lisensi komersial terproteksi. Setelah instalasi selesai, aktifkan workstation Anda dalam hitungan detik:
+ACS dilindungi oleh lisensi komersial terproteksi:
 
 1. **Aktivasi Lisensi**:
    ```bash
-   # Aktivasi instan langsung di terminal
+   # Aktivasi langsung di terminal
    acs activate <kode-lisensi-anda>
 
-   # Atau masuk menggunakan akun GitHub resmi yang telah terdaftar
+   # Atau masuk menggunakan akun GitHub resmi yang terdaftar
    acs login
    ```
 
 2. **Inisialisasi Lingkungan & Diagnosis Sistem**:
    ```bash
-   # Sinkronisasi otomatis MCP tools, template ruleset & workspace
+   # Sinkronisasi tools, template & workspace
    acs setup
 
-   # Lakukan pemeriksaan 16 titik prasyarat dan auto-perbaikan mandiri
+   # Pemeriksaan sistem dan perbaikan mandiri
    acs doctor --fix
    ```
 
@@ -77,66 +75,66 @@ ACS dilindungi oleh lisensi komersial terproteksi. Setelah instalasi selesai, ak
 
 ---
 
-### 🛡️ Proteksi Enterprise & Kedaulatan Data Lokal
+### 🛡️ Privasi Enterprise & Kedaulatan Data Lokal
 
-- **Aktivasi Berpembatas & Validasi Lisensi Offline**: Verifikasi lisensi terenkripsi dengan cache HMAC aman di workstation lokal. Anda tetap dapat bekerja offline tanpa bergantung pada koneksi internet harian.
-- **Isolasi Penuh Single-Tenant**: 100% riwayat telemetri, database SQLite WAL, log eksekusi prompt, dan konfigurasi tersimpan secara eksklusif di mesin lokal Anda (`~/.acs/`). Nol kebocoran data ke cloud pihak ketiga.
-- **Zero Console Window (Eksekusi Senyap di Latar Belakang)**: Pemanfaatan flag Win32 `CREATE_NO_WINDOW` dan proses terpisah menjamin seluruh daemon latar belakang, auto-heal watchdog, dan skrip pembantu berjalan senyap tanpa kedipan jendela konsol terminal di layar Anda.
-- **Isolasi Siklus Hidup Proses Mandiri**: Penghentian atau restart layanan dashboard ACS berjalan terpisah dan tidak mematikan proxy `9router` (`:20128`). Lalu lintas agen AI yang sedang aktif tetap aman tanpa gangguan.
+- **Proteksi Lisensi Komersial**: Memerlukan lisensi resmi untuk penggunaan. Dirancang dengan validasi aman untuk privasi dan stabilitas saat offline.
+- **Kedaulatan Data Lokal**: Seluruh riwayat prompt, metrik proyek, dan konfigurasi tersimpan 100% di mesin lokal Anda. Bebas dari pengiriman data ke pihak ketiga.
+- **Operasional Senyap di Latar Belakang**: Layanan sistem dan auto-heal berjalan senyap di background tanpa gangguan jendela terminal di layar kerja Anda.
+- **Arsitektur Layanan Mandiri**: Layanan dashboard dan proxy berjalan mandiri untuk memastikan stabilitas dan ketersediaan tinggi selama pemeliharaan.
 
 ---
 
 ### 💻 Daftar Perintah CLI `acs` Lengkap
 
-Seluruh operasional kini dipersatukan di bawah perintah modern **`acs`**:
+Seluruh operasional dipersatukan di bawah perintah modern **`acs`**:
 
 #### Operasional Inti & Lisensi
 | Perintah | Deskripsi |
 |---|---|
-| `acs activate <key>` | Mengaktifkan lisensi komersial resmi pada workstation lokal |
-| `acs login` | Otentikasi dan klaim lisensi melalui browser via GitHub OAuth |
-| `acs status` | Menampilkan masa aktif lisensi, kesehatan port, dan status layanan |
-| `acs start` | Menyalakan daemon latar belakang dan kokpit web lokal (`:20130`) |
-| `acs stop` | Menghentikan layanan dashboard ACS secara aman (9router tetap aktif) |
-| `acs restart` | Restart cepat layanan ACS tanpa memutus koneksi proxy agen |
-| `acs doctor [--fix]` | Memeriksa 16 titik prasyarat dependensi dan auto-perbaikan otomatis |
-| `acs update` | Memeriksa dan memasang pembaruan versi terbaru dari Sovereign CDN |
+| `acs activate <key>` | Mengaktifkan lisensi komersial resmi pada workstation |
+| `acs login` | Otentikasi dan klaim lisensi via GitHub OAuth |
+| `acs status` | Menampilkan status lisensi, port, dan layanan aktif |
+| `acs start` | Menyalakan layanan latar belakang dan kokpit web lokal (`:20130`) |
+| `acs stop` | Menghentikan layanan ACS secara aman |
+| `acs restart` | Restart cepat layanan ACS tanpa jeda panjang |
+| `acs doctor [--fix]` | Memeriksa dependensi sistem dan auto-perbaikan |
+| `acs update` | Memeriksa dan memasang pembaruan versi dari Sovereign CDN |
 | `acs lang [id\|en]` | Mengganti bahasa antarmuka CLI (Bahasa Indonesia / English) |
-| `acs uninstall` | Menghapus instalasi ACS, layanan sistem, dan link biner secara bersih |
+| `acs uninstall` | Menghapus instalasi ACS dan layanan sistem secara bersih |
 
 #### Layanan Sistem & Komponen
 | Perintah | Deskripsi |
 |---|---|
-| `acs service [start\|stop\|status]` | Mengelola service otomatis sistem operasi (systemd / Task Scheduler) |
-| `acs dashboard` | Mengelola server dashboard dan membuka web UI (`:20130`) |
-| `acs scheduler` | Mengontrol scheduler tugas latar belakang dan auto-heal watchdog |
-| `acs gateway` | Mengelola gateway multi-akun AI (Kiro, Antigravity, dll.) |
-| `acs router` | Mengontrol proxy load-balancer multi-provider 9router (`:20128`) |
-| `acs setup` | Menginisialisasi ulang konfigurasi workspace, tools, dan agen rules |
+| `acs service [start\|stop\|status]` | Mengelola service otomatis sistem operasi |
+| `acs dashboard` | Mengelola server dashboard web UI (`:20130`) |
+| `acs scheduler` | Mengontrol scheduler tugas latar belakang dan auto-heal |
+| `acs gateway` | Mengelola gateway multi-akun penyedia AI |
+| `acs router` | Mengontrol proxy load-balancer multi-provider |
+| `acs setup` | Menginisialisasi ulang konfigurasi workspace dan aturan agen |
 
-#### Ekosistem Agen & MCP
+#### Ekosistem Agen & Tools
 | Perintah | Deskripsi |
 |---|---|
 | `acs kanban` | Papan visual pelacak tugas lokal dan pemantau PRD Blueprint |
 | `acs mcp [list\|add\|remove]` | Mengelola server dan tools Model Context Protocol (MCP) |
-| `acs accounts` | Mengelola akun penyedia model AI (KeyPool) dan alokasi kuota |
+| `acs accounts` | Mengelola akun penyedia model AI dan alokasi kuota |
 | `acs articles` | Mesin penelusuran artikel riset dan basis pengetahuan offline |
 | `acs sessions` | Memeriksa dan mengelola riwayat sesi eksekusi agen AI |
-| `acs logs [service\|daemon\|9router]` | Memantau log gabungan layanan secara realtime tanpa terpotong |
+| `acs logs` | Memantau log gabungan layanan secara realtime |
 
 ---
 
 ### ✨ Keunggulan Arsitektur ACS
 
-1. **Integrasi Model Context Protocol (MCP) Bawaan**: Terhubung mulus ke sistem berkas, otomasi browser (CloakBrowser), code intelligence berbasis AST Language Server (LSP), dan penelusuran riset mendalam.
-2. **Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Mengurangi pemborosan token latar belakang hingga 89%, menyediakan ruang *reasoning context* maksimal untuk penulisan kode.
-3. **Smart Circuit Breaker Anti-Flapping**: Deteksi dini kegagalan jaringan dan masa tenggang *cold-boot* menjamin stabilitas tanpa siklus restart berulang.
-4. **Relay Cerdas Kuota Otonom (EDF)**: Algoritma Earliest Deadline First memprioritaskan akun kuota AI yang mendekati batas reset untuk efisiensi maksimal.
-5. **Deteksi Otomatis Proyek Lintas Workspace**: Secara otomatis mengenali seluruh workspace Claude Code CLI dan menyajikan status PRD blueprint pada kokpit Kanban.
+1. **Integrasi Model Context Protocol (MCP) Bawaan**: Terhubung mulus ke sistem berkas, otomasi browser, code intelligence berbasis Language Server (LSP), dan riset web.
+2. **Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Mengurangi pemborosan token latar belakang hingga 89%, menyediakan ruang konteks maksimal untuk pembuatan kode.
+3. **Smart Circuit Breaker Anti-Flapping**: Deteksi dini kegagalan jaringan dan masa tenggang menjamin stabilitas tanpa siklus restart berulang.
+4. **Relay Cerdas Kuota Otonom (EDF)**: Algoritma cerdas memprioritaskan akun kuota AI yang mendekati batas reset untuk efisiensi maksimal.
+5. **Deteksi Otomatis Proyek Lintas Workspace**: Secara otomatis mengenali seluruh workspace dan menyajikan status PRD blueprint pada kokpit Kanban.
 
 ---
 
 <div align="center">
-<b>Dibangun dengan bangga untuk para software engineer berkecepatan tinggi.</b><br>
+<b>Dibangun untuk para software engineer berkecepatan tinggi.</b><br>
 Distribusi Resmi & Sovereign CDN: <a href="https://dl.uikode.com">https://dl.uikode.com</a>
 </div>

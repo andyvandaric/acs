@@ -23,9 +23,9 @@
 ### 📖 About
 **The AI Coding Revolution Needs a Sovereign Foundation**
 
-You run AI coding agents to ship world-class software, not to waste hours untangling fragile JSON configurations or watching your context window vanish into thin air before writing line 1.
+You run AI coding agents to ship world-class software, not to waste hours untangling fragile configurations or watching your context window vanish before writing line 1.
 
-**Agnostic Config Suites (ACS)** is a high-performance, single-tenant **Local Sovereign Operating System** written in Go. It turns unpredictable, fragile AI coding assistants into an unbreakable, deterministic, cost-optimized engineering powerhouse.
+**Agnostic Config Suites (ACS)** is a high-performance **Local Sovereign Operating System**. It turns unpredictable AI coding assistants into an unbreakable, deterministic, cost-optimized engineering powerhouse.
 
 ---
 
@@ -43,29 +43,27 @@ irm https://dl.uikode.com/install.ps1 | iex
 curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
-*(Failover mirrors are hosted across GitHub Releases and UIKode Edge infrastructure).*
-
 ---
 
 ### ⚡ Quick Start & License Activation
 
-ACS is protected by a proprietary enterprise license. Upon installation, activate your workstation in seconds:
+ACS is protected by a proprietary commercial license:
 
 1. **Activate License**:
    ```bash
    # Direct terminal activation
    acs activate <your-license-key>
 
-   # Or log in via authorized GitHub OAuth account
+   # Or log in via authorized GitHub account
    acs login
    ```
 
 2. **Initialize Workspace & Verify System Health**:
    ```bash
-   # Automatic environment setup, MCP configuration & rule synchronization
+   # Setup workspace, tools & rules
    acs setup
 
-   # Run 16-point prerequisite diagnosis and auto-repair
+   # Run health checks and auto-repair
    acs doctor --fix
    ```
 
@@ -73,16 +71,16 @@ ACS is protected by a proprietary enterprise license. Upon installation, activat
    ```bash
    acs start
    ```
-   *Dashboard cockpit immediately launches at `http://127.0.0.1:20130`.*
+   *Dashboard cockpit launches at `http://127.0.0.1:20130`.*
 
 ---
 
-### 🛡️ Enterprise Protection & Local Sovereignty
+### 🛡️ Enterprise Privacy & Local Sovereignty
 
-- **Gated License Lifecycle**: Seamless offline license verification with cryptographic HMAC caching. No internet required for routine daily runs once activated.
-- **Single-Tenant Data Isolation**: 100% of your telemetry, SQLite WAL databases, prompt logs, and configurations reside exclusively on your local workstation (`~/.acs/`). Zero cloud data leakage.
-- **Zero Console Window / Non-Blocking Execution**: Native Win32 `CREATE_NO_WINDOW` and detached process isolation guarantee that background daemons, watchdogs, and tool wrappers never interrupt your desktop with flashing console windows.
-- **Independent Non-Tree-Kill Process Isolation**: ACS dashboard operations run completely isolated from underlying proxies like 9router (`:20128`). Stopping or restarting ACS never interrupts active agent traffic.
+- **Commercial License Protection**: Valid license required for operation. Seamless validation designed for enterprise privacy and offline stability.
+- **Local Data Sovereignty**: All prompt histories, project metrics, and configurations stay 100% on your local machine. Zero external data sharing.
+- **Silent Background Operation**: Services and background tools run completely in the background without intrusive terminal popups or desktop interruptions.
+- **Resilient Service Architecture**: Dashboard and proxy services run with independent lifecycles to ensure continuous uptime during maintenance.
 
 ---
 
@@ -90,16 +88,16 @@ ACS is protected by a proprietary enterprise license. Upon installation, activat
 
 All operations are unified under the modern `acs` command:
 
-#### Core Lifecycle
+#### Core Operations
 | Command | Description |
 |---|---|
-| `acs activate <key>` | Activate official commercial license key on workstation |
-| `acs login` | Authenticate and claim license via GitHub OAuth browser flow |
-| `acs status` | Display real-time service health, ports, and license validity |
-| `acs start` | Start ACS background daemons and local Web Cockpit (`:20130`) |
-| `acs stop` | Gracefully shut down ACS services (preserves 9router proxy) |
+| `acs activate <key>` | Activate commercial license key on workstation |
+| `acs login` | Authenticate and claim license via GitHub OAuth |
+| `acs status` | Display service health, ports, and license validity |
+| `acs start` | Start ACS background services and local Cockpit (`:20130`) |
+| `acs stop` | Gracefully shut down ACS services |
 | `acs restart` | Perform zero-downtime hot restart of ACS services |
-| `acs doctor [--fix]` | Run 16-point environment diagnosis with self-healing repairs |
+| `acs doctor [--fix]` | Run environment diagnosis with self-healing repairs |
 | `acs update` | Check and install latest version from Sovereign CDN |
 | `acs lang [id\|en]` | Switch CLI language between Indonesian and English |
 | `acs uninstall` | Cleanly remove ACS, services, and associated path links |
@@ -107,36 +105,36 @@ All operations are unified under the modern `acs` command:
 #### Service & Infrastructure
 | Command | Description |
 |---|---|
-| `acs service [start\|stop\|status]` | Manage OS background daemon (systemd / Windows Task Scheduler) |
-| `acs dashboard` | Dashboard Web UI manager and direct browser launcher (`:20130`) |
-| `acs scheduler` | Autonomous background task scheduler & auto-heal watchdog |
-| `acs gateway` | Manage multi-account AI gateways (Kiro, Antigravity, etc.) |
-| `acs router` | Control 9router multi-provider load-balancing proxy (`:20128`) |
-| `acs setup` | Re-initialize workspace environments, templates, and agent rules |
+| `acs service [start\|stop\|status]` | Manage OS background service |
+| `acs dashboard` | Dashboard Web UI manager (`:20130`) |
+| `acs scheduler` | Autonomous task scheduler & auto-heal watchdog |
+| `acs gateway` | Manage multi-account AI gateways |
+| `acs router` | Control multi-provider load-balancing proxy |
+| `acs setup` | Re-initialize workspace environments and agent rules |
 
-#### Agentic Ecosystem & MCP
+#### Agentic Ecosystem & Tools
 | Command | Description |
 |---|---|
 | `acs kanban` | Local visual task management and PRD Blueprint tracker |
 | `acs mcp [list\|add\|remove]` | Manage Model Context Protocol (MCP) servers and tools |
-| `acs accounts` | Manage KeyPool provider accounts and sticky quota allocations |
+| `acs accounts` | Manage provider accounts and quota allocations |
 | `acs articles` | Query offline synthesized research and knowledge base |
 | `acs sessions` | Inspect and manage active agent execution sessions |
-| `acs logs [service\|daemon\|9router]` | Tail real-time aggregated service logs without truncation |
+| `acs logs` | Tail real-time service logs |
 
 ---
 
 ### ✨ Architectural Pillars
 
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation (CloakBrowser), code intelligence (LSP AST), and live web research tools.
-2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing massive reasoning headroom for actual code generation.
-3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime even during intermittent upstream network hiccups.
-4. **Autonomous EDF Smart Quota Relay**: Earliest Deadline First (EDF) scheduler prioritizes expiring AI provider quotas to maximize usage value.
-5. **Universal Project Auto-Discovery**: Automatically recognizes existing Claude Code CLI workspaces and surfaces active PRD blueprints in the Kanban cockpit.
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools.
+2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
+3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
+4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
+5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
 
 ---
 
 <div align="center">
-<b>Built with pride for high-velocity software engineers.</b><br>
+<b>Built for high-velocity software engineers.</b><br>
 Official Distribution & Sovereign CDN: <a href="https://dl.uikode.com">https://dl.uikode.com</a>
 </div>
