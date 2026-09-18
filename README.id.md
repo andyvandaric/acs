@@ -1,275 +1,142 @@
-# ACS — Agnostic Config Suites
+# ACS: Agnostic Config Suites
+*(Sistem Operasi Berdaulat Lokal & Kokpit Kendali untuk Autonomous AI Coding Agents)*
 
-> **🌐 Bahasa:** [English](README.md) | [Bahasa Indonesia](README.id.md)
+<div align="center">
+<img src="https://dl.uikode.com/logo.svg" width="160" alt="Logo ACS">
 
-Stack agentic coding yang bikin AI kerja buat kamu — bukan sebaliknya.
+![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
+![Versi](https://img.shields.io/badge/Versi-1.12.0-orange?style=for-the-badge)
+![Lisensi](https://img.shields.io/badge/Lisensi-Proprietary-red.svg?style=for-the-badge)
+![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
----
+**Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.**<br>
+*(Stop burning tokens. Stop freezing terminals. Take back sovereign control.)*
 
-## Kenapa ACS?
-
-**Agent Capability System** — single binary yang mengubah AI coding agent manapun jadi tim engineering lengkap:
-
-- **Dukungan MCP Bawaan** — Hubungkan langsung ke endpoint Model Context Protocol untuk integrasi alat tanpa batas
-- **Multi-model routing** — 9router proxy menghubungkan semua provider (OpenAI, Anthropic, Google, local) dalam satu endpoint, auto-fallback kalau satu provider down
-- **Agent gateway** — deploy AI agent ke Telegram, jalankan 24/7, terima task dari chat kapanpun
-- **30+ battle-tested skills** — spec writing, architecture, TDD, security review, git workflow — semua otomatis aktif sesuai konteks
-- **Web dashboard** — monitor semua agent, gateway, model usage, health status dari browser
-- **Self-healing** — auto-detect stale processes, restart crashed gateways, sweep dead locks
-- **Auto-update** — binary update otomatis tanpa downtime, rollback kalau gagal
-- **Zero config routing** — setup sekali, semua agent (Claude Code, Hermes, Kiro, Codex) langsung konek ke model pool yang sama
-
-Kompatibel dengan Claude Code, Hermes, Kiro, Codex, dan agent MCP-compatible lainnya. Tool-agnostic by design.
+[English](README.md) | [Bahasa Indonesia](#bahasa-indonesia)
+</div>
 
 ---
 
-## Release Terbaru
+<a id="bahasa-indonesia"></a>
+## 🇮🇩 Bahasa Indonesia
 
-- ACS: `0.18.0`
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
+### 📖 Tentang ACS
+**Revolusi AI Coding Membutuhkan Fondasi Kedaulatan (Sovereign Foundation)**
 
-## Install
+Anda menggunakan agen AI coding untuk membangun software kelas dunia, bukan untuk membuang berjam-jam waktu Anda mengurai file JSON yang berantakan atau melihat *context window* Anda lenyap habis sebelum baris kode pertama ditulis.
 
-### macOS / Linux
+**Agnostic Config Suites (ACS)** adalah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)** berperforma tinggi yang dibangun dengan Go. ACS mengubah agen AI yang rapuh dan boros token menjadi mesin rekayasa perangkat lunak otonom yang tangguh, hemat biaya, dan deterministik.
 
-```bash
-curl -fsSL https://uikode.com/acs/install.sh | bash
-```
+---
 
-### Windows (PowerShell)
+### 📦 Instalasi Resmi
 
+Pasang biner terpadu `acs` langsung melalui Sovereign CDN:
+
+**Windows** (PowerShell Administrator):
 ```powershell
-irm https://uikode.com/acs/install.ps1 | iex
+irm https://dl.uikode.com/install.ps1 | iex
 ```
 
-Installer otomatis:
-- Deteksi platform (Windows/macOS/Linux, amd64/arm64)
-- Download binary (~33MB) dari private repo via GitHub auth
-- Verifikasi SHA-256
-- Install ke `~/.acs/bin/`
-- Register sebagai persistent service (auto-start saat login)
-
-## Yang Terinstall
-
-- **acs** — single binary, semua platform, semua fitur
-- **9router** — LLM proxy dengan multi-provider routing + combo fallback
-- **30+ agent skills** — architecture, security, TDD, release, marketing, dan lainnya
-- **Web dashboard** — monitoring + management UI (port 20130)
-- **Scheduler** — background tasks: health check, auto-update, gateway monitoring
-- **Gateway manager** — deploy agent ke Telegram dalam hitungan detik
-
-## Perintah (CLI Commands)
-
-**Operasi Inti:**
-- `acs service [start|stop|restart|status]` — Mengelola stack ACS
-- `acs setup` — Menginstal/memperbarui lingkungan ACS
-- `acs update` — Memperbarui ACS ke versi terbaru
-- `acs doctor` — Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
-- `acs uninstall` — Menghapus ACS dari sistem
-
-**Kontrol Komponen:**
-- `acs dashboard` — Operasi server dashboard
-- `acs scheduler` — Penjadwal tugas latar belakang (background)
-- `acs gateway` — Mengelola gateway API
-- `acs router` — Operasi 9router
-
-**Ekosistem & MCP:**
-- `acs mcp` — Mengelola Server & alat MCP (Model Context Protocol)
-- `acs accounts` — Mengelola KeyPool & akun provider
-- `acs articles` — Mesin artikel pengetahuan tersintesis
-- `acs kanban` — Pelacakan tugas visual lokal
-- `acs sessions` — Mengelola riwayat sesi agen
-- `acs logs` — Melihat log teragregasi secara real-time
-
-**Kecerdasan Agen:**
-- `acs agent` — AcsAgentManager (konfigurasi agen & soul)
-- `acs toolprofile (tp)` — Mengelola profil alat AI (tool profiles)
-- `acs workspace` — Operasi ruleset ruang kerja
-- `acs hook` — Hook runtime Antigravity
-
-**Utilitas:**
-- `acs status` — Menampilkan status diagnostik sistem
-- `acs license` — Manajemen kunci lisensi
-- `acs docs` — Manajer dokumentasi
-- `acs completion` — Auto-completion shell
-
-## Setup
-
+**Linux / macOS** (Bash / Zsh):
 ```bash
-# Setup lengkap (semua komponen)
-acs setup
-
-# Dengan Telegram bot (opsional)
-acs setup --telegram-token <BOT_TOKEN> --telegram-users <USER_IDS>
+curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
-Setup bersifat **idempotent** — aman dijalankan berulang kali. Yang dikonfigurasi:
-
-| Step | Fungsi |
-|------|--------|
-| prerequisites | Cek & install tools (git, bun, python) |
-| 9router | Install LLM proxy + seed model database + generate API key |
-| claude-code | Deploy config + MCP servers + hooks |
-| hermes-agent | Deploy profiles + SOUL + automation |
-| gateway | Setup Telegram bot gateway (jika token disediakan) |
-| shared-skills | Deploy 30+ agent skills |
-| mcp-servers | Konfigurasi MCP tool servers |
-| automation | Deploy hooks + scheduled tasks |
-
-## Stack Architecture
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   ACS (single binary)            │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ 9router  │  │ Gateway  │  │    Dashboard     │  │
-│  │ :20128   │  │ Manager  │  │     :20130       │  │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘  │
-│       │              │                 │            │
-│  Multi-model    Telegram bot      Web UI +          │
-│  routing +      deploy +          monitoring        │
-│  fallback       24/7 agent                          │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │Scheduler │  │  Skills  │  │   Auto-Update    │  │
-│  │(background)│ │  (30+)   │  │   (6h check)     │  │
-│  └──────────┘  └──────────┘  └──────────────────┘  │
-│                                                     │
-└─────────────────────────────────────────────────────┘
-         ↕                ↕                ↕
-   OpenAI / Anthropic   Telegram      Claude Code
-   Google / Local       Bot API       Hermes / Kiro
-```
-
-## Agent Capability System
-
-Skills aktif otomatis berdasarkan konteks task. Tidak perlu invokasi manual.
-
-| Kategori | Skills |
-|----------|--------|
-| **Dev Workflow** | spec-writer, architecture-blueprint, code-review, tdd-regression-guard, git-workflow, parallel-orchestration |
-| **Security** | security-review (OWASP, secrets, input validation, auth/authz) |
-| **Quality** | runtime-validation, markdown-autofix, tooling-bootstrap, investigation-protocol |
-| **Frontend** | frontend-ui-ux (styling, a11y, responsive, dark/light mode) |
-| **Business** | pitch-deck, funnel-builder, gtm-launch, technical-copy-seo, product-marketing, seo-audit, outbound-sequence, cro-audit, dx-onboarding |
-
-Setiap skill mencakup: trigger conditions, step-by-step execution, context requirements, dan quality gates.
-
-## Dashboard
-
-```bash
-acs service start    # Start semua (9router + gateway + dashboard + scheduler)
-```
-
-Buka `http://localhost:20130` — fitur dashboard:
-
-- **Gateway Manager** — start/stop/create/delete agent gateway, lihat status real-time
-- **Model Routing** — lihat combo aktif, provider status, usage metrics
-- **Health Monitor** — warning system untuk duplicate tokens, stale locks, process issues
-- **Agent Sessions** — history percakapan agent
-- **Settings** — API keys, preferences, theme (dark/light)
-
-## Gateway: AI Agent via Telegram
-
-Deploy agent yang bisa diajak chat 24/7:
-
-```bash
-# Buat gateway baru
-acs gateway create --name my-agent --telegram-token <TOKEN> --allowed-users <USER_ID>
-
-# Start
-acs gateway start my-agent
-
-# Lihat semua gateway
-acs gateway list
-```
-
-Setiap gateway = 1 Telegram bot = 1 AI agent dengan personality dan skills sendiri.
-
-## Auto-Update
-
-ACS cek update otomatis setiap 6 jam. Untuk update manual:
-
-```bash
-acs update
-```
-
-Update flow: download binary baru → verify SHA-256 → swap binary → restart service. Zero downtime.
-
-## Uninstall
-
-### Safe (simpan skills, configs, data)
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh | bash
-
-# Windows
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.ps1 | iex
-```
-
-### Full Purge (hapus semua)
-
-```bash
-# macOS / Linux
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh | bash -s -- --purge
-
-# Windows
-powershell -Command "& { irm https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.ps1 | iex } -Purge"
-```
-
-| Item | Safe | Purge |
-|------|:----:|:-----:|
-| Service + automation | ✓ | ✓ |
-| Hooks + cron scripts | ✓ | ✓ |
-| Skills | — | ✓ |
-| Configs (Hermes, Claude) | — | ✓ |
-| Database + logs | — | ✓ |
-| Binary + PATH | — | ✓ |
-
-## Persyaratan
-
-- Git
-- Koneksi internet
-- Akun GitHub dengan akses private repo (diberikan setelah pembelian)
-
-## Setelah Install
-
-```bash
-acs setup          # Konfigurasi semua komponen
-acs doctor         # Verifikasi instalasi
-acs service start  # Start background service
-```
-
-Buka dashboard: `http://localhost:20130`
-
-## Troubleshooting
-
-```bash
-acs doctor         # Diagnosa masalah
-acs doctor --fix   # Auto-repair masalah umum
-```
+*(Mirror failover tersedia otomatis melalui GitHub Releases dan infrastruktur UIKode Edge).*
 
 ---
 
-## Belum punya akses?
+### ⚡ Panduan Cepat & Aktivasi Lisensi
 
-ACS didistribusikan via private repository. Setiap buyer mendapat akses collaborator + lifetime updates.
+ACS dilindungi oleh lisensi komersial terproteksi. Setelah instalasi selesai, aktifkan workstation Anda dalam hitungan detik:
 
-<p align="center">
-  <a href="https://wa.me/6281289731212?text=Mau%20order%20ACS%20nya%2C%20mohon%20infonya%20ya">
-    <img src="https://img.shields.io/badge/Order%20Sekarang-WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Order via WhatsApp">
-  </a>
-</p>
+1. **Aktivasi Lisensi**:
+   ```bash
+   # Aktivasi instan langsung di terminal
+   acs activate <kode-lisensi-anda>
 
-<p align="center">
-  <em>Sekali bayar. Update selamanya. Tanpa langganan.</em>
-</p>
+   # Atau masuk menggunakan akun GitHub resmi yang telah terdaftar
+   acs login
+   ```
+
+2. **Inisialisasi Lingkungan & Diagnosis Sistem**:
+   ```bash
+   # Sinkronisasi otomatis MCP tools, template ruleset & workspace
+   acs setup
+
+   # Lakukan pemeriksaan 16 titik prasyarat dan auto-perbaikan mandiri
+   acs doctor --fix
+   ```
+
+3. **Nyalakan Layanan & Kokpit Web Lokal**:
+   ```bash
+   acs start
+   ```
+   *Dashboard kokpit web langsung terbuka di `http://127.0.0.1:20130`.*
 
 ---
 
-## Lisensi
+### 🛡️ Proteksi Enterprise & Kedaulatan Data Lokal
 
-Proprietary. Akses diberikan per-user via private repository.
+- **Aktivasi Berpembatas & Validasi Lisensi Offline**: Verifikasi lisensi terenkripsi dengan cache HMAC aman di workstation lokal. Anda tetap dapat bekerja offline tanpa bergantung pada koneksi internet harian.
+- **Isolasi Penuh Single-Tenant**: 100% riwayat telemetri, database SQLite WAL, log eksekusi prompt, dan konfigurasi tersimpan secara eksklusif di mesin lokal Anda (`~/.acs/`). Nol kebocoran data ke cloud pihak ketiga.
+- **Zero Console Window (Eksekusi Senyap di Latar Belakang)**: Pemanfaatan flag Win32 `CREATE_NO_WINDOW` dan proses terpisah menjamin seluruh daemon latar belakang, auto-heal watchdog, dan skrip pembantu berjalan senyap tanpa kedipan jendela konsol terminal di layar Anda.
+- **Isolasi Siklus Hidup Proses Mandiri**: Penghentian atau restart layanan dashboard ACS berjalan terpisah dan tidak mematikan proxy `9router` (`:20128`). Lalu lintas agen AI yang sedang aktif tetap aman tanpa gangguan.
+
+---
+
+### 💻 Daftar Perintah CLI `acs` Lengkap
+
+Seluruh operasional kini dipersatukan di bawah perintah modern **`acs`**:
+
+#### Operasional Inti & Lisensi
+| Perintah | Deskripsi |
+|---|---|
+| `acs activate <key>` | Mengaktifkan lisensi komersial resmi pada workstation lokal |
+| `acs login` | Otentikasi dan klaim lisensi melalui browser via GitHub OAuth |
+| `acs status` | Menampilkan masa aktif lisensi, kesehatan port, dan status layanan |
+| `acs start` | Menyalakan daemon latar belakang dan kokpit web lokal (`:20130`) |
+| `acs stop` | Menghentikan layanan dashboard ACS secara aman (9router tetap aktif) |
+| `acs restart` | Restart cepat layanan ACS tanpa memutus koneksi proxy agen |
+| `acs doctor [--fix]` | Memeriksa 16 titik prasyarat dependensi dan auto-perbaikan otomatis |
+| `acs update` | Memeriksa dan memasang pembaruan versi terbaru dari Sovereign CDN |
+| `acs lang [id\|en]` | Mengganti bahasa antarmuka CLI (Bahasa Indonesia / English) |
+| `acs uninstall` | Menghapus instalasi ACS, layanan sistem, dan link biner secara bersih |
+
+#### Layanan Sistem & Komponen
+| Perintah | Deskripsi |
+|---|---|
+| `acs service [start\|stop\|status]` | Mengelola service otomatis sistem operasi (systemd / Task Scheduler) |
+| `acs dashboard` | Mengelola server dashboard dan membuka web UI (`:20130`) |
+| `acs scheduler` | Mengontrol scheduler tugas latar belakang dan auto-heal watchdog |
+| `acs gateway` | Mengelola gateway multi-akun AI (Kiro, Antigravity, dll.) |
+| `acs router` | Mengontrol proxy load-balancer multi-provider 9router (`:20128`) |
+| `acs setup` | Menginisialisasi ulang konfigurasi workspace, tools, dan agen rules |
+
+#### Ekosistem Agen & MCP
+| Perintah | Deskripsi |
+|---|---|
+| `acs kanban` | Papan visual pelacak tugas lokal dan pemantau PRD Blueprint |
+| `acs mcp [list\|add\|remove]` | Mengelola server dan tools Model Context Protocol (MCP) |
+| `acs accounts` | Mengelola akun penyedia model AI (KeyPool) dan alokasi kuota |
+| `acs articles` | Mesin penelusuran artikel riset dan basis pengetahuan offline |
+| `acs sessions` | Memeriksa dan mengelola riwayat sesi eksekusi agen AI |
+| `acs logs [service\|daemon\|9router]` | Memantau log gabungan layanan secara realtime tanpa terpotong |
+
+---
+
+### ✨ Keunggulan Arsitektur ACS
+
+1. **Integrasi Model Context Protocol (MCP) Bawaan**: Terhubung mulus ke sistem berkas, otomasi browser (CloakBrowser), code intelligence berbasis AST Language Server (LSP), dan penelusuran riset mendalam.
+2. **Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Mengurangi pemborosan token latar belakang hingga 89%, menyediakan ruang *reasoning context* maksimal untuk penulisan kode.
+3. **Smart Circuit Breaker Anti-Flapping**: Deteksi dini kegagalan jaringan dan masa tenggang *cold-boot* menjamin stabilitas tanpa siklus restart berulang.
+4. **Relay Cerdas Kuota Otonom (EDF)**: Algoritma Earliest Deadline First memprioritaskan akun kuota AI yang mendekati batas reset untuk efisiensi maksimal.
+5. **Deteksi Otomatis Proyek Lintas Workspace**: Secara otomatis mengenali seluruh workspace Claude Code CLI dan menyajikan status PRD blueprint pada kokpit Kanban.
+
+---
+
+<div align="center">
+<b>Dibangun dengan bangga untuk para software engineer berkecepatan tinggi.</b><br>
+Distribusi Resmi & Sovereign CDN: <a href="https://dl.uikode.com">https://dl.uikode.com</a>
+</div>

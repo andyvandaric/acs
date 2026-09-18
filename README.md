@@ -5,15 +5,14 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![oh-my-claudecode](https://img.shields.io/badge/oh--my--claudecode-5.3.0-green?style=for-the-badge)
-![Antigravity](https://img.shields.io/badge/Antigravity-Integrated-purple?style=for-the-badge)
-![License](https://img.shields.io/badge/License-Copyrighted-red.svg?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-1.12.0-orange?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
+![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
-**Stop burning tokens. Stop freezing terminals. Take back control.**<br>
-*(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali.)*
+**Stop burning tokens. Stop freezing terminals. Take back sovereign control.**<br>
+*(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.)*
 
-[English](#english) | [Bahasa Indonesia](#bahasa-indonesia)
+[English](#english) | [Bahasa Indonesia](README.id.md)
 </div>
 
 ---
@@ -22,154 +21,122 @@
 ## 🇺🇸 English
 
 ### 📖 About
-**The AI Revolution Needs a Sovereign Foundation**
+**The AI Coding Revolution Needs a Sovereign Foundation**
 
-You bought an AI coding agent to write world-class code, not to spend your nights untangling disjointed JSON configs or watching your context window evaporate before line 1. 
+You run AI coding agents to ship world-class software, not to waste hours untangling fragile JSON configurations or watching your context window vanish into thin air before writing line 1.
 
-Welcome to **Agnostic Config Suites (ACS)** — not a thin API wrapper, but a **Local Sovereign Operating System**. We transform fragile, unpredictable AI agents into a deterministic, cost-efficient, and unbreakable autonomous powerhouse.
-
-### ✨ Features (6 Reasons Why ACS Changes Everything)
-1. **🔌 Native Model Context Protocol (MCP)**: Instantly connect your AI agents to external tools, APIs, and filesystems through our standardized MCP integrations. *Result:* Seamless context injection and limitless tool expansion.
-2. **⚡ The Zero-Idle-Token Architecture**: Injects skills and rules *only* when needed. *Result:* Cuts idle context bloat by 89%, expanding your available reasoning space.
-3. **🛡️ The Anti-Freeze Guarantee (Self-Healing Proxies)**: Smart Circuit Breaker monitors every route and instantly falls back to a direct connection if a node fails 3 times.
-4. **🥷 Stealth Multi-Tier Browser Automation**: A 4-Tier Browser Synergy handling everything from background stealth crawling to bypassing Turnstile protections.
-5. **🔄 60-Second Setup vs. 45-Minute JSON Hell**: Universal 1-Click Multi-Agent Sync for all your tool profiles, env variables, and MCP servers. Zero drift.
-6. **🕒 Autonomous EDF Smart Relay**: Earliest Deadline First (EDF) engine prioritizes your API accounts closest to reset, chaining them seamlessly.
-
-### 📦 Installation
-**Windows** (PowerShell):
-```powershell
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
-```
-
-**Linux / macOS** (Bash):
-```bash
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
-```
-
-### ⚡ Quick Start
-After installation, set up your ACS environment by running:
-```bash
-acs-cli setup
-```
-
-### 💻 Commands
-**Core Operations:**
-- `acs-cli service [start|stop|restart|status]`: Manage ACS stack
-- `acs-cli setup`: Install/update ACS environments
-- `acs-cli update`: Self-update ACS CLI to latest version
-- `acs-cli doctor`: Run health checks and auto-fix issues
-- `acs-cli uninstall`: Remove ACS from system
-
-**Component Control:**
-- `acs-cli dashboard`: Dashboard server operations
-- `acs-cli scheduler`: Background task scheduler
-- `acs-cli gateway`: Manage API gateways
-- `acs-cli router`: 9router operations
-
-**Ecosystem & MCP:**
-- `acs-cli mcp`: Manage MCP Servers & tools
-- `acs-cli accounts`: Manage KeyPool & provider accounts
-- `acs-cli articles`: Synthesized knowledge articles engine
-- `acs-cli kanban`: Local visual task tracking
-- `acs-cli sessions`: Manage agent session history
-- `acs-cli logs`: View real-time aggregated logs
-
-**Agent Intelligence:**
-- `acs-cli agent`: AcsAgentManager (agents & soul configuration)
-- `acs-cli toolprofile`: Manage AI tool profiles
-- `acs-cli workspace`: Workspace ruleset operations
-- `acs-cli hook`: Antigravity runtime hooks
-
-**Utilities:**
-- `acs-cli status`: Show system diagnostic status
-- `acs-cli license`: License key management
-- `acs-cli docs`: Documentation manager
-- `acs-cli completion`: Shell completions
-
-*(For a full list of development commands, see `just` inside the repository).*
-
-### 🛠️ Usage & The Cockpit Experience
-Manage everything from our **Dashboard Cockpit**:
-- **Visual Kanban Hub**: See exactly what your agent is working on.
-- **1-Click Rollback**: Revert to a stable version instantly.
-- **Unified Proxy Monitor**: Real-time insights into your self-healing network.
+**Agnostic Config Suites (ACS)** is a high-performance, single-tenant **Local Sovereign Operating System** written in Go. It turns unpredictable, fragile AI coding assistants into an unbreakable, deterministic, cost-optimized engineering powerhouse.
 
 ---
 
-<a id="bahasa-indonesia"></a>
-## 🇮🇩 Bahasa Indonesia
+### 📦 Installation
 
-### 📖 Tentang
-**Revolusi AI Membutuhkan Fondasi Kedaulatan (Sovereign Foundation)**
+Install the unified `acs` binary directly via Sovereign CDN:
 
-Anda membeli agen AI coding untuk menulis kode kelas dunia, bukan untuk menghabiskan malam-malam Anda mengurai konfigurasi JSON yang berantakan atau melihat *context window* Anda menguap habis sebelum baris pertama.
-
-Selamat datang di **Agnostic Config Suites (ACS)** — bukan sekadar wrapper API tipis, melainkan sebuah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)**. Kami mengubah agen AI yang rentan dan tak terduga menjadi mesin otonom yang tangguh, hemat biaya, dan deterministik.
-
-### ✨ Fitur (6 Alasan Mengapa ACS Mengubah Segalanya)
-1. **🔌 Integrasi Model Context Protocol (MCP) Bawaan**: Hubungkan agen AI Anda secara instan dengan alat eksternal, API, dan sistem file melalui integrasi MCP standar kami. *Hasil:* Injeksi konteks yang mulus dan ekspansi alat tanpa batas.
-2. **⚡ Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Menyuntikkan skill dan aturan *hanya* saat dibutuhkan. *Hasil:* Memotong pemborosan konteks siaga sebesar 89%, memperluas ruang penalaran (reasoning space) yang tersedia.
-3. **🛡️ Jaminan Anti-Beku (Proxy Pemulihan Otomatis)**: Smart Circuit Breaker memonitor setiap rute dan secara instan beralih ke koneksi langsung jika sebuah node gagal 3 kali.
-4. **🥷 Otomatisasi Browser Multi-Tier Tersembunyi (Stealth)**: Sinergi 4 Lapis Browser (DevTools + ACS CloakBrowser + Camoufox + SeleniumBase UC Mode) yang menangani perayapan (crawling) di background hingga menembus proteksi kelas militer Turnstile.
-5. **🔄 Setup 60 Detik vs. 45 Menit Konfigurasi JSON**: Sinkronisasi Multi-Agen Universal 1-Klik untuk semua profil tool Anda, environment variables, dan server MCP. Tanpa deviasi (zero drift).
-6. **🕒 Relay Pintar Otonom EDF**: Mesin *Earliest Deadline First* (EDF) memprioritaskan akun API Anda yang paling dekat dengan waktu reset, dan menggabungkannya dengan mulus untuk kapasitas tak terbatas.
-
-### 📦 Instalasi
-**Windows** (PowerShell):
+**Windows** (PowerShell Administrator):
 ```powershell
-irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex
+irm https://dl.uikode.com/install.ps1 | iex
 ```
 
-**Linux / macOS** (Bash):
+**Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/install.sh | bash
+curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
-### ⚡ Mulai Cepat (Quick Start)
-Setelah instalasi, jalankan setup untuk lingkungan ACS Anda dengan perintah:
-```bash
-acs-cli setup
-```
+*(Failover mirrors are hosted across GitHub Releases and UIKode Edge infrastructure).*
 
-### 💻 Perintah (Commands)
-**Operasi Inti:**
-- `acs-cli service [start|stop|restart|status]`: Mengelola stack ACS
-- `acs-cli setup`: Menginstal/memperbarui lingkungan ACS
-- `acs-cli update`: Memperbarui ACS CLI ke versi terbaru
-- `acs-cli doctor`: Menjalankan pemeriksaan kesehatan dan perbaikan otomatis
-- `acs-cli uninstall`: Menghapus ACS dari sistem
+---
 
-**Kontrol Komponen:**
-- `acs-cli dashboard`: Operasi server dashboard
-- `acs-cli scheduler`: Penjadwal tugas latar belakang (background)
-- `acs-cli gateway`: Mengelola gateway API
-- `acs-cli router`: Operasi 9router
+### ⚡ Quick Start & License Activation
 
-**Ekosistem & MCP:**
-- `acs-cli mcp`: Mengelola Server & alat MCP (Model Context Protocol)
-- `acs-cli accounts`: Mengelola KeyPool & akun provider
-- `acs-cli articles`: Mesin artikel pengetahuan tersintesis
-- `acs-cli kanban`: Pelacakan tugas visual lokal
-- `acs-cli sessions`: Mengelola riwayat sesi agen
-- `acs-cli logs`: Melihat log teragregasi secara real-time
+ACS is protected by a proprietary enterprise license. Upon installation, activate your workstation in seconds:
 
-**Kecerdasan Agen:**
-- `acs-cli agent`: AcsAgentManager (konfigurasi agen & soul)
-- `acs-cli toolprofile`: Mengelola profil alat AI (tool profiles)
-- `acs-cli workspace`: Operasi ruleset ruang kerja
-- `acs-cli hook`: Hook runtime Antigravity
+1. **Activate License**:
+   ```bash
+   # Direct terminal activation
+   acs activate <your-license-key>
 
-**Utilitas:**
-- `acs-cli status`: Menampilkan status diagnostik sistem
-- `acs-cli license`: Manajemen kunci lisensi
-- `acs-cli docs`: Manajer dokumentasi
-- `acs-cli completion`: Auto-completion shell
+   # Or log in via authorized GitHub OAuth account
+   acs login
+   ```
 
-*(Untuk melihat daftar lengkap perintah development, gunakan `just` di dalam root repositori).*
+2. **Initialize Workspace & Verify System Health**:
+   ```bash
+   # Automatic environment setup, MCP configuration & rule synchronization
+   acs setup
 
-### 🛠️ Penggunaan & Pengalaman Kokpit
-Kelola semuanya dari **Dashboard Cockpit** kami:
-- **Visual Kanban Hub**: Lihat dengan tepat apa yang sedang dikerjakan oleh agen Anda.
-- **Rollback 1-Klik**: Kembalikan ke versi stabil secara instan jika ada update yang bermasalah.
-- **Monitor Proxy Terpadu**: Pantau jaringan pemulihan-otomatis Anda secara real-time.
+   # Run 16-point prerequisite diagnosis and auto-repair
+   acs doctor --fix
+   ```
+
+3. **Start the Stack & Local Cockpit**:
+   ```bash
+   acs start
+   ```
+   *Dashboard cockpit immediately launches at `http://127.0.0.1:20130`.*
+
+---
+
+### 🛡️ Enterprise Protection & Local Sovereignty
+
+- **Gated License Lifecycle**: Seamless offline license verification with cryptographic HMAC caching. No internet required for routine daily runs once activated.
+- **Single-Tenant Data Isolation**: 100% of your telemetry, SQLite WAL databases, prompt logs, and configurations reside exclusively on your local workstation (`~/.acs/`). Zero cloud data leakage.
+- **Zero Console Window / Non-Blocking Execution**: Native Win32 `CREATE_NO_WINDOW` and detached process isolation guarantee that background daemons, watchdogs, and tool wrappers never interrupt your desktop with flashing console windows.
+- **Independent Non-Tree-Kill Process Isolation**: ACS dashboard operations run completely isolated from underlying proxies like 9router (`:20128`). Stopping or restarting ACS never interrupts active agent traffic.
+
+---
+
+### 💻 Modern CLI Command Reference
+
+All operations are unified under the modern `acs` command:
+
+#### Core Lifecycle
+| Command | Description |
+|---|---|
+| `acs activate <key>` | Activate official commercial license key on workstation |
+| `acs login` | Authenticate and claim license via GitHub OAuth browser flow |
+| `acs status` | Display real-time service health, ports, and license validity |
+| `acs start` | Start ACS background daemons and local Web Cockpit (`:20130`) |
+| `acs stop` | Gracefully shut down ACS services (preserves 9router proxy) |
+| `acs restart` | Perform zero-downtime hot restart of ACS services |
+| `acs doctor [--fix]` | Run 16-point environment diagnosis with self-healing repairs |
+| `acs update` | Check and install latest version from Sovereign CDN |
+| `acs lang [id\|en]` | Switch CLI language between Indonesian and English |
+| `acs uninstall` | Cleanly remove ACS, services, and associated path links |
+
+#### Service & Infrastructure
+| Command | Description |
+|---|---|
+| `acs service [start\|stop\|status]` | Manage OS background daemon (systemd / Windows Task Scheduler) |
+| `acs dashboard` | Dashboard Web UI manager and direct browser launcher (`:20130`) |
+| `acs scheduler` | Autonomous background task scheduler & auto-heal watchdog |
+| `acs gateway` | Manage multi-account AI gateways (Kiro, Antigravity, etc.) |
+| `acs router` | Control 9router multi-provider load-balancing proxy (`:20128`) |
+| `acs setup` | Re-initialize workspace environments, templates, and agent rules |
+
+#### Agentic Ecosystem & MCP
+| Command | Description |
+|---|---|
+| `acs kanban` | Local visual task management and PRD Blueprint tracker |
+| `acs mcp [list\|add\|remove]` | Manage Model Context Protocol (MCP) servers and tools |
+| `acs accounts` | Manage KeyPool provider accounts and sticky quota allocations |
+| `acs articles` | Query offline synthesized research and knowledge base |
+| `acs sessions` | Inspect and manage active agent execution sessions |
+| `acs logs [service\|daemon\|9router]` | Tail real-time aggregated service logs without truncation |
+
+---
+
+### ✨ Architectural Pillars
+
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation (CloakBrowser), code intelligence (LSP AST), and live web research tools.
+2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing massive reasoning headroom for actual code generation.
+3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime even during intermittent upstream network hiccups.
+4. **Autonomous EDF Smart Quota Relay**: Earliest Deadline First (EDF) scheduler prioritizes expiring AI provider quotas to maximize usage value.
+5. **Universal Project Auto-Discovery**: Automatically recognizes existing Claude Code CLI workspaces and surfaces active PRD blueprints in the Kanban cockpit.
+
+---
+
+<div align="center">
+<b>Built with pride for high-velocity software engineers.</b><br>
+Official Distribution & Sovereign CDN: <a href="https://dl.uikode.com">https://dl.uikode.com</a>
+</div>
