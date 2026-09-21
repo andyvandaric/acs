@@ -1,17 +1,70 @@
 # Changelog
 
-## [v1.13.0] - 2026-09-21
+## [v1.14.0] - 2026-09-22
+### Highlights
 
-### Breaking Changes
-- Canonical binary migration: The core executable is standardized to `acs`. Legacy references to `acs-cli` are rewired through backward-compatible shims; update external scripts to invoke `acs` directly.
-- Claim-first Kanban gate: Task creation workflows now require active card claims. Duplicate card creation via `kanban_create` without prior listing and claiming is blocked.
+v1.14.0 delivers Architectural Blindspots Remediation Suite across phase-01 to phase-04, including Kanban URL resolver, PID liveness reaper, AST verification gate, and SQLite write mutex. Release engineering hardens Gate 13 failure handling, Winget verification, and portal version decoupling. Governance docs add markdownlint gates, English normalization, and PRD freshness guards.
+
+**BREAKING CHANGES:** None.
 
 ### Added
-- Canonical `acs` binary resolution via `ResolveACSBinary` across MCP definitions, templates, automation shims, and installers.
-- `ResolveAuthEnv` SSOT engine for endpoint discovery, token resolution, and concurrent-safe `WriteClaudeSettingsEnv` execution.
-- Kanban Direct Card URL Resolver with `toolKanbanCardByRef` catalog entries, REST routes, and 4-tab model structures.
+
+- Added Unified Kanban Direct Card URL Resolver for phase-04.
+- Added Stale Claims PID Liveness Reaper and Garbage Collection for phase-03.
+- Added AST Verification Gate and Anti-Silent-Fallback Protocol for phase-02.
+- Added SQLite Concurrency Write Mutex and DSN Normalization for phase-01.
+- Added Architectural Blindspots Remediation Suite Master PRD for phase-01.
+- Added `just fmt-md` alias for markdown auto-formatting.
+- Added `just lint-md` and `just fix-md` commands for governance docs.
+
+### Changed
+
+- Bumped version to 1.14.0.
+- Bumped version to 0.18.2.
+- Added scoped markdownlint gate for governance docs.
+- Added `AGENTS.md.tmpl` as canonical source for hermes agent rules.
+
+### Fixed
+
+- Decoupled portal versions from ACS release sync.
+- Synced portal changelog, JSON-LD, and nested repo push automatically on release.
+- Failed Gate 13 loudly on `gh` release errors.
+- Added Winget version gate, binary verification, testable flags, and terminal experimental gate.
+- Aligned hooks template and added WezTerm regression guards.
+- Propagated 8-pillar ACS philosophy to deployed hooks.
+- Hardened task deduplication and updated embedded stage assets.
+- Overhauled responsive layout for 1280px viewports and eliminated card creation redundancy.
+- Restored `--wezterm` flag to `RunWezTerm` and decoupled it from `--terminal`.
+
+### Documentation
+
+- Added Blindspots Remediation Suite feature bullet.
+- Pointed Official Distribution backlink to uikode.com/acs portal.
+- Backfilled Last Updated on phase-01 and phase-03.
+- Stripped internal stack from acs-knowledge corpus in anti-stack revision.
+- Added wall-clock freshness guard against hallucinated PRD timestamps.
+- Added Phase 05 Knowledge Base GUI and 2 residual fixes.
+- Reconciled acs-knowledge PRD blueprint to HG1B ACCEPT.
+- Reconciled runtime-harness-and-kanban-gateway-hardening PRD blueprint to certified.
+- Translated all Indonesian content to English in rulesets and templates.
+- Overhauled v1.13.0 release notes with backward compatibility guarantees.
+
+## [v1.13.0] - 2026-09-21
+
+### Overview
+ACS v1.13.0 brings major stability, container reliability, and workflow enhancements across all supported platforms (Windows, macOS, Linux). Fully backward-compatible with legacy tooling and automation scripts.
+
+### Backward Compatibility & Deprecation Policy
+- **Zero Breaking Invocations**: Legacy binary name `acs-cli` is fully supported via automatic shims, aliases, and symlinks. Existing agentic daemons, OMC workflows, and custom scripts continue to function without modification.
+- Updater health checks accept either `acs` or `acs-cli` in version output (compat-read); modern `acs-<os>-<arch>` assets are matched alongside legacy `acs-cli-<os>-<arch>`.
+- MCP entries self-heal stale `acs-cli` references to the canonical `acs` binary at runtime.
+- No breaking API, CLI flag, or config schema changes in this release.
+
+### Key Features
+- **Unified Kanban Direct Card URL Resolver**: 4-tab card models, cross-tenant URL resolution, Git commit inspection API, and interactive 2D pan-zoom Mermaid diagram lightbox.
+- **ResolveAuthEnv SSOT Engine**: Centralized authentication, endpoint, and token discovery for 9router and external gateways with user-level singleton lock.
+- **Sovereign Single-Binary CDN Distribution**: High-speed multi-platform downloads via dl.uikode.com with SHA-256 integrity verification.
 - Subagent stagnation gate featuring heartbeat persistence, fast-path checks, and execution halt bands.
-- Pan-zoom 2D Mermaid diagram viewer with isolated lightbox portal, WCAG AAA theme contrast, and keyboard shortcuts.
 - Git commit inspection service, backend Go handler, and frontend `GitCommitDetailModal`.
 - Surgical uninstaller engines for Go, PowerShell, and POSIX shell with `.acs` local directory purge capabilities.
 - Windows integration tooling including Zero-UAC broker, terminal step orchestrator, and AST terminal patchers.
@@ -22,8 +75,15 @@
 - Modernized `install.ps1` and build toolchains to deploy single-binary artifacts.
 - Updated blueprint preview modal TOC parser to use `matchAll` regex with zero lint warnings.
 - Migrated operational backup storage paths from Hermes to the ACS data directory.
+- Canonical `acs` binary resolution via `ResolveACSBinary` across MCP definitions, templates, automation shims, and installers.
 
-### Fixed
+### Critical Bug Fixes
+- **macOS BSD awk Installer Error**: Resolved syntax error on macOS (`awk: syntax error at source line 1`) during download size calculation using POSIX parameter passing.
+- **Doctor Silent Crash (Exit Code 2)**: Resolved runtime panic in `acs doctor` on fresh/minimal environments using `cliconfig.LoadOrDefault()` fallback.
+- **Dashboard Status False-Negative**: Fixed `acs status` erroneously reporting dashboard stopped in minimal containers lacking `lsof`/`ss` by adding TCP and HTTP health probes.
+- **Accounts Page SQL Logic Error**: Handled missing `providerConnections` table gracefully on fresh installs by returning empty list instead of HTTP 503 toast error.
+- **Token Usage Infinite Shimmer**: Decoupled loading state from data presence in `TokenUsageChart.tsx` and returned zeroed bucket metrics on fresh installs.
+- **Stack Updates Floating Dock Progress**: Added `defer/recover` finally block guaranteeing terminal `done 100%` event broadcast and auto-dismissal of completed cards.
 - Calibrated test connection probe latencies, raised `max_tokens` floor above provider minimums, and handled `in_progress` stream states.
 - Normalized localhost endpoints and hardened 64KB response parsing to fix false UI unauthorized states.
 - Preserved PowerShell profile variable strings during regex substitution passes.

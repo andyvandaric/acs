@@ -136,5 +136,5 @@ Seluruh operasional dipersatukan di bawah perintah modern **`acs`**:
 
 <div align="center">
 <b>Dibangun untuk para software engineer berkecepatan tinggi.</b><br>
-Distribusi Resmi & Sovereign CDN: <a href="https://dl.uikode.com">https://dl.uikode.com</a>
+Distribusi Resmi: <a href="https://uikode.com/acs">https://uikode.com/acs</a>
 </div>
