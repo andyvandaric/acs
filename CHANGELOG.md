@@ -1,5 +1,65 @@
 # Changelog
 
+## [v1.13.0] - 2026-09-21
+
+### Breaking Changes
+- Canonical binary migration: The core executable is standardized to `acs`. Legacy references to `acs-cli` are rewired through backward-compatible shims; update external scripts to invoke `acs` directly.
+- Claim-first Kanban gate: Task creation workflows now require active card claims. Duplicate card creation via `kanban_create` without prior listing and claiming is blocked.
+
+### Added
+- Canonical `acs` binary resolution via `ResolveACSBinary` across MCP definitions, templates, automation shims, and installers.
+- `ResolveAuthEnv` SSOT engine for endpoint discovery, token resolution, and concurrent-safe `WriteClaudeSettingsEnv` execution.
+- Kanban Direct Card URL Resolver with `toolKanbanCardByRef` catalog entries, REST routes, and 4-tab model structures.
+- Subagent stagnation gate featuring heartbeat persistence, fast-path checks, and execution halt bands.
+- Pan-zoom 2D Mermaid diagram viewer with isolated lightbox portal, WCAG AAA theme contrast, and keyboard shortcuts.
+- Git commit inspection service, backend Go handler, and frontend `GitCommitDetailModal`.
+- Surgical uninstaller engines for Go, PowerShell, and POSIX shell with `.acs` local directory purge capabilities.
+- Windows integration tooling including Zero-UAC broker, terminal step orchestrator, and AST terminal patchers.
+- Embeds for 15 OMC subagent personas, dual-verification badge indicators, and P9 micro-chunk verification gates.
+
+### Changed
+- Modularized `ACSKanbanBoard` into dedicated components featuring P0-P3 priority sorting and 5-column lifecycle states.
+- Modernized `install.ps1` and build toolchains to deploy single-binary artifacts.
+- Updated blueprint preview modal TOC parser to use `matchAll` regex with zero lint warnings.
+- Migrated operational backup storage paths from Hermes to the ACS data directory.
+
+### Fixed
+- Calibrated test connection probe latencies, raised `max_tokens` floor above provider minimums, and handled `in_progress` stream states.
+- Normalized localhost endpoints and hardened 64KB response parsing to fix false UI unauthorized states.
+- Preserved PowerShell profile variable strings during regex substitution passes.
+- Eliminated Windows AV false positives by omitting `-tiny` compilation flags and binding `ShowWindow` to `user32.dll`.
+- Fixed multi-project workspace git root resolution for blueprint tree scanning and direct commit inspection.
+- Threaded verified git commit authors into Kanban task attachment records.
+- Resolved 129 Biome lint diagnostics across frontend packages.
+
+## [v1.12.0] - 2026-09-18 05:45 (UTC+7)
+
+### Breaking Changes
+- Hard gate 3 now strictly enforces a clean working tree and registered commit hash before wave progression.
+- Deployment in `installer-sync` now requires passing strict 4-gate local testing (Windows AST + POSIX + Podman) before VPS CDN distribution.
+
+### Added
+- ACS Service Resilience & Process Decoupling: targeted single-PID termination (`taskkill /F /PID <pid>`), preventing 9router from being terminated when stopping or restarting ACS dashboard.
+- Unified 360° Observability: Fiber HTTP access log middleware logging method, path, status, latency, and client IP directly to `acs.log`.
+- Centralized log streaming: 9router stdout/stderr redirected to rotating `~/.acs/logs/9router.log` (20MB cap, 3 backups).
+- Real log registry: `dashboard-service.log`, `daemon-service.log`, and `9router.log` registered in UI log viewer.
+- SafeGo panic recovery wrapper (`server.SafeGo`) with stack trace logging across all background goroutines.
+- Resilient Auto-Heal & Anti-Flapping: HTTP health probe timeout increased to 8s with 2x retry buffer, 45s cold-boot grace period, and persistent `watchdog.RestartTracker` (circuit breaker capped at 3 restarts per 15 minutes).
+- Automated Phase Commit Enforcer hook (`prd-phase-commit-enforcer.mjs`) executing atomic local commits immediately upon sub-phase completion (`✅ Done`).
+- Zero-friction Git Onboarding Core (`git-onboarding-lib.mjs`) with automatic GitHub CLI (`gh api user`) identity resolution and non-TTY safe fallback.
+- Dedicated ACS Project Hub & Workspace Manager modal on `/kanban` route with first-class Native MCP Tools (`kanban_list`, `kanban_create`, `kanban_update`, `kanban_artifacts`, `kanban_claim_files`) and interactive CLI.
+- Standardized local timezone and dynamic UTC offset formatting `YYYY-MM-DD HH:MM (UTC±X)` across CHANGELOG and PRD templates.
+- Explicit "Lead Orchestrator Command Map" section and 6 Authoritative Governance Pillars embedded into Master PRD template and watchdog rulesets.
+
+### Fixed
+- SQLite connection churn: eliminated all premature `defer db.Close()` on singleton pool `global9rDB`, resolving `sql: database is closed` errors and use-after-free panics.
+- WebSocket data race: guarded `conn.WriteMessage` with per-connection `writeMu sync.Mutex`.
+- Resource leaks: fixed unclosed HTTP response bodies on non-200 statuses, closed parent file descriptor handles on Windows service spawn, and bound cache loop to `sync.Once`.
+- Zero console window: enforced Win32 `STARTUPINFO(SW_HIDE)` and `windowsHide` configurations across Python build tools, runners, and scripts to eliminate terminal flash.
+- Rebranded legacy "Antigravity Project Hub" and "Antigravity Project Manager" hardcoded strings in Kanban UI components.
+- Form task creation empty state by adding `blueprint_path` and `files` inputs in `AntigravityTaskModal.tsx`.
+- Updated hardcoded fallback models from legacy `1st_combo` to active `gemini-3.8-flash-max` and `muse`.
+
 ## [v1.6.1] - 2026-09-17
 
 

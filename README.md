@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.12.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.13.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -131,6 +131,9 @@ All operations are unified under the modern `acs` command:
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, and dual verification badges.
+7. **Deterministic Quality Gates & Watchdogs**: PreToolUse PRD gates, blueprint scope guards, stagnation circuit breakers, and 15 embedded subagent personas.
+8. **Terminal Step Orchestrator & Theming**: Automated PowerShell 7 profile, Windows Terminal AST patching, and Zero-UAC execution engine.
 
 ---
 
