@@ -104,7 +104,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         # Save the installer script to a temp file to avoid re-download issues
         $tempScript = Join-Path $env:TEMP "acs-install-relaunch.ps1"
         try {
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
             try {
                 Invoke-WebRequest -Uri "https://dl.uikode.com/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
             } catch {
@@ -364,6 +364,71 @@ try {
     [Win32.NativeMethods]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [UIntPtr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
 } catch { }
 
+# --- Check Prerequisites & Configure Stack -----------------------------------
+Write-Host ""
+Info "Checking environment and prerequisites..."
+
+$hasNodeOrBun = $false
+if ((Get-Command "9router" -ErrorAction SilentlyContinue) -or `
+    (Get-Command "bun" -ErrorAction SilentlyContinue) -or `
+    (Get-Command "npm" -ErrorAction SilentlyContinue)) {
+    $hasNodeOrBun = $true
+}
+
+$hasHeadroom = $false
+if (Get-Command "headroom" -ErrorAction SilentlyContinue) {
+    $hasHeadroom = $true
+}
+
+if ($hasNodeOrBun) {
+    Ok "9router runtime available (Node/Bun found)"
+} else {
+    Info "npm/bun not found - 9router proxy auto-start disabled (install bun or npm to enable)"
+}
+
+if ($hasHeadroom) {
+    Ok "headroom binary found"
+} else {
+    Info "headroom not found - context compression proxy auto-start disabled (optional)"
+}
+
+$auto9router = if ($hasNodeOrBun) { "true" } else { "false" }
+$autoHeadroom = if ($hasHeadroom) { "true" } else { "false" }
+
+$acsDataDir = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\data"
+$acsRoot = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs"
+foreach ($dir in @($acsDataDir, $acsRoot)) {
+    if (-not (Test-Path $dir)) {
+        New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    }
+    $cfgPath = Join-Path $dir "stack-config.json"
+    if (-not (Test-Path $cfgPath)) {
+        $cfgContent = @"
+{
+  "auto_start": {
+    "9router": $auto9router,
+    "dashboard": true,
+    "scheduler": true,
+    "headroom": $autoHeadroom,
+    "gateways": false
+  }
+}
+"@
+        [System.IO.File]::WriteAllText($cfgPath, $cfgContent, [System.Text.Encoding]::UTF8)
+    } else {
+        if (-not $hasNodeOrBun) {
+            $existing = Get-Content $cfgPath -Raw
+            $updated = $existing -replace '"9router":\s*true', '"9router": false'
+            [System.IO.File]::WriteAllText($cfgPath, $updated, [System.Text.Encoding]::UTF8)
+        }
+        if (-not $hasHeadroom) {
+            $existing = Get-Content $cfgPath -Raw
+            $updated = $existing -replace '"headroom":\s*true', '"headroom": false'
+            [System.IO.File]::WriteAllText($cfgPath, $updated, [System.Text.Encoding]::UTF8)
+        }
+    }
+}
+
 # --- Configure Stack with License Verification -------------------------------
 Write-Host ""
 Info "Configuring ACS agentic stack..."
@@ -426,6 +491,11 @@ if ($setupExitCode -eq 0) {
     Write-Host "    acs setup" -ForegroundColor Yellow
     Write-Host "  or: acs setup --license-key <YOUR_KEY>" -ForegroundColor Yellow
     Write-Host "  or: acs activate <YOUR_LICENSE_KEY>" -ForegroundColor Yellow
+    if (-not $hasNodeOrBun) {
+        Write-Host ""
+        Info "Optional prerequisites for full AI stack (install anytime):"
+        Info "  * 9router AI proxy: irm https://bun.sh/install.ps1 | iex"
+    }
     Write-Host ""
 }
 

@@ -274,7 +274,7 @@ DL_SIZE="$(wc -c < "$TMP_FILE" | tr -d ' ')"
 if [[ "$DL_SIZE" -lt 1000000 ]]; then
   err "Download failed: file too small (${DL_SIZE} bytes)."
 fi
-ok "Downloaded: $(awk "BEGIN{printf \"%.1f\", $DL_SIZE/1048576}") MB"
+ok "Downloaded: $(awk -v size="$DL_SIZE" 'BEGIN { printf "%.1f", size / 1048576 }') MB"
 
 # ─── Verify SHA-256 ──────────────────────────────────────────────────────────
 if [[ -n "$EXPECTED_SHA" ]]; then
@@ -366,6 +366,80 @@ if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   export PATH="${INSTALL_DIR}:$PATH"
 fi
 
+# ─── Check Prerequisites & Configure Stack ──────────────────────────────────
+echo ""
+info "Checking environment and prerequisites..."
+
+HAS_NODE_OR_BUN=false
+if command -v 9router >/dev/null 2>&1 || command -v bun >/dev/null 2>&1 || command -v npm >/dev/null 2>&1; then
+  HAS_NODE_OR_BUN=true
+fi
+
+HAS_HEADROOM=false
+if command -v headroom >/dev/null 2>&1; then
+  HAS_HEADROOM=true
+fi
+
+HAS_SYSTEMCTL=false
+if command -v systemctl >/dev/null 2>&1; then
+  HAS_SYSTEMCTL=true
+fi
+
+if [ "$HAS_NODE_OR_BUN" = "true" ]; then
+  ok "9router runtime available (Node/Bun found)"
+else
+  info "npm/bun not found — 9router AI proxy auto-start disabled (install bun or npm to enable)"
+fi
+
+if [ "$HAS_HEADROOM" = "true" ]; then
+  ok "headroom binary found"
+else
+  info "headroom not found — context compression proxy auto-start disabled (optional)"
+fi
+
+if [ "$HAS_SYSTEMCTL" = "true" ]; then
+  ok "systemctl found"
+else
+  info "systemctl not found (container/minimal Linux) — persistent service registration skipped"
+fi
+
+# Configure stack-config.json so background stack skips missing optional components
+# rather than attempting auto-repair or logging errors during activation
+AUTO_9ROUTER="true"
+if [ "$HAS_NODE_OR_BUN" = "false" ]; then
+  AUTO_9ROUTER="false"
+fi
+
+AUTO_HEADROOM="true"
+if [ "$HAS_HEADROOM" = "false" ]; then
+  AUTO_HEADROOM="false"
+fi
+
+for CFG_DIR in "${HOME}/.acs/data" "${HOME}/.acs"; do
+  mkdir -p "$CFG_DIR"
+  CFG_FILE="${CFG_DIR}/stack-config.json"
+  if [ ! -f "$CFG_FILE" ]; then
+    cat > "$CFG_FILE" <<EOF
+{
+  "auto_start": {
+    "9router": ${AUTO_9ROUTER},
+    "dashboard": true,
+    "scheduler": true,
+    "headroom": ${AUTO_HEADROOM},
+    "gateways": false
+  }
+}
+EOF
+  else
+    if [ "$AUTO_9ROUTER" = "false" ]; then
+      sed 's/"9router":[[:space:]]*true/"9router": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" || rm -f "${CFG_FILE}.tmp"
+    fi
+    if [ "$AUTO_HEADROOM" = "false" ]; then
+      sed 's/"headroom":[[:space:]]*true/"headroom": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" || rm -f "${CFG_FILE}.tmp"
+    fi
+  fi
+done
+
 # ─── Configure Stack with License Verification ─────────────────────────────
 echo ""
 info "Configuring ACS agentic stack..."
@@ -377,11 +451,15 @@ fi
 if "${INSTALL_DIR}/acs" setup "${SETUP_ARGS[@]}"; then
   # ─── Register as persistent service only after setup succeeds ────────────
   echo ""
-  info "Registering as persistent service..."
-  if "${INSTALL_DIR}/acs" service install --force 2>/dev/null; then
-    ok "Service registered (auto-starts on login)"
+  if [ "$HAS_SYSTEMCTL" = "true" ]; then
+    info "Registering as persistent service..."
+    if "${INSTALL_DIR}/acs" service install --force 2>/dev/null; then
+      ok "Service registered (auto-starts on login)"
+    else
+      warn "Service registration skipped (run manually: acs service install)"
+    fi
   else
-    warn "Service registration skipped (run manually: acs service install)"
+    info "Persistent service registration skipped (systemctl not available in container)"
   fi
 
   # Start background stack
@@ -414,5 +492,10 @@ else
   printf "    ${YELLOW}acs setup${NC}\n"
   printf "  or: ${YELLOW}acs setup --license-key <YOUR_KEY>${NC}\n"
   printf "  or: ${YELLOW}acs activate <YOUR_LICENSE_KEY>${NC}\n"
+  if [ "$HAS_NODE_OR_BUN" = "false" ]; then
+    echo ""
+    info "Optional prerequisites for full AI stack (install anytime):"
+    info "  • 9router AI proxy: curl -fsSL https://bun.sh/install | bash"
+  fi
   echo ""
 fi
