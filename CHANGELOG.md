@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.15.1] - 2026-09-23
+
+### Fixed
+- Permit non-binary assets in installer repository anti-leak verification check.
+
 ## [v1.14.0] - 2026-09-22
 ### Highlights
 
