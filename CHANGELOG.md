@@ -1,10 +1,10 @@
 # Changelog
 
-## [v1.15.0] - 2026-09-23
+## [v1.15.1] - 2026-09-23
 
 ### Highlights
 
-v1.15.0 delivers the full ACS Knowledge Base architecture with bilingual content (EN/ID), interactive rich-text and Mermaid rendering, persistent headed browser sessions, automated setup and autostart diagnostics, and dynamic guides CMS integration.
+v1.15.1 delivers the full ACS Knowledge Base architecture with bilingual content (EN/ID), interactive rich-text and Mermaid rendering, persistent headed browser sessions, automated setup and autostart diagnostics, and dynamic guides CMS integration.
 
 ### Added
 
@@ -34,7 +34,7 @@ v1.15.0 delivers the full ACS Knowledge Base architecture with bilingual content
 
 ### Changed
 
-- Bumped version to 1.15.0.
+- Bumped version to 1.15.1.
 
 ## [v1.14.0] - 2026-09-22
 ### Highlights
