@@ -1,9 +1,40 @@
 # Changelog
 
-## [1.15.1] - 2026-09-23
+## [v1.15.0] - 2026-09-23
+
+### Highlights
+
+v1.15.0 delivers the full ACS Knowledge Base architecture with bilingual content (EN/ID), interactive rich-text and Mermaid rendering, persistent headed browser sessions, automated setup and autostart diagnostics, and dynamic guides CMS integration.
+
+### Added
+
+- **Bilingual Knowledge Base (Waves 1-8)**:
+  - Local SQLite FTS5 persistence foundation with composite primary key `(slug, lang)` and migration support (`seedUserVersion = 2`).
+  - Curated 7-topic bilingual corpus (EN + ID) with automatic fallback and canonical path resolution.
+  - Interactive GUI at `/knowledge` featuring instant debounced search (150ms) and markdown-stripped card excerpts.
+  - Semantic HTML rendering via `ArticleBody` with interactive Mermaid diagram generation.
+  - Segmented `[Rendered | Markdown]` view toggle and responsive EN | ID language switcher.
+- **Persistent Headed Browser Automation**:
+  - Browser control endpoint `POST /api/mcp/browser/mode` supporting headed execution and profile directory selection.
+  - Runtime environment toggles (`ACS_BROWSER_HEADED`) with automated warm-up and idle reaper exemption.
+- **Dynamic Content & Guides CMS**:
+  - Decoupled hardcoded assets into dynamic seeding and unified public guides CMS.
+- **Setup & Runtime Hardening**:
+  - Automated dashboard autostart guidance, URL hints, and inline doctor diagnostics.
+  - Headroom cold-boot grace throttling and inference probe streaming fallbacks.
+  - Kanban single-write reconcilers and done-gate atomicity.
 
 ### Fixed
-- Permit non-binary assets in installer repository anti-leak verification check.
+
+- Whitelisted internal SSOT resolvers and adjusted stopped headroom diagnostics status to warning.
+- Resolved SQLite driver resolution and path synchronization in headroom 9router integration.
+- Fixed sidebar footer layout wrapping for smooth multi-button responsiveness on `/knowledge`.
+- Hardened E2E test endpoint timeouts for heavy parallel query sweeps.
+- Decoupled npm and PyPI wrapper versions from the core ACS release tag.
+
+### Changed
+
+- Bumped version to 1.15.0.
 
 ## [v1.14.0] - 2026-09-22
 ### Highlights
