@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.14.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.16.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -121,6 +121,7 @@ All operations are unified under the modern `acs` command:
 | `acs articles` | Query offline synthesized research and knowledge base |
 | `acs sessions` | Inspect and manage active agent execution sessions |
 | `acs logs` | Tail real-time service logs |
+| `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
 
 ---
 
@@ -131,7 +132,12 @@ All operations are unified under the modern `acs` command:
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, and dual verification badges.
-7. **Deterministic Quality Gates & Watchdogs**: PreToolUse PRD gates, blueprint scope guards, stagnation circuit breakers, and 15 embedded subagent personas.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-field tokenized search.
+7. **Deterministic Quality Gates & Watchdogs**: PreToolUse PRD gates, blueprint scope guards, stagnation circuit breakers, 15 embedded subagent personas, step 0 pre-creation probe, and 3-tier hybrid anti-duplication engine.
 8. **Terminal Step Orchestrator & Theming**: Automated PowerShell 7 profile, Windows Terminal AST patching, and Zero-UAC execution engine.
-9. **Architectural Blindspots Remediation Suite**: SQLite Concurrency Write Mutex & DSN Normalization, AST Verification Gate & Anti-Silent-Fallback Protocol, Stale Claims PID Liveness Reaper & Garbage Collection, Unified Kanban Direct Card URL Resolver.
+9. **Architectural Blindspots Remediation Suite**: SQLite Concurrency Write Mutex & DSN Normalization, AST Verification Gate & Anti-Silent-Fallback Protocol, SQLite FTS5 tokenized query engine with table triggers.
+10. **Sovereign Bug Hunter Agent**: Autonomous security auditing with adversarial exploration, AST discovery, active injection & OWASP vulnerability engine, transport security & anti-MITM, client anti-RE, AI semantic triage, dual-mode CLI, and executive pentest reporting. Packaged as a standalone binary and external harness Docker container.
+11. **Hardware-Bound License Enforcement**: Auto-claim hardware binding, 3-day offline cache cap, and device eviction enforcement.
+12. **Multi-OS Core & Agentic Stack Parity**: Wave-based runtime daemon, IPC hardening, hook registration matcher parity, 9router path precedence, and zero console flash across Windows, Linux, and macOS.
+13. **Auditor Governance & Audit Pipeline**: Timestamped audit standard, auditor persona, state FSM, inner circle pipeline, automated rules sync, and idempotent changelog upsert with two-phase multi-repo git release.
+14. **Periodic Knowledge Sync**: 623s daemon task with license guard keeps the agentic knowledge base current.

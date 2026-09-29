@@ -1,5 +1,119 @@
 # Changelog
 
+## [v1.16.0] - 2026-09-26
+
+### Highlights
+
+v1.16.0 ships a sovereign multi-agent governance engine with a full bug-hunter binary, a 3-tier hybrid kanban search and anti-duplication engine backed by SQLite FTS5 and BGE-M3, and multi-OS core runtime parity across daemon, IPC, and hook registration layers. The release hardens the binary replacement and restart lifecycle by safeguarding 9router and headroom at every gate, caps offline cache lifetime to 24 hours, and enforces hardware node-lock with 3-day offline cache eviction. Release infrastructure gains an atomic persistent release journal, idempotent changelog upsert, and a two-phase multi-repo git release flow.
+
+---
+
+### Added
+
+#### Bug Hunter Agent (`bug-hunter`)
+- Standalone `bug-hunter` binary and thin `acs` shim (phase-03).
+- Universal public facade API (phase-02).
+- Packages migrated to `pkg/bughunter`; AI engine decoupled (phase-01).
+- Wave 1: deterministic traps and in-browser hook.
+- Wave 2: AST discovery and headed auth session manager.
+- Wave 3: adversarial exploration engine and delta minimizer.
+- Wave 4: triage codegen reporter and CLI engine.
+
+#### Bug Hunter Security Hardening
+- Wave 1: session sealing and secret redaction.
+- Wave 2: active injection and OWASP vulnerability engine.
+- Wave 3: transport security, anti-MITM, and IDOR matrix.
+- Wave 4: client anti-RE and executive pentest reporting.
+- Live HTTP probing security auditors and AI triage integrated into agent.
+
+#### Kanban Search & Anti-Duplication Engine
+- Multi-field tokenized search predicate and tests (phase-01).
+- SQLite FTS5 table triggers and tokenized query engine (phase-02).
+- 3-tier hybrid anti-duplication engine with unikey BGE-M3 and zero-token fallback (phase-03).
+- Step 0 pre-creation probe and 3-tier hybrid anti-duplication rules enforced (phase-04).
+- Task search logic extracted into dedicated `tasks_search.go`.
+
+#### Multi-OS Core & Agentic Stack Parity
+- Wave 1: 9router path precedence and frontend store resilience.
+- Wave 2: hook registration matcher parity and zero console flash.
+- Wave 3: multi-OS core runtime daemon and IPC hardening.
+
+#### Agentic Persona & Hook Pipeline
+- Auditor persona and timestamped audit standard (phase-01).
+- Hook pipeline hardening, leaf tool masking, and hook engine transition (phase-02).
+- State FSM, inner circle pipeline, and audit templates (phase-03).
+- Rules sync automated in build; workspace persona index repair (phase-04).
+- Agentic wave 1: modelengine completion and adversarial planner.
+- Agentic wave 2: AI semantic triage and logic flaw detector.
+- Agentic wave 3: dual-mode CLI and executive pentest reporter.
+- Agentic wave 4: E2E security verification suite.
+
+#### Sovereign Knowledge & Sync
+- Client SPKI pinning transport and knowledge envelope unpacker (phase-03).
+- Client DPAPI encrypted cache and E2E synchronization (phase-04).
+- Periodic 623-second knowledge sync task registered with license guard (wave-02).
+- Sovereign admin session injection and hardware node-lock (wave-02).
+- Hardware auto-claim binding, 3-day offline cache cap, and device eviction enforcement.
+
+#### Release Infrastructure
+- Atomic persistent release journal.
+- Release journal integrated into release flow and version bumper.
+- Idempotent changelog upsert and two-phase multi-repo git release.
+- Resilient git subprocess engine and batched staging.
+- Buyer isolation audit enforced in `gate_preflight`; publish gate decoupled.
+- Distribution deferred to Gate 13 via reordered release gates.
+- Portal version SSOT codified; checkout funnel discipline and CI SSH tunnel protocol documented.
+- `version.ts` auto-bumped during portal sync to preserve SSOT.
+
+#### CLI & Auth
+- Runtime operating system included in CLI-auth request.
+- Runtime operating system included in online validation request.
+- Legacy `acs-cli` token included in version output for updater backwards compatibility.
+- External harness Docker packaging and action runner (phase-04).
+
+---
+
+### Changed
+
+- `acs-cli` occurrences migrated to canonical `acs` with legacy fallback.
+- Mirrored personas and PRD templates synchronized across agentic stack.
+- Release journal state artifacts added to `.gitignore`.
+- Version bumped to `0.18.2`.
+
+---
+
+### Fixed
+
+- 9router safeguarded during install, restart, release process management, and collateral process kill during binary replacement.
+- Headroom safeguarded during install and restart.
+- Offline cache lifetime capped to 24 hours; online recheck forced on expiry.
+- PowerShell quoting and string formatting corrected in binary lock handler.
+- Persistent profile directory creation guaranteed on browser mode switch.
+- `context.WithoutCancel` used in capture runner close callback.
+- Headless default enforced for `cloakbrowser`.
+- `microChunkPhilosophy` injected; automation asset manifest SHA-256 updated.
+- Test timing assertion relaxed under parallel test suite contention.
+
+---
+
+### Documentation
+
+- v1.16.0 sovereign MAS governance engine release documented.
+- Kanban search and anti-duplication mini-PRD completed (waves 1–2 verified); upgraded to 3-tier hybrid engine with unikey BGE-M3.
+- FTS5 data backfill and REST creation short-circuit patched into mini-PRD.
+- Universal bug hunter extraction master PRD and phases 01–04 authored and reconciled to completed.
+- Bilingual content parity sub-phases 01–04 reconciled to completed.
+- Multi-OS core and agentic stack parity PRD reconciled to completed; circular dependency eliminated.
+- Sovereign knowledge and UI-ADM persistence suite master blueprint and 4-phase specs established.
+- ACS chat gateway and headless bridge modular PRD suite authored.
+- ACS virtual office studio modular PRD suite authored; 3D kanban whiteboard simplified to 4 canonical columns.
+- ACS agent personas least-privilege and alignment modular PRD suite authored.
+- Browser automation E2E pipeline modular PRD suite authored.
+- Release pipeline hardening modular PRD blueprint drafted.
+- `index.md` `cliconfig.ResolveACSBinary` alignment finalized.
+- Multi-agent architecture documented; portal showcase updated (phase-05).
+- Historical system audits and multi-agent architecture research archived.
+
 ## [v1.15.1] - 2026-09-23
 
 ### Highlights
