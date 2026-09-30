@@ -1,5 +1,39 @@
 # Changelog
 
+## [v1.17.0] - 2026-09-30
+
+### Breaking Changes
+- Locked out legacy OMC memory tools across all profiles; compatibility routes now serve deprecation headers.
+- Standardized command invocation prefix from `acs-cli` to `acs`.
+
+### Added
+- Role compilation engine using Gonja with `memoryMapLoader`, atomic file writes, base `base_role.j2` template, and child template migrations across all personas.
+- `acs rules compile-roles` command and automated build integration in `sync-agent-rules` and `justfile`.
+- Parity conformance suite and CLI path fallback mechanisms.
+- Streaming portable binary downloader with SHA-256 integrity verification.
+- Isolated devtools resolution, prerequisite fallback cascades, environment path resolvers, and `acs env` inspection subcommands (`info`, `check`).
+- Registry-direct Windows PATH persistence with automated backup, replacing `setx`.
+- Session-start automatic project memory loading.
+- Migration engine support for multi-format notepad, JSON, and shared-memory ingestion.
+
+### Changed
+- Optimized `SearchCode` execution to sub-10ms via immediate FTS matching and asynchronous drift refresh.
+- Propagated Single Source of Truth (SSOT) rules and agent personas across stacks via `rules-sync`.
+- Eliminated hook subshells to meet a sub-5ms execution latency budget.
+- Established `search_code` as Tier 1 primary code search across system banners and documentation.
+
+### Fixed
+- Sanitized FTS5 `MATCH` queries against pipes and special characters.
+- Added explicit deferred `rows.Close` invocations in `SearchCode` and `refreshStaleFilesBatch` to eliminate resource leaks.
+- Splitted kanban cache with 250ms negative TTL to stop cross-test state leakage.
+- Preserved `TIDE_VERSION` environment values during `version.ts` ecosystem synchronization.
+- Calibrated negative cache TTL to 2 seconds and adjusted wall-clock test assertions.
+
+### Documentation
+- Standardized knowledge stack architecture to Sovereign Second Brain in `CLAUDE.md`.
+- Documented governance invariants 7 and 8 enforcing OMC unwiring and `search_code` primacy.
+- Completed reconciliation records for SQLite standardization, Jinja role templating, devtools hook resilience, and sovereign memory standards.
+
 ## [v1.16.0] - 2026-09-26
 
 ### Highlights
