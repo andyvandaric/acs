@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.17.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.18.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -117,25 +117,24 @@ All operations are unified under the modern `acs` command:
 | Command | Description |
 |---|---|
 | `acs kanban` | Local visual task management and PRD Blueprint tracker |
-| `acs mcp [list\|add\|remove]` | Manage Model Context Protocol (MCP) servers and tools |
+| `acs mcp [list\|add\|remove\|serve]` | Manage Model Context Protocol (MCP) servers and tools |
 | `acs accounts` | Manage provider accounts and quota allocations |
 | `acs articles` | Query offline synthesized research and knowledge base |
 | `acs sessions` | Inspect and manage active agent execution sessions |
 | `acs logs` | Tail real-time service logs |
 | `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
 | `acs rules compile-roles` | Compile Gonja Jinja2 role templates into unified agent rules |
+| `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
 
 ---
 
 ### ✨ Architectural Pillars
 
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools.
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools and stdio JSON-RPC 2.0 server harness.
 2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-field tokenized search.
-7. **Deterministic Quality Gates & Watchdogs**: PreToolUse PRD gates, blueprint scope guards, stagnation circuit breakers, 15 embedded subagent personas, step 0 pre-creation probe, and 3-tier hybrid anti-duplication engine.
-8. **Terminal Step Orchestrator & Theming**: Automated PowerShell 7 profile, Windows Terminal AST patching, and Zero-UAC
-9. **Compiled Role Engine & Conformance Pipeline**: Jinja2/Gonja compilation suite targeting 10 canonical CEO-OS blocks, isolated toolchain fallback cascade, and parity conformance testing.
-10. **Low-Latency Sovereign Memory Engine & Hook Runner**: Sub-5ms hook execution eliminating subshells, automated session-start memory loading, and unified multi-format memory ingestion with legacy OMC isolation.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-agent task orchestration.
+7. **Synaptic Memory & Lifecycle Engine**: Semantic graph edges, contradiction resolution, automatic file eviction, TTL expiry pruning, and 25KB safe payload guarding for durable memory retrieval.
+8. **Autonomous Rolling Micro-Compaction**: Continuous session fork maintenance with audited dual-trigger compaction and cold-start state preservation.

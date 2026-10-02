@@ -1,5 +1,34 @@
 # Changelog
 
+## [v1.18.0] - 2026-10-02
+
+### Added
+- In-process stdio JSON-RPC 2.0 server loop via `acs mcp serve` CLI subcommand, mapping the `mcp__acs__*` namespace across 27 core tool handlers.
+- Dedicated native Claude plugin installer (`InstallACSPlugin`), plugin manifest registration, and slash commands.
+- Synaptic query cache core engine with boolean query parsing, snippet truncation, and compact `MemorySearchHit` adapter with a 25KB safe payload cap.
+- Semantic graph edges using `from_title` and `to_title` attributes, contradiction engine, and supersede resolution for active-filtered search.
+- Lifecycle parameters for MCP tools and HTTP REST routes backed by schema migrations with nullable scanning.
+- Cold-start automated migration for legacy memory formats, background file eviction engine, TTL expiry pruning, and scheduled maintenance tasks.
+- High-density code search resolver with distribution filtering and integration into code intel.
+- Top-level `/research` route, sidebar navigation item, and `ExaKeyPoolCard` integration in `ResearchArticles`.
+- Multi-session context isolation with tri-engine browser switching.
+- Automatic Kanban checkoff enforcement using regex-based invariants.
+- System guards for Windows MAX_PATH length and stale temporary file pruning.
+- Memory status and manual pruning CLI commands.
+
+### Changed
+- Decoupled `claudeAgent.Sync` and enforced zero HTTP writes during sync operations.
+- Flattened `purgeClaudeJSONServers` call hierarchy.
+- Replaced `setx` calls with direct `reg add` invocations and PowerShell fallbacks to prevent environment variable truncation on Windows.
+
+### Fixed
+- Guarded Claude global and project configuration files against developer-mode overwrites when production environment is active.
+- Resolved process environment drift on Windows by reading user path variables directly from the persistent Windows Registry.
+- Replaced shell `execSync` with direct binary invocation via `execFileSync` for Git operations on Windows.
+- Corrected `test-pipeline` recipe path to `tools/pipeline/tests/`.
+- Updated `acs-hud` asset manifest checksum and doctor path validation.
+- Modernized PID resolution and parent process pattern matching.
+
 ## [v1.17.0] - 2026-09-30
 
 ### Breaking Changes
