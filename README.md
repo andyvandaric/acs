@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.18.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.29.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -135,6 +135,10 @@ All operations are unified under the modern `acs` command:
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-agent task orchestration.
-7. **Synaptic Memory & Lifecycle Engine**: Semantic graph edges, contradiction resolution, automatic file eviction, TTL expiry pruning, and 25KB safe payload guarding for durable memory retrieval.
-8. **Autonomous Rolling Micro-Compaction**: Continuous session fork maintenance with audited dual-trigger compaction and cold-start state preservation.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-
+7. **SessionBus Sovereign Orchestration**: Single active CEO per project with claim API, CEO register gates, 23 persona roster with on-demand spawn, PM-only discovery, and decision queue escalation.
+8. **Virtual Office Command Deck**: Org structure tree, persona catalog grid with dossier modal, multi-persona chat dock, workspace selector, terminal modal, and 3D desk matrix.
+9. **Expanded Core Tooling**: 37 Go-native MCP tools with kanban_summary and memory_summary, LSP handlers, response clamp ceilings, and offline fallback.
+10. **Memory Sovereign Pipeline**: Unified ingestion with tiered dedupe and contradiction engine, handoff helpers, and physical markdown unwire.
+11. **HookEngine Permission Governance**: In-memory permission cache with persistence, ancestry detection, dangerously-skip-permissions banner, and kanban reconciler.
+12. **CLI Sovereign Expansion**: acs sessionbus register, org whois, kanban summary/create/card/artifacts, memory status summary alias, and persona slash commands.

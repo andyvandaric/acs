@@ -1,5 +1,1216 @@
 # Changelog
 
+## [v1.29.0] - 2026-10-05
+### Highlights
+v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual Office studio with PTY streaming at /office. It adds unified memory ingestion with semantic dedupe, 37 core stdio tools, and 3-tier persona governance with 25 unified personas. It unifies hooks to single user-prompt-submit, normalizes subagent_type to bare names, and unwires physical markdown memory sync.
+
+### Breaking Changes
+- Single user-prompt-submit aggregator replaces legacy hooks. Update manifest and settings template and expect 26 hooks in gate 2.5.
+- subagent_type uses bare names without oh-my-claudecode prefix. Update agent prompts, decomposer, execution adapters, ralph, team, ultraqa, and agent_catalog. architect-low is now architect tier.
+- Physical markdown memory sync is deprecated and removed by unwire engine and tombstone daemon. Use IngestEntry, IngestBatch, and POST /api/memory/snapshot.
+- Plugin registration uses acs@acs for acs:core and acs@uikode for official Claude plugin SSOT. Update marketplace references.
+- kanban_list payload is compacted and review and verify map to testing column. Update clients parsing full payloads or distinct columns.
+
+### Added
+- Session Bus adds SQLite WAL store with fan-out messaging, 8 core tools, RPC handlers, HTTP routes, lifecycle hook with auto-fork handshake, 3-tier assignment with CEO Anke isolation, claim API, register command, inbox banner, decision queue, and projects resolver.
+- Virtual Office adds /office route, studio page, PersonaCatalogGrid with dossier modal, org-structure tree, 7 PM leads, multi-persona chat with SSE hub, TerminalModal with xterm viewer, PTY websocket bridge, session resolver, ActiveRosterTable, ResourceLocksPanel, and AnkeChatDock.
+- Memory adds unified ingestion pipeline with IngestEntry and IngestBatch, tier 1 exact dedupe, tier 2 syntactic supersede, tier 3 semantic contradiction engine, POST /api/memory/snapshot, memory_summary and kanban_summary tools and REST endpoints, prune_memory handler, and in-memory permission cache with persistence.
+- Personas add 25 unified Jinja2 templates with Second Brain harness, base_role template with tier boundaries, 23 slash commands deployed to ~/.claude/commands, org hierarchy with whois command, and live session auto-discovery.
+- Core tools expand from 27 to 35 to 37 with 8 Go-native LSP handlers, payload ceilings, ClampPayload middleware, cache telemetry fields, and Windows Toolhelp32 and unix ancestry providers.
+
+### Changed
+- Hooks consolidate to single user-prompt-submit. Manifest, settings template, and .claude/agents sync to the new contract with 40s shim timeout and collapsed legacy entries.
+- subagent_type normalizes to bare names across plan, team, ralph, ultrawork, ultraqa, deep-dive, interview, writer-memory, and autopilot prompts.
+- Memory deprecates physical markdown sync. AsyncWriter routes to IngestBatch and InsertEntry routes to IngestEntry.
+- matchDynamicSkill bounds prompt scan length. The bound prevents CPU stalls.
+- ProjectMcpWorkspace removes obsolete .mcp.json radio option. Legacy global-setup route and sidebar navigation are unwired.
+
+### Fixed
+- Build gates persist full per-platform garble logs, validate dist binary version before fingerprint skip, reuse dist binaries, parallelize gate 3 across CPU cores, calibrate gate 2 timeout to 420s, restore gate 4 hardening threshold to max 2, allow 8 public repo occurrences, and skip AI changelog and readme gates in dry-run mode.
+- Windows install enforces npm for claude, purges broken bun stubs, probes execution, adds Repair-BrokenBunClaude auto-heal to install.ps1, adds pre-stop hooks with atomic rotation to prevent WinError 32, scopes 9router teardown to targeted PIDs, and extends headroom cold-boot timeout to 45s.
+- Runtime wraps maybeRefreshDriftAsync in panic recovery, parses numeric unix timestamps in dedupe updated_at, normalizes dedupe hash to trimmed content SHA, unifies IgnoredDirNames with bare venv, clamps tool responses, raises hook timeout to 30s with 25s shim spawn timeout, and synchronizes asset manifest SHA256 checksums.
+- UI and session paths fix terminal resolver to launch claude CLI with persona in workspace, guard tmux attach with non-Windows OS check, use executil.CommandContext with cached git commit to remove conhost flash, eliminate catalog flicker, and isolate chat history per persona thread.
+
+### Documentation
+- Guides modernize to ACS standard across getting-started with acs binary naming, deep-dive, and developer reference waves 1 through 3.
+- Handbooks add Claude Code CLI v2.1.289 developer and member editions, usage guide for stack and kanban, and single-anke-per-project PRD suite.
+- Rules codify 4-tier execution hierarchy, MCP-first invariant, audit-first architect dispatch, Authoritative English, builtin MCP over curl, and upstream SSOT modification guidelines.
+- Suites certify session bus visual and PTY, session auto-fork and compact, memory semantic dedupe and anti-drift, usage transparency, persona 3-tier governance, fleet hardening, and Windows autoheal as 100% completed.
+
+## [v1.28.0] - 2026-10-04
+
+### Added
+
+- move to bottom of sidebar with Exp badge and add experimental banner
+- route chat messages directly to session inbox and excise fake llm (chunk-3.2)
+- add justfile local-release targets and sync changelog (chunk-2.2)
+- align active roster table pm filter and project badge (chunk-3.4)
+- wire pty metadata bridge and persona spawn workspace binding (chunk-2.3)
+- add local release engine and changelog sync (chunk-2.1)
+- implement tmux lifecycle and claude cli command resolution (chunk-2.2)
+- update chat dock with 7 PM leads and terminal quick action (chunk-3.3)
+- implement sessionbus projects resolver endpoint (chunk-2.1)
+- add workspace project selector dropdown (chunk-3.1)
+- wire persona detail dossier modal into catalog grid (chunk-1.7)
+- add org structure tree tab and hierarchy view (chunk-1.6)
+- add enriched persona types and dossier detail modal (chunk-1.5)
+- add PM-only session filter to discovery engine (chunk-1.4)
+- filter project jsonl discovery to PM and CEO personas only (chunk-1.4)
+- extend persona view fields and add org-structure endpoint (chunk-1.3)
+- enrich persona roster and promote 7 PM leads (chunk-1.1 and 1.2)
+- implement multi-persona sessionbus chat responder with persona identities (chunk-3.1)
+- render multi-persona avatars and recipient badges in AnkeChatDock (chunk-2.2)
+- add multi-role sessionbus chat and optimistic deduplication to ankeChatStore (chunk-2.1)
+- implement dedicated sessionbus chat endpoints for multi-persona dispatch (chunk-1.2)
+- add idempotent DDL migrations for founder_conversations role and content (chunk-1.1)
+- implement persona slash commands generator and emit 23 persona commands (chunk-3.1)
+- wire PersonaCatalogGrid and PM chat selector in VirtualOffice (chunk-2.2)
+- implement PersonaCatalogGrid component with live spawn trigger (chunk-2.1)
+- implement persona registry and on-demand spawn endpoints (chunk-1.2)
+- provide dynamic live session awareness in Anke AI chat responder
+- discover real Claude Code sessions from project jsonl files
+- wire TerminalModal and fix lock release contract (wave-1)
+- wire autonomous AI responder and bump version to v1.22.0
+- implement full-duplex bi-directional Anke chat SSE hub and IPC queue (wave-3)
+- register periodic blueprint reconciler task and boot sync
+- make confidence parsing tolerant and add ReconcileBlueprints engine
+- implement live Claude Code session auto-discovery engine (chunk-2.1)
+- register real session action handlers and unlock endpoints in sessionbus (chunk-4.1)
+- eliminate flicker in VirtualOffice via fine-grained reconcile and silent refresh (chunk-1.1)
+- add in-process fallback to kanban blueprint sync hook (chunk-2.2)
+- support path-targeted blueprint sync in routes_agentic (chunk-2.1)
+- enforce strict macro orchestration and tool ban for Tier CEO in base_role.j2 (chunk-4.1)
+- make kanban reconciler tolerant to markdown variations and checklist stats (chunk-1.2)
+- make blueprint scanner markdown-tolerant and checklist-aware (chunk-1.1)
+- clamp knowledge tool responses and sanitize search hits
+- wire all 8 Go-native LSP handlers into mcp_serve stdio server
+- enforce payload and item ceilings across Go-native LSP handlers
+- mount sessionbus decision queue endpoints (chunk-4.4b)
+- mount stack-agnostic memory handoff endpoints (chunk-4.4a)
+- implement decision queue helpers for ceo escalation (chunk-4.3b)
+- implement compact offline fallback handlers for bridge tools
+- add cache efficiency telemetry and badge to ProviderBreakdown with testsnCo-Authored-By: Claude Code <noreply@anthropic.com>
+- add project column and migration to decision queue (chunk-4.3a)
+- enforce anti-blind execution and blueprint freshness gates in SSOT templates
+- wire autonomous dispatcher to task scheduler (chunk-4.2b)
+- add cache telemetry breakdown and tooltips to UsageTable with tests
+- formalize blueprint execution readiness protocol (direct dispatch vs mandatory re-audit)
+- implement save and load handoff helpers (chunk-4.1b)
+- migrate Usage.tsx to createTide and add 4 transparent cache tiles
+- clamp article reader content to 25KB and bound list limit
+- declare stagnant handoff types and constants (chunk-4.1a)
+- populate cache fields in 9router snapshot stats and test coverage
+- bound corpus items in agent research and normalize deep research
+- populate cache fields in ProviderUsage across all periods
+- populate cache fields in QueryUsageStatsForPeriod across all periods
+- implement desk interaction event hub and modal dispatcher
+- resolve dynamic founder and operator identity for commercial buyers
+- bound parameters and wrap errors in search and fetch handlers
+- implement headless reactive session store and desk state mapping
+- add aggregate cache telemetry fields to UsageStats and queryUsageStats
+- define 3d spatial types and 35-desk coordinate matrix
+- populate cache fields in QueryUsageFilters
+- register prune_memory handler in RegisterAllHandlers
+- populate cache fields in queryRecentRequests and queryRecentRequestsFiltered
+- add cache telemetry fields to RecentRequest and deriveCacheFields helper
+- implement interactive terminal modal dialog component
+- clamp code search snippets and memory graph payloads
+- bind resolver output to desk and session owner (chunk-3.1)
+- implement xterm terminal viewer component and vitest suite
+- harden kanban_card_by_ref with compact summary and clamped tabs
+- install xterm dependencies and define terminal types
+- unblock PM auto-delegation path in architect and planner (chunk-2.3)
+- lock verifier read-only (chunk-2.2)
+- mount Virtual Office navigation, /office route, and comprehensive test suite
+- align core tool catalog to 35 Go-native tools
+- enforce leaf-worker delegation mask (chunk-2.1)
+- mount pty websocket streaming bridge and sessionbus rest endpoints
+- add VirtualOffice studio main page component
+- integrate ClampPayload into daemon withLogging wrapper
+- add ResourceLocksPanel and AnkeChatDock for Virtual Office
+- inject exit strategy and handoff protocol block
+- wire ClampPayload into stdio tools/call response path
+- inject tier boundary enforcement block
+- implement session resolver and thread-safe pty manager pool
+- implement dual-layer event gatekeeper for zero-drift auto-reconciliation
+- implement central response clamp middleware and tool ceilings
+- add IAP monetization banner and active roster table for Virtual Office
+- implement cross-platform conpty engine and lifecycle tests
+- add Virtual Office type contracts and Anke SSE chat store
+- implement hook chain watchdog and daemon deadlock sweeper
+- mount session bus HTTP routes and wire into server router (chunk-4e)
+- implement session bus RPC handlers and wire into server (chunk-4d)
+- inject session bus inbox unread peek banner into prompt submission context (chunk-3b)
+- implement Anke Chat SSE realtime streaming and history routes (chunk-4f)
+- register acs-session-bus server in builtin registry (chunk-4c)
+- register 8 session bus tools into AllTools catalog and update assertions (chunk-4b)
+- define 8 session bus core tools with input schemas (chunk-4a)
+- implement types and SQLite WAL store with fan-out messaging and atomic locking (chunk-1b)
+- define 23 Indo-Dutch persona roster and seeder functions (chunk-2a)
+- implement sessionbus lifecycle hook with auto-registration and auto-fork handshake (chunk-3a)
+- implement 3-tier deterministic persona assignment with CEO Anke isolation (chunk-2b)
+- add SessionBusDBPath facade with env override and unit tests (chunk-1a)
+- compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
+- enforce 25-persona threshold and correct SSOT terminology in sync script
+- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
+- migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
+- bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
+- migrate acs-code-intel and acs-docs-agent to jinja2 templates and update parity test
+- expand core stdio tools from 27 to 35 with 8 acs-lsp tools
+- inject second brain and cli harness into base_role and executor templates
+- exclude builtin stdio harness and tri-engine browser from project mcp generation
+- isolate 9router from stop-all and generic stack stop
+- cleanup duplicate mcp selection cards and enforce locked master harness
+- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
+- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
+- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
+- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
+- implement unified ingestion pipeline and atomic batch ingester (phase-04)
+- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
+- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
+- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
+- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
+- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- standardize official claude plugin ssot to acs@uikode
+- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
+- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- standardize acs:core plugin registration to acs@acs with automated marketplace schema
+
+### Fixed
+
+- add pre-stop hooks and atomic file rotation to prevent WinError 32 (chunk-1.4)
+- scope 9router teardown to targeted PIDs and eliminate broad pattern kill (chunk-1.3)
+- extend headroom cold-boot timeout to 45s and add log sink (chunk-1.1)
+- auto-claim kanban task when CEO delegates via chat
+- add Repair-BrokenBunClaude auto-heal to install.ps1 (chunk-2.1)
+- purge broken bun stubs and verify claude execution post-update (chunk-1.3)
+- probe claude execution and enforce npm fix on windows (chunk-1.2)
+- enforce npm for claude on windows and auto-purge broken bun stubs (chunk-1.1)
+- use dot access in AnkeChatDock test to satisfy biome useLiteralKeys
+- use executil.CommandContext and cache git commit to eliminate conhost window flash
+- guard tmux attach with non-windows OS check in session resolver (chunk-1.1)
+- close blueprint reconciler rows with defer to avoid leak
+- ensure founder_conversations schema compatibility with sessionbus store
+- make fallback blueprint sync project scope dynamic (chunk-4)
+- remove unmount loading wrapper in ActiveRosterTable and ResourceLocksPanel (chunk-1.2)
+- align leaf personas governance tier to worker (chunk-3)
+- use executil.Command for unix pty spawn (chunk-2)
+- normalize absolute path in blueprint sync endpoint (chunk-1)
+- map review and verify status to testing column in Board (chunk-3.4)
+- enforce single-owner attach isolation (chunk-3.2)
+- compact kanban_list payload to prevent 1MB token overflow
+- synchronize fable tier across router profiles and sync applied presets back to profile
+- synchronize ANTHROPIC_MODEL env var on dashboard model patch
+- calibrate gate 2 timeout to 420s for full suite pass under windows io
+
+### Changed
+
+- bump version to v1.23.0 for persona catalog and pty spawn
+- sync compiled persona files from base_role.j2 template update
+- remove obsolete .mcp.json radio option from ProjectMcpWorkspace
+- unwire legacy global-setup route and sidebar navigation
+
+### Documentation
+
+- certify system-resilience phase-01 service-resilience 100% completed
+- certify system-resilience phase-02 local-release 100% completed
+- certify installer-claude-windows-16bit-autoheal suite 100% completed
+- certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
+- draft sessionbus-direct-chat-and-pm-dispatch blueprint
+- certify persona-catalog-shortcuts-and-pty-spawn suite 100% completed
+- draft persona-catalog-shortcuts-and-pty-spawn blueprint
+- certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
+- author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
+- certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
+- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
+- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
+- reconcile phase-04 snapshot handoff engine to completed
+- reconcile admin-session-and-license-device-lock suite to completed
+- certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
+- reconcile phase-03 frontend usage page to completed
+- reconcile phase-01 and phase-02 usage transparency backend to completed
+- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
+- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
+- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile phase-03 conpty isolation and desk binding to completed
+- author phase-02b dynamic operator identity resolution chain blueprint
+- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
+- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile phase-02 fleet disallowed-tools and routing to completed
+- mark Phase 02 dashboard studio page as completed
+- reconcile phase-01 base role and boundary enforcement to completed
+- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- mark obsolete persona blueprints as superseded by jinja2 3-tier governance
+- reconcile completed statuses for session bus, agent harness, and memory dedupe suites
+- align visual studio to /office route with IAP beta preview badge and modular licensing
+- remediate session bus visual and pty PRD with REST contracts and P9 chunks
+- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
+- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- modularize acs-session-bus blueprint into 5 granular phases
+- document v1.20.0 release notes
+- enrich second brain and investigation rulesets and register 48 skills in skills-index
+- certify acs-session-auto-fork-and-compact suite 100% completed
+- reconcile track 9 phase-04 verification and e2e to completed
+- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
+- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 master plan phase 05 to completed
+- reconcile track 10 phase-05 markdown unwire to completed
+- reconcile track 10 phase-03 semantic contradiction to completed
+- mark track-10 phase-01 completed with empirical certification
+- reconcile track 10 phase-02 syntactic jaccard to completed
+- record cross-session reports and peer readiness on ceo board
+- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- establish central anke hq session and sibling sessions control board
+
+## [v1.27.0] - 2026-10-04
+
+### Added
+
+- route chat messages directly to session inbox and excise fake llm (chunk-3.2)
+- add justfile local-release targets and sync changelog (chunk-2.2)
+- align active roster table pm filter and project badge (chunk-3.4)
+- wire pty metadata bridge and persona spawn workspace binding (chunk-2.3)
+- add local release engine and changelog sync (chunk-2.1)
+- implement tmux lifecycle and claude cli command resolution (chunk-2.2)
+- update chat dock with 7 PM leads and terminal quick action (chunk-3.3)
+- implement sessionbus projects resolver endpoint (chunk-2.1)
+- add workspace project selector dropdown (chunk-3.1)
+- wire persona detail dossier modal into catalog grid (chunk-1.7)
+- add org structure tree tab and hierarchy view (chunk-1.6)
+- add enriched persona types and dossier detail modal (chunk-1.5)
+- add PM-only session filter to discovery engine (chunk-1.4)
+- filter project jsonl discovery to PM and CEO personas only (chunk-1.4)
+- extend persona view fields and add org-structure endpoint (chunk-1.3)
+- enrich persona roster and promote 7 PM leads (chunk-1.1 and 1.2)
+- implement multi-persona sessionbus chat responder with persona identities (chunk-3.1)
+- render multi-persona avatars and recipient badges in AnkeChatDock (chunk-2.2)
+- add multi-role sessionbus chat and optimistic deduplication to ankeChatStore (chunk-2.1)
+- implement dedicated sessionbus chat endpoints for multi-persona dispatch (chunk-1.2)
+- add idempotent DDL migrations for founder_conversations role and content (chunk-1.1)
+- implement persona slash commands generator and emit 23 persona commands (chunk-3.1)
+- wire PersonaCatalogGrid and PM chat selector in VirtualOffice (chunk-2.2)
+- implement PersonaCatalogGrid component with live spawn trigger (chunk-2.1)
+- implement persona registry and on-demand spawn endpoints (chunk-1.2)
+- provide dynamic live session awareness in Anke AI chat responder
+- discover real Claude Code sessions from project jsonl files
+- wire TerminalModal and fix lock release contract (wave-1)
+- wire autonomous AI responder and bump version to v1.22.0
+- implement full-duplex bi-directional Anke chat SSE hub and IPC queue (wave-3)
+- register periodic blueprint reconciler task and boot sync
+- make confidence parsing tolerant and add ReconcileBlueprints engine
+- implement live Claude Code session auto-discovery engine (chunk-2.1)
+- register real session action handlers and unlock endpoints in sessionbus (chunk-4.1)
+- eliminate flicker in VirtualOffice via fine-grained reconcile and silent refresh (chunk-1.1)
+- add in-process fallback to kanban blueprint sync hook (chunk-2.2)
+- support path-targeted blueprint sync in routes_agentic (chunk-2.1)
+- enforce strict macro orchestration and tool ban for Tier CEO in base_role.j2 (chunk-4.1)
+- make kanban reconciler tolerant to markdown variations and checklist stats (chunk-1.2)
+- make blueprint scanner markdown-tolerant and checklist-aware (chunk-1.1)
+- clamp knowledge tool responses and sanitize search hits
+- wire all 8 Go-native LSP handlers into mcp_serve stdio server
+- enforce payload and item ceilings across Go-native LSP handlers
+- mount sessionbus decision queue endpoints (chunk-4.4b)
+- mount stack-agnostic memory handoff endpoints (chunk-4.4a)
+- implement decision queue helpers for ceo escalation (chunk-4.3b)
+- implement compact offline fallback handlers for bridge tools
+- add cache efficiency telemetry and badge to ProviderBreakdown with testsnCo-Authored-By: Claude Code <noreply@anthropic.com>
+- add project column and migration to decision queue (chunk-4.3a)
+- enforce anti-blind execution and blueprint freshness gates in SSOT templates
+- wire autonomous dispatcher to task scheduler (chunk-4.2b)
+- add cache telemetry breakdown and tooltips to UsageTable with tests
+- formalize blueprint execution readiness protocol (direct dispatch vs mandatory re-audit)
+- implement save and load handoff helpers (chunk-4.1b)
+- migrate Usage.tsx to createTide and add 4 transparent cache tiles
+- clamp article reader content to 25KB and bound list limit
+- declare stagnant handoff types and constants (chunk-4.1a)
+- populate cache fields in 9router snapshot stats and test coverage
+- bound corpus items in agent research and normalize deep research
+- populate cache fields in ProviderUsage across all periods
+- populate cache fields in QueryUsageStatsForPeriod across all periods
+- implement desk interaction event hub and modal dispatcher
+- resolve dynamic founder and operator identity for commercial buyers
+- bound parameters and wrap errors in search and fetch handlers
+- implement headless reactive session store and desk state mapping
+- add aggregate cache telemetry fields to UsageStats and queryUsageStats
+- define 3d spatial types and 35-desk coordinate matrix
+- populate cache fields in QueryUsageFilters
+- register prune_memory handler in RegisterAllHandlers
+- populate cache fields in queryRecentRequests and queryRecentRequestsFiltered
+- add cache telemetry fields to RecentRequest and deriveCacheFields helper
+- implement interactive terminal modal dialog component
+- clamp code search snippets and memory graph payloads
+- bind resolver output to desk and session owner (chunk-3.1)
+- implement xterm terminal viewer component and vitest suite
+- harden kanban_card_by_ref with compact summary and clamped tabs
+- install xterm dependencies and define terminal types
+- unblock PM auto-delegation path in architect and planner (chunk-2.3)
+- lock verifier read-only (chunk-2.2)
+- mount Virtual Office navigation, /office route, and comprehensive test suite
+- align core tool catalog to 35 Go-native tools
+- enforce leaf-worker delegation mask (chunk-2.1)
+- mount pty websocket streaming bridge and sessionbus rest endpoints
+- add VirtualOffice studio main page component
+- integrate ClampPayload into daemon withLogging wrapper
+- add ResourceLocksPanel and AnkeChatDock for Virtual Office
+- inject exit strategy and handoff protocol block
+- wire ClampPayload into stdio tools/call response path
+- inject tier boundary enforcement block
+- implement session resolver and thread-safe pty manager pool
+- implement dual-layer event gatekeeper for zero-drift auto-reconciliation
+- implement central response clamp middleware and tool ceilings
+- add IAP monetization banner and active roster table for Virtual Office
+- implement cross-platform conpty engine and lifecycle tests
+- add Virtual Office type contracts and Anke SSE chat store
+- implement hook chain watchdog and daemon deadlock sweeper
+- mount session bus HTTP routes and wire into server router (chunk-4e)
+- implement session bus RPC handlers and wire into server (chunk-4d)
+- inject session bus inbox unread peek banner into prompt submission context (chunk-3b)
+- implement Anke Chat SSE realtime streaming and history routes (chunk-4f)
+- register acs-session-bus server in builtin registry (chunk-4c)
+- register 8 session bus tools into AllTools catalog and update assertions (chunk-4b)
+- define 8 session bus core tools with input schemas (chunk-4a)
+- implement types and SQLite WAL store with fan-out messaging and atomic locking (chunk-1b)
+- define 23 Indo-Dutch persona roster and seeder functions (chunk-2a)
+- implement sessionbus lifecycle hook with auto-registration and auto-fork handshake (chunk-3a)
+- implement 3-tier deterministic persona assignment with CEO Anke isolation (chunk-2b)
+- add SessionBusDBPath facade with env override and unit tests (chunk-1a)
+- compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
+- enforce 25-persona threshold and correct SSOT terminology in sync script
+- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
+- migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
+- bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
+- migrate acs-code-intel and acs-docs-agent to jinja2 templates and update parity test
+- expand core stdio tools from 27 to 35 with 8 acs-lsp tools
+- inject second brain and cli harness into base_role and executor templates
+- exclude builtin stdio harness and tri-engine browser from project mcp generation
+- isolate 9router from stop-all and generic stack stop
+- cleanup duplicate mcp selection cards and enforce locked master harness
+- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
+- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
+- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
+- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
+- implement unified ingestion pipeline and atomic batch ingester (phase-04)
+- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
+- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
+- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
+- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
+- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- standardize official claude plugin ssot to acs@uikode
+- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
+- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- standardize acs:core plugin registration to acs@acs with automated marketplace schema
+
+### Fixed
+
+- add pre-stop hooks and atomic file rotation to prevent WinError 32 (chunk-1.4)
+- scope 9router teardown to targeted PIDs and eliminate broad pattern kill (chunk-1.3)
+- extend headroom cold-boot timeout to 45s and add log sink (chunk-1.1)
+- auto-claim kanban task when CEO delegates via chat
+- add Repair-BrokenBunClaude auto-heal to install.ps1 (chunk-2.1)
+- purge broken bun stubs and verify claude execution post-update (chunk-1.3)
+- probe claude execution and enforce npm fix on windows (chunk-1.2)
+- enforce npm for claude on windows and auto-purge broken bun stubs (chunk-1.1)
+- use dot access in AnkeChatDock test to satisfy biome useLiteralKeys
+- use executil.CommandContext and cache git commit to eliminate conhost window flash
+- guard tmux attach with non-windows OS check in session resolver (chunk-1.1)
+- close blueprint reconciler rows with defer to avoid leak
+- ensure founder_conversations schema compatibility with sessionbus store
+- make fallback blueprint sync project scope dynamic (chunk-4)
+- remove unmount loading wrapper in ActiveRosterTable and ResourceLocksPanel (chunk-1.2)
+- align leaf personas governance tier to worker (chunk-3)
+- use executil.Command for unix pty spawn (chunk-2)
+- normalize absolute path in blueprint sync endpoint (chunk-1)
+- map review and verify status to testing column in Board (chunk-3.4)
+- enforce single-owner attach isolation (chunk-3.2)
+- compact kanban_list payload to prevent 1MB token overflow
+- synchronize fable tier across router profiles and sync applied presets back to profile
+- synchronize ANTHROPIC_MODEL env var on dashboard model patch
+- calibrate gate 2 timeout to 420s for full suite pass under windows io
+
+### Changed
+
+- bump version to v1.23.0 for persona catalog and pty spawn
+- sync compiled persona files from base_role.j2 template update
+- remove obsolete .mcp.json radio option from ProjectMcpWorkspace
+- unwire legacy global-setup route and sidebar navigation
+
+### Documentation
+
+- certify system-resilience phase-01 service-resilience 100% completed
+- certify system-resilience phase-02 local-release 100% completed
+- certify installer-claude-windows-16bit-autoheal suite 100% completed
+- certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
+- draft sessionbus-direct-chat-and-pm-dispatch blueprint
+- certify persona-catalog-shortcuts-and-pty-spawn suite 100% completed
+- draft persona-catalog-shortcuts-and-pty-spawn blueprint
+- certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
+- author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
+- certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
+- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
+- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
+- reconcile phase-04 snapshot handoff engine to completed
+- reconcile admin-session-and-license-device-lock suite to completed
+- certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
+- reconcile phase-03 frontend usage page to completed
+- reconcile phase-01 and phase-02 usage transparency backend to completed
+- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
+- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
+- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile phase-03 conpty isolation and desk binding to completed
+- author phase-02b dynamic operator identity resolution chain blueprint
+- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
+- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile phase-02 fleet disallowed-tools and routing to completed
+- mark Phase 02 dashboard studio page as completed
+- reconcile phase-01 base role and boundary enforcement to completed
+- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- mark obsolete persona blueprints as superseded by jinja2 3-tier governance
+- reconcile completed statuses for session bus, agent harness, and memory dedupe suites
+- align visual studio to /office route with IAP beta preview badge and modular licensing
+- remediate session bus visual and pty PRD with REST contracts and P9 chunks
+- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
+- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- modularize acs-session-bus blueprint into 5 granular phases
+- document v1.20.0 release notes
+- enrich second brain and investigation rulesets and register 48 skills in skills-index
+- certify acs-session-auto-fork-and-compact suite 100% completed
+- reconcile track 9 phase-04 verification and e2e to completed
+- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
+- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 master plan phase 05 to completed
+- reconcile track 10 phase-05 markdown unwire to completed
+- reconcile track 10 phase-03 semantic contradiction to completed
+- mark track-10 phase-01 completed with empirical certification
+- reconcile track 10 phase-02 syntactic jaccard to completed
+- record cross-session reports and peer readiness on ceo board
+- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- establish central anke hq session and sibling sessions control board
+
+## [v1.26.0] - 2026-10-04
+
+### Added
+
+- route chat messages directly to session inbox and excise fake llm (chunk-3.2)
+- add justfile local-release targets and sync changelog (chunk-2.2)
+- align active roster table pm filter and project badge (chunk-3.4)
+- wire pty metadata bridge and persona spawn workspace binding (chunk-2.3)
+- add local release engine and changelog sync (chunk-2.1)
+- implement tmux lifecycle and claude cli command resolution (chunk-2.2)
+- update chat dock with 7 PM leads and terminal quick action (chunk-3.3)
+- implement sessionbus projects resolver endpoint (chunk-2.1)
+- add workspace project selector dropdown (chunk-3.1)
+- wire persona detail dossier modal into catalog grid (chunk-1.7)
+- add org structure tree tab and hierarchy view (chunk-1.6)
+- add enriched persona types and dossier detail modal (chunk-1.5)
+- add PM-only session filter to discovery engine (chunk-1.4)
+- filter project jsonl discovery to PM and CEO personas only (chunk-1.4)
+- extend persona view fields and add org-structure endpoint (chunk-1.3)
+- enrich persona roster and promote 7 PM leads (chunk-1.1 and 1.2)
+- implement multi-persona sessionbus chat responder with persona identities (chunk-3.1)
+- render multi-persona avatars and recipient badges in AnkeChatDock (chunk-2.2)
+- add multi-role sessionbus chat and optimistic deduplication to ankeChatStore (chunk-2.1)
+- implement dedicated sessionbus chat endpoints for multi-persona dispatch (chunk-1.2)
+- add idempotent DDL migrations for founder_conversations role and content (chunk-1.1)
+- implement persona slash commands generator and emit 23 persona commands (chunk-3.1)
+- wire PersonaCatalogGrid and PM chat selector in VirtualOffice (chunk-2.2)
+- implement PersonaCatalogGrid component with live spawn trigger (chunk-2.1)
+- implement persona registry and on-demand spawn endpoints (chunk-1.2)
+- provide dynamic live session awareness in Anke AI chat responder
+- discover real Claude Code sessions from project jsonl files
+- wire TerminalModal and fix lock release contract (wave-1)
+- wire autonomous AI responder and bump version to v1.22.0
+- implement full-duplex bi-directional Anke chat SSE hub and IPC queue (wave-3)
+- register periodic blueprint reconciler task and boot sync
+- make confidence parsing tolerant and add ReconcileBlueprints engine
+- implement live Claude Code session auto-discovery engine (chunk-2.1)
+- register real session action handlers and unlock endpoints in sessionbus (chunk-4.1)
+- eliminate flicker in VirtualOffice via fine-grained reconcile and silent refresh (chunk-1.1)
+- add in-process fallback to kanban blueprint sync hook (chunk-2.2)
+- support path-targeted blueprint sync in routes_agentic (chunk-2.1)
+- enforce strict macro orchestration and tool ban for Tier CEO in base_role.j2 (chunk-4.1)
+- make kanban reconciler tolerant to markdown variations and checklist stats (chunk-1.2)
+- make blueprint scanner markdown-tolerant and checklist-aware (chunk-1.1)
+- clamp knowledge tool responses and sanitize search hits
+- wire all 8 Go-native LSP handlers into mcp_serve stdio server
+- enforce payload and item ceilings across Go-native LSP handlers
+- mount sessionbus decision queue endpoints (chunk-4.4b)
+- mount stack-agnostic memory handoff endpoints (chunk-4.4a)
+- implement decision queue helpers for ceo escalation (chunk-4.3b)
+- implement compact offline fallback handlers for bridge tools
+- add cache efficiency telemetry and badge to ProviderBreakdown with testsnCo-Authored-By: Claude Code <noreply@anthropic.com>
+- add project column and migration to decision queue (chunk-4.3a)
+- enforce anti-blind execution and blueprint freshness gates in SSOT templates
+- wire autonomous dispatcher to task scheduler (chunk-4.2b)
+- add cache telemetry breakdown and tooltips to UsageTable with tests
+- formalize blueprint execution readiness protocol (direct dispatch vs mandatory re-audit)
+- implement save and load handoff helpers (chunk-4.1b)
+- migrate Usage.tsx to createTide and add 4 transparent cache tiles
+- clamp article reader content to 25KB and bound list limit
+- declare stagnant handoff types and constants (chunk-4.1a)
+- populate cache fields in 9router snapshot stats and test coverage
+- bound corpus items in agent research and normalize deep research
+- populate cache fields in ProviderUsage across all periods
+- populate cache fields in QueryUsageStatsForPeriod across all periods
+- implement desk interaction event hub and modal dispatcher
+- resolve dynamic founder and operator identity for commercial buyers
+- bound parameters and wrap errors in search and fetch handlers
+- implement headless reactive session store and desk state mapping
+- add aggregate cache telemetry fields to UsageStats and queryUsageStats
+- define 3d spatial types and 35-desk coordinate matrix
+- populate cache fields in QueryUsageFilters
+- register prune_memory handler in RegisterAllHandlers
+- populate cache fields in queryRecentRequests and queryRecentRequestsFiltered
+- add cache telemetry fields to RecentRequest and deriveCacheFields helper
+- implement interactive terminal modal dialog component
+- clamp code search snippets and memory graph payloads
+- bind resolver output to desk and session owner (chunk-3.1)
+- implement xterm terminal viewer component and vitest suite
+- harden kanban_card_by_ref with compact summary and clamped tabs
+- install xterm dependencies and define terminal types
+- unblock PM auto-delegation path in architect and planner (chunk-2.3)
+- lock verifier read-only (chunk-2.2)
+- mount Virtual Office navigation, /office route, and comprehensive test suite
+- align core tool catalog to 35 Go-native tools
+- enforce leaf-worker delegation mask (chunk-2.1)
+- mount pty websocket streaming bridge and sessionbus rest endpoints
+- add VirtualOffice studio main page component
+- integrate ClampPayload into daemon withLogging wrapper
+- add ResourceLocksPanel and AnkeChatDock for Virtual Office
+- inject exit strategy and handoff protocol block
+- wire ClampPayload into stdio tools/call response path
+- inject tier boundary enforcement block
+- implement session resolver and thread-safe pty manager pool
+- implement dual-layer event gatekeeper for zero-drift auto-reconciliation
+- implement central response clamp middleware and tool ceilings
+- add IAP monetization banner and active roster table for Virtual Office
+- implement cross-platform conpty engine and lifecycle tests
+- add Virtual Office type contracts and Anke SSE chat store
+- implement hook chain watchdog and daemon deadlock sweeper
+- mount session bus HTTP routes and wire into server router (chunk-4e)
+- implement session bus RPC handlers and wire into server (chunk-4d)
+- inject session bus inbox unread peek banner into prompt submission context (chunk-3b)
+- implement Anke Chat SSE realtime streaming and history routes (chunk-4f)
+- register acs-session-bus server in builtin registry (chunk-4c)
+- register 8 session bus tools into AllTools catalog and update assertions (chunk-4b)
+- define 8 session bus core tools with input schemas (chunk-4a)
+- implement types and SQLite WAL store with fan-out messaging and atomic locking (chunk-1b)
+- define 23 Indo-Dutch persona roster and seeder functions (chunk-2a)
+- implement sessionbus lifecycle hook with auto-registration and auto-fork handshake (chunk-3a)
+- implement 3-tier deterministic persona assignment with CEO Anke isolation (chunk-2b)
+- add SessionBusDBPath facade with env override and unit tests (chunk-1a)
+- compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
+- enforce 25-persona threshold and correct SSOT terminology in sync script
+- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
+- migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
+- bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
+- migrate acs-code-intel and acs-docs-agent to jinja2 templates and update parity test
+- expand core stdio tools from 27 to 35 with 8 acs-lsp tools
+- inject second brain and cli harness into base_role and executor templates
+- exclude builtin stdio harness and tri-engine browser from project mcp generation
+- isolate 9router from stop-all and generic stack stop
+- cleanup duplicate mcp selection cards and enforce locked master harness
+- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
+- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
+- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
+- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
+- implement unified ingestion pipeline and atomic batch ingester (phase-04)
+- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
+- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
+- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
+- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
+- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- standardize official claude plugin ssot to acs@uikode
+- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
+- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- standardize acs:core plugin registration to acs@acs with automated marketplace schema
+
+### Fixed
+
+- add pre-stop hooks and atomic file rotation to prevent WinError 32 (chunk-1.4)
+- scope 9router teardown to targeted PIDs and eliminate broad pattern kill (chunk-1.3)
+- extend headroom cold-boot timeout to 45s and add log sink (chunk-1.1)
+- auto-claim kanban task when CEO delegates via chat
+- add Repair-BrokenBunClaude auto-heal to install.ps1 (chunk-2.1)
+- purge broken bun stubs and verify claude execution post-update (chunk-1.3)
+- probe claude execution and enforce npm fix on windows (chunk-1.2)
+- enforce npm for claude on windows and auto-purge broken bun stubs (chunk-1.1)
+- use dot access in AnkeChatDock test to satisfy biome useLiteralKeys
+- use executil.CommandContext and cache git commit to eliminate conhost window flash
+- guard tmux attach with non-windows OS check in session resolver (chunk-1.1)
+- close blueprint reconciler rows with defer to avoid leak
+- ensure founder_conversations schema compatibility with sessionbus store
+- make fallback blueprint sync project scope dynamic (chunk-4)
+- remove unmount loading wrapper in ActiveRosterTable and ResourceLocksPanel (chunk-1.2)
+- align leaf personas governance tier to worker (chunk-3)
+- use executil.Command for unix pty spawn (chunk-2)
+- normalize absolute path in blueprint sync endpoint (chunk-1)
+- map review and verify status to testing column in Board (chunk-3.4)
+- enforce single-owner attach isolation (chunk-3.2)
+- compact kanban_list payload to prevent 1MB token overflow
+- synchronize fable tier across router profiles and sync applied presets back to profile
+- synchronize ANTHROPIC_MODEL env var on dashboard model patch
+- calibrate gate 2 timeout to 420s for full suite pass under windows io
+
+### Changed
+
+- bump version to v1.23.0 for persona catalog and pty spawn
+- sync compiled persona files from base_role.j2 template update
+- remove obsolete .mcp.json radio option from ProjectMcpWorkspace
+- unwire legacy global-setup route and sidebar navigation
+
+### Documentation
+
+- certify system-resilience phase-02 local-release 100% completed
+- certify installer-claude-windows-16bit-autoheal suite 100% completed
+- certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
+- draft sessionbus-direct-chat-and-pm-dispatch blueprint
+- certify persona-catalog-shortcuts-and-pty-spawn suite 100% completed
+- draft persona-catalog-shortcuts-and-pty-spawn blueprint
+- certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
+- author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
+- certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
+- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
+- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
+- reconcile phase-04 snapshot handoff engine to completed
+- reconcile admin-session-and-license-device-lock suite to completed
+- certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
+- reconcile phase-03 frontend usage page to completed
+- reconcile phase-01 and phase-02 usage transparency backend to completed
+- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
+- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
+- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile phase-03 conpty isolation and desk binding to completed
+- author phase-02b dynamic operator identity resolution chain blueprint
+- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
+- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile phase-02 fleet disallowed-tools and routing to completed
+- mark Phase 02 dashboard studio page as completed
+- reconcile phase-01 base role and boundary enforcement to completed
+- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- mark obsolete persona blueprints as superseded by jinja2 3-tier governance
+- reconcile completed statuses for session bus, agent harness, and memory dedupe suites
+- align visual studio to /office route with IAP beta preview badge and modular licensing
+- remediate session bus visual and pty PRD with REST contracts and P9 chunks
+- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
+- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- modularize acs-session-bus blueprint into 5 granular phases
+- document v1.20.0 release notes
+- enrich second brain and investigation rulesets and register 48 skills in skills-index
+- certify acs-session-auto-fork-and-compact suite 100% completed
+- reconcile track 9 phase-04 verification and e2e to completed
+- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
+- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 master plan phase 05 to completed
+- reconcile track 10 phase-05 markdown unwire to completed
+- reconcile track 10 phase-03 semantic contradiction to completed
+- mark track-10 phase-01 completed with empirical certification
+- reconcile track 10 phase-02 syntactic jaccard to completed
+- record cross-session reports and peer readiness on ceo board
+- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- establish central anke hq session and sibling sessions control board
+
+## [v1.25.0] - 2026-10-04
+
+### Added
+
+- route chat messages directly to session inbox and excise fake llm (chunk-3.2)
+- add justfile local-release targets and sync changelog (chunk-2.2)
+- align active roster table pm filter and project badge (chunk-3.4)
+- wire pty metadata bridge and persona spawn workspace binding (chunk-2.3)
+- add local release engine and changelog sync (chunk-2.1)
+- implement tmux lifecycle and claude cli command resolution (chunk-2.2)
+- update chat dock with 7 PM leads and terminal quick action (chunk-3.3)
+- implement sessionbus projects resolver endpoint (chunk-2.1)
+- add workspace project selector dropdown (chunk-3.1)
+- wire persona detail dossier modal into catalog grid (chunk-1.7)
+- add org structure tree tab and hierarchy view (chunk-1.6)
+- add enriched persona types and dossier detail modal (chunk-1.5)
+- add PM-only session filter to discovery engine (chunk-1.4)
+- filter project jsonl discovery to PM and CEO personas only (chunk-1.4)
+- extend persona view fields and add org-structure endpoint (chunk-1.3)
+- enrich persona roster and promote 7 PM leads (chunk-1.1 and 1.2)
+- implement multi-persona sessionbus chat responder with persona identities (chunk-3.1)
+- render multi-persona avatars and recipient badges in AnkeChatDock (chunk-2.2)
+- add multi-role sessionbus chat and optimistic deduplication to ankeChatStore (chunk-2.1)
+- implement dedicated sessionbus chat endpoints for multi-persona dispatch (chunk-1.2)
+- add idempotent DDL migrations for founder_conversations role and content (chunk-1.1)
+- implement persona slash commands generator and emit 23 persona commands (chunk-3.1)
+- wire PersonaCatalogGrid and PM chat selector in VirtualOffice (chunk-2.2)
+- implement PersonaCatalogGrid component with live spawn trigger (chunk-2.1)
+- implement persona registry and on-demand spawn endpoints (chunk-1.2)
+- provide dynamic live session awareness in Anke AI chat responder
+- discover real Claude Code sessions from project jsonl files
+- wire TerminalModal and fix lock release contract (wave-1)
+- wire autonomous AI responder and bump version to v1.22.0
+- implement full-duplex bi-directional Anke chat SSE hub and IPC queue (wave-3)
+- register periodic blueprint reconciler task and boot sync
+- make confidence parsing tolerant and add ReconcileBlueprints engine
+- implement live Claude Code session auto-discovery engine (chunk-2.1)
+- register real session action handlers and unlock endpoints in sessionbus (chunk-4.1)
+- eliminate flicker in VirtualOffice via fine-grained reconcile and silent refresh (chunk-1.1)
+- add in-process fallback to kanban blueprint sync hook (chunk-2.2)
+- support path-targeted blueprint sync in routes_agentic (chunk-2.1)
+- enforce strict macro orchestration and tool ban for Tier CEO in base_role.j2 (chunk-4.1)
+- make kanban reconciler tolerant to markdown variations and checklist stats (chunk-1.2)
+- make blueprint scanner markdown-tolerant and checklist-aware (chunk-1.1)
+- clamp knowledge tool responses and sanitize search hits
+- wire all 8 Go-native LSP handlers into mcp_serve stdio server
+- enforce payload and item ceilings across Go-native LSP handlers
+- mount sessionbus decision queue endpoints (chunk-4.4b)
+- mount stack-agnostic memory handoff endpoints (chunk-4.4a)
+- implement decision queue helpers for ceo escalation (chunk-4.3b)
+- implement compact offline fallback handlers for bridge tools
+- add cache efficiency telemetry and badge to ProviderBreakdown with testsnCo-Authored-By: Claude Code <noreply@anthropic.com>
+- add project column and migration to decision queue (chunk-4.3a)
+- enforce anti-blind execution and blueprint freshness gates in SSOT templates
+- wire autonomous dispatcher to task scheduler (chunk-4.2b)
+- add cache telemetry breakdown and tooltips to UsageTable with tests
+- formalize blueprint execution readiness protocol (direct dispatch vs mandatory re-audit)
+- implement save and load handoff helpers (chunk-4.1b)
+- migrate Usage.tsx to createTide and add 4 transparent cache tiles
+- clamp article reader content to 25KB and bound list limit
+- declare stagnant handoff types and constants (chunk-4.1a)
+- populate cache fields in 9router snapshot stats and test coverage
+- bound corpus items in agent research and normalize deep research
+- populate cache fields in ProviderUsage across all periods
+- populate cache fields in QueryUsageStatsForPeriod across all periods
+- implement desk interaction event hub and modal dispatcher
+- resolve dynamic founder and operator identity for commercial buyers
+- bound parameters and wrap errors in search and fetch handlers
+- implement headless reactive session store and desk state mapping
+- add aggregate cache telemetry fields to UsageStats and queryUsageStats
+- define 3d spatial types and 35-desk coordinate matrix
+- populate cache fields in QueryUsageFilters
+- register prune_memory handler in RegisterAllHandlers
+- populate cache fields in queryRecentRequests and queryRecentRequestsFiltered
+- add cache telemetry fields to RecentRequest and deriveCacheFields helper
+- implement interactive terminal modal dialog component
+- clamp code search snippets and memory graph payloads
+- bind resolver output to desk and session owner (chunk-3.1)
+- implement xterm terminal viewer component and vitest suite
+- harden kanban_card_by_ref with compact summary and clamped tabs
+- install xterm dependencies and define terminal types
+- unblock PM auto-delegation path in architect and planner (chunk-2.3)
+- lock verifier read-only (chunk-2.2)
+- mount Virtual Office navigation, /office route, and comprehensive test suite
+- align core tool catalog to 35 Go-native tools
+- enforce leaf-worker delegation mask (chunk-2.1)
+- mount pty websocket streaming bridge and sessionbus rest endpoints
+- add VirtualOffice studio main page component
+- integrate ClampPayload into daemon withLogging wrapper
+- add ResourceLocksPanel and AnkeChatDock for Virtual Office
+- inject exit strategy and handoff protocol block
+- wire ClampPayload into stdio tools/call response path
+- inject tier boundary enforcement block
+- implement session resolver and thread-safe pty manager pool
+- implement dual-layer event gatekeeper for zero-drift auto-reconciliation
+- implement central response clamp middleware and tool ceilings
+- add IAP monetization banner and active roster table for Virtual Office
+- implement cross-platform conpty engine and lifecycle tests
+- add Virtual Office type contracts and Anke SSE chat store
+- implement hook chain watchdog and daemon deadlock sweeper
+- mount session bus HTTP routes and wire into server router (chunk-4e)
+- implement session bus RPC handlers and wire into server (chunk-4d)
+- inject session bus inbox unread peek banner into prompt submission context (chunk-3b)
+- implement Anke Chat SSE realtime streaming and history routes (chunk-4f)
+- register acs-session-bus server in builtin registry (chunk-4c)
+- register 8 session bus tools into AllTools catalog and update assertions (chunk-4b)
+- define 8 session bus core tools with input schemas (chunk-4a)
+- implement types and SQLite WAL store with fan-out messaging and atomic locking (chunk-1b)
+- define 23 Indo-Dutch persona roster and seeder functions (chunk-2a)
+- implement sessionbus lifecycle hook with auto-registration and auto-fork handshake (chunk-3a)
+- implement 3-tier deterministic persona assignment with CEO Anke isolation (chunk-2b)
+- add SessionBusDBPath facade with env override and unit tests (chunk-1a)
+- compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
+- enforce 25-persona threshold and correct SSOT terminology in sync script
+- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
+- migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
+- bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
+- migrate acs-code-intel and acs-docs-agent to jinja2 templates and update parity test
+- expand core stdio tools from 27 to 35 with 8 acs-lsp tools
+- inject second brain and cli harness into base_role and executor templates
+- exclude builtin stdio harness and tri-engine browser from project mcp generation
+- isolate 9router from stop-all and generic stack stop
+- cleanup duplicate mcp selection cards and enforce locked master harness
+- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
+- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
+- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
+- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
+- implement unified ingestion pipeline and atomic batch ingester (phase-04)
+- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
+- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
+- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
+- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
+- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- standardize official claude plugin ssot to acs@uikode
+- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
+- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- standardize acs:core plugin registration to acs@acs with automated marketplace schema
+
+### Fixed
+
+- scope 9router teardown to targeted PIDs and eliminate broad pattern kill (chunk-1.3)
+- extend headroom cold-boot timeout to 45s and add log sink (chunk-1.1)
+- auto-claim kanban task when CEO delegates via chat
+- add Repair-BrokenBunClaude auto-heal to install.ps1 (chunk-2.1)
+- purge broken bun stubs and verify claude execution post-update (chunk-1.3)
+- probe claude execution and enforce npm fix on windows (chunk-1.2)
+- enforce npm for claude on windows and auto-purge broken bun stubs (chunk-1.1)
+- use dot access in AnkeChatDock test to satisfy biome useLiteralKeys
+- use executil.CommandContext and cache git commit to eliminate conhost window flash
+- guard tmux attach with non-windows OS check in session resolver (chunk-1.1)
+- close blueprint reconciler rows with defer to avoid leak
+- ensure founder_conversations schema compatibility with sessionbus store
+- make fallback blueprint sync project scope dynamic (chunk-4)
+- remove unmount loading wrapper in ActiveRosterTable and ResourceLocksPanel (chunk-1.2)
+- align leaf personas governance tier to worker (chunk-3)
+- use executil.Command for unix pty spawn (chunk-2)
+- normalize absolute path in blueprint sync endpoint (chunk-1)
+- map review and verify status to testing column in Board (chunk-3.4)
+- enforce single-owner attach isolation (chunk-3.2)
+- compact kanban_list payload to prevent 1MB token overflow
+- synchronize fable tier across router profiles and sync applied presets back to profile
+- synchronize ANTHROPIC_MODEL env var on dashboard model patch
+- calibrate gate 2 timeout to 420s for full suite pass under windows io
+
+### Changed
+
+- bump version to v1.23.0 for persona catalog and pty spawn
+- sync compiled persona files from base_role.j2 template update
+- remove obsolete .mcp.json radio option from ProjectMcpWorkspace
+- unwire legacy global-setup route and sidebar navigation
+
+### Documentation
+
+- certify system-resilience phase-02 local-release 100% completed
+- certify installer-claude-windows-16bit-autoheal suite 100% completed
+- certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
+- draft sessionbus-direct-chat-and-pm-dispatch blueprint
+- certify persona-catalog-shortcuts-and-pty-spawn suite 100% completed
+- draft persona-catalog-shortcuts-and-pty-spawn blueprint
+- certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
+- author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
+- certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
+- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
+- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
+- reconcile phase-04 snapshot handoff engine to completed
+- reconcile admin-session-and-license-device-lock suite to completed
+- certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
+- reconcile phase-03 frontend usage page to completed
+- reconcile phase-01 and phase-02 usage transparency backend to completed
+- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
+- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
+- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile phase-03 conpty isolation and desk binding to completed
+- author phase-02b dynamic operator identity resolution chain blueprint
+- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
+- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile phase-02 fleet disallowed-tools and routing to completed
+- mark Phase 02 dashboard studio page as completed
+- reconcile phase-01 base role and boundary enforcement to completed
+- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- mark obsolete persona blueprints as superseded by jinja2 3-tier governance
+- reconcile completed statuses for session bus, agent harness, and memory dedupe suites
+- align visual studio to /office route with IAP beta preview badge and modular licensing
+- remediate session bus visual and pty PRD with REST contracts and P9 chunks
+- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
+- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- modularize acs-session-bus blueprint into 5 granular phases
+- document v1.20.0 release notes
+- enrich second brain and investigation rulesets and register 48 skills in skills-index
+- certify acs-session-auto-fork-and-compact suite 100% completed
+- reconcile track 9 phase-04 verification and e2e to completed
+- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
+- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 master plan phase 05 to completed
+- reconcile track 10 phase-05 markdown unwire to completed
+- reconcile track 10 phase-03 semantic contradiction to completed
+- mark track-10 phase-01 completed with empirical certification
+- reconcile track 10 phase-02 syntactic jaccard to completed
+- record cross-session reports and peer readiness on ceo board
+- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- establish central anke hq session and sibling sessions control board
+
+## [v1.24.0] - 2026-10-04
+
+### Added
+
+- add local release engine and changelog sync (chunk-2.1)
+- implement tmux lifecycle and claude cli command resolution (chunk-2.2)
+- update chat dock with 7 PM leads and terminal quick action (chunk-3.3)
+- implement sessionbus projects resolver endpoint (chunk-2.1)
+- add workspace project selector dropdown (chunk-3.1)
+- wire persona detail dossier modal into catalog grid (chunk-1.7)
+- add org structure tree tab and hierarchy view (chunk-1.6)
+- add enriched persona types and dossier detail modal (chunk-1.5)
+- add PM-only session filter to discovery engine (chunk-1.4)
+- filter project jsonl discovery to PM and CEO personas only (chunk-1.4)
+- extend persona view fields and add org-structure endpoint (chunk-1.3)
+- enrich persona roster and promote 7 PM leads (chunk-1.1 and 1.2)
+- implement multi-persona sessionbus chat responder with persona identities (chunk-3.1)
+- render multi-persona avatars and recipient badges in AnkeChatDock (chunk-2.2)
+- add multi-role sessionbus chat and optimistic deduplication to ankeChatStore (chunk-2.1)
+- implement dedicated sessionbus chat endpoints for multi-persona dispatch (chunk-1.2)
+- add idempotent DDL migrations for founder_conversations role and content (chunk-1.1)
+- implement persona slash commands generator and emit 23 persona commands (chunk-3.1)
+- wire PersonaCatalogGrid and PM chat selector in VirtualOffice (chunk-2.2)
+- implement PersonaCatalogGrid component with live spawn trigger (chunk-2.1)
+- implement persona registry and on-demand spawn endpoints (chunk-1.2)
+- provide dynamic live session awareness in Anke AI chat responder
+- discover real Claude Code sessions from project jsonl files
+- wire TerminalModal and fix lock release contract (wave-1)
+- wire autonomous AI responder and bump version to v1.22.0
+- implement full-duplex bi-directional Anke chat SSE hub and IPC queue (wave-3)
+- register periodic blueprint reconciler task and boot sync
+- make confidence parsing tolerant and add ReconcileBlueprints engine
+- implement live Claude Code session auto-discovery engine (chunk-2.1)
+- register real session action handlers and unlock endpoints in sessionbus (chunk-4.1)
+- eliminate flicker in VirtualOffice via fine-grained reconcile and silent refresh (chunk-1.1)
+- add in-process fallback to kanban blueprint sync hook (chunk-2.2)
+- support path-targeted blueprint sync in routes_agentic (chunk-2.1)
+- enforce strict macro orchestration and tool ban for Tier CEO in base_role.j2 (chunk-4.1)
+- make kanban reconciler tolerant to markdown variations and checklist stats (chunk-1.2)
+- make blueprint scanner markdown-tolerant and checklist-aware (chunk-1.1)
+- clamp knowledge tool responses and sanitize search hits
+- wire all 8 Go-native LSP handlers into mcp_serve stdio server
+- enforce payload and item ceilings across Go-native LSP handlers
+- mount sessionbus decision queue endpoints (chunk-4.4b)
+- mount stack-agnostic memory handoff endpoints (chunk-4.4a)
+- implement decision queue helpers for ceo escalation (chunk-4.3b)
+- implement compact offline fallback handlers for bridge tools
+- add cache efficiency telemetry and badge to ProviderBreakdown with testsnCo-Authored-By: Claude Code <noreply@anthropic.com>
+- add project column and migration to decision queue (chunk-4.3a)
+- enforce anti-blind execution and blueprint freshness gates in SSOT templates
+- wire autonomous dispatcher to task scheduler (chunk-4.2b)
+- add cache telemetry breakdown and tooltips to UsageTable with tests
+- formalize blueprint execution readiness protocol (direct dispatch vs mandatory re-audit)
+- implement save and load handoff helpers (chunk-4.1b)
+- migrate Usage.tsx to createTide and add 4 transparent cache tiles
+- clamp article reader content to 25KB and bound list limit
+- declare stagnant handoff types and constants (chunk-4.1a)
+- populate cache fields in 9router snapshot stats and test coverage
+- bound corpus items in agent research and normalize deep research
+- populate cache fields in ProviderUsage across all periods
+- populate cache fields in QueryUsageStatsForPeriod across all periods
+- implement desk interaction event hub and modal dispatcher
+- resolve dynamic founder and operator identity for commercial buyers
+- bound parameters and wrap errors in search and fetch handlers
+- implement headless reactive session store and desk state mapping
+- add aggregate cache telemetry fields to UsageStats and queryUsageStats
+- define 3d spatial types and 35-desk coordinate matrix
+- populate cache fields in QueryUsageFilters
+- register prune_memory handler in RegisterAllHandlers
+- populate cache fields in queryRecentRequests and queryRecentRequestsFiltered
+- add cache telemetry fields to RecentRequest and deriveCacheFields helper
+- implement interactive terminal modal dialog component
+- clamp code search snippets and memory graph payloads
+- bind resolver output to desk and session owner (chunk-3.1)
+- implement xterm terminal viewer component and vitest suite
+- harden kanban_card_by_ref with compact summary and clamped tabs
+- install xterm dependencies and define terminal types
+- unblock PM auto-delegation path in architect and planner (chunk-2.3)
+- lock verifier read-only (chunk-2.2)
+- mount Virtual Office navigation, /office route, and comprehensive test suite
+- align core tool catalog to 35 Go-native tools
+- enforce leaf-worker delegation mask (chunk-2.1)
+- mount pty websocket streaming bridge and sessionbus rest endpoints
+- add VirtualOffice studio main page component
+- integrate ClampPayload into daemon withLogging wrapper
+- add ResourceLocksPanel and AnkeChatDock for Virtual Office
+- inject exit strategy and handoff protocol block
+- wire ClampPayload into stdio tools/call response path
+- inject tier boundary enforcement block
+- implement session resolver and thread-safe pty manager pool
+- implement dual-layer event gatekeeper for zero-drift auto-reconciliation
+- implement central response clamp middleware and tool ceilings
+- add IAP monetization banner and active roster table for Virtual Office
+- implement cross-platform conpty engine and lifecycle tests
+- add Virtual Office type contracts and Anke SSE chat store
+- implement hook chain watchdog and daemon deadlock sweeper
+- mount session bus HTTP routes and wire into server router (chunk-4e)
+- implement session bus RPC handlers and wire into server (chunk-4d)
+- inject session bus inbox unread peek banner into prompt submission context (chunk-3b)
+- implement Anke Chat SSE realtime streaming and history routes (chunk-4f)
+- register acs-session-bus server in builtin registry (chunk-4c)
+- register 8 session bus tools into AllTools catalog and update assertions (chunk-4b)
+- define 8 session bus core tools with input schemas (chunk-4a)
+- implement types and SQLite WAL store with fan-out messaging and atomic locking (chunk-1b)
+- define 23 Indo-Dutch persona roster and seeder functions (chunk-2a)
+- implement sessionbus lifecycle hook with auto-registration and auto-fork handshake (chunk-3a)
+- implement 3-tier deterministic persona assignment with CEO Anke isolation (chunk-2b)
+- add SessionBusDBPath facade with env override and unit tests (chunk-1a)
+- compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
+- enforce 25-persona threshold and correct SSOT terminology in sync script
+- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
+- migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
+- bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
+- migrate acs-code-intel and acs-docs-agent to jinja2 templates and update parity test
+- expand core stdio tools from 27 to 35 with 8 acs-lsp tools
+- inject second brain and cli harness into base_role and executor templates
+- exclude builtin stdio harness and tri-engine browser from project mcp generation
+- isolate 9router from stop-all and generic stack stop
+- cleanup duplicate mcp selection cards and enforce locked master harness
+- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
+- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
+- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
+- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
+- implement unified ingestion pipeline and atomic batch ingester (phase-04)
+- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
+- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
+- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
+- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
+- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- standardize official claude plugin ssot to acs@uikode
+- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
+- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- standardize acs:core plugin registration to acs@acs with automated marketplace schema
+
+### Fixed
+
+- extend headroom cold-boot timeout to 45s and add log sink (chunk-1.1)
+- auto-claim kanban task when CEO delegates via chat
+- add Repair-BrokenBunClaude auto-heal to install.ps1 (chunk-2.1)
+- purge broken bun stubs and verify claude execution post-update (chunk-1.3)
+- probe claude execution and enforce npm fix on windows (chunk-1.2)
+- enforce npm for claude on windows and auto-purge broken bun stubs (chunk-1.1)
+- use dot access in AnkeChatDock test to satisfy biome useLiteralKeys
+- use executil.CommandContext and cache git commit to eliminate conhost window flash
+- guard tmux attach with non-windows OS check in session resolver (chunk-1.1)
+- close blueprint reconciler rows with defer to avoid leak
+- ensure founder_conversations schema compatibility with sessionbus store
+- make fallback blueprint sync project scope dynamic (chunk-4)
+- remove unmount loading wrapper in ActiveRosterTable and ResourceLocksPanel (chunk-1.2)
+- align leaf personas governance tier to worker (chunk-3)
+- use executil.Command for unix pty spawn (chunk-2)
+- normalize absolute path in blueprint sync endpoint (chunk-1)
+- map review and verify status to testing column in Board (chunk-3.4)
+- enforce single-owner attach isolation (chunk-3.2)
+- compact kanban_list payload to prevent 1MB token overflow
+- synchronize fable tier across router profiles and sync applied presets back to profile
+- synchronize ANTHROPIC_MODEL env var on dashboard model patch
+- calibrate gate 2 timeout to 420s for full suite pass under windows io
+
+### Changed
+
+- bump version to v1.23.0 for persona catalog and pty spawn
+- sync compiled persona files from base_role.j2 template update
+- remove obsolete .mcp.json radio option from ProjectMcpWorkspace
+- unwire legacy global-setup route and sidebar navigation
+
+### Documentation
+
+- certify installer-claude-windows-16bit-autoheal suite 100% completed
+- certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
+- draft sessionbus-direct-chat-and-pm-dispatch blueprint
+- certify persona-catalog-shortcuts-and-pty-spawn suite 100% completed
+- draft persona-catalog-shortcuts-and-pty-spawn blueprint
+- certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
+- author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
+- certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
+- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
+- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
+- reconcile phase-04 snapshot handoff engine to completed
+- reconcile admin-session-and-license-device-lock suite to completed
+- certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
+- reconcile phase-03 frontend usage page to completed
+- reconcile phase-01 and phase-02 usage transparency backend to completed
+- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
+- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
+- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile phase-03 conpty isolation and desk binding to completed
+- author phase-02b dynamic operator identity resolution chain blueprint
+- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
+- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile phase-02 fleet disallowed-tools and routing to completed
+- mark Phase 02 dashboard studio page as completed
+- reconcile phase-01 base role and boundary enforcement to completed
+- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- mark obsolete persona blueprints as superseded by jinja2 3-tier governance
+- reconcile completed statuses for session bus, agent harness, and memory dedupe suites
+- align visual studio to /office route with IAP beta preview badge and modular licensing
+- remediate session bus visual and pty PRD with REST contracts and P9 chunks
+- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
+- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- modularize acs-session-bus blueprint into 5 granular phases
+- document v1.20.0 release notes
+- enrich second brain and investigation rulesets and register 48 skills in skills-index
+- certify acs-session-auto-fork-and-compact suite 100% completed
+- reconcile track 9 phase-04 verification and e2e to completed
+- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
+- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 master plan phase 05 to completed
+- reconcile track 10 phase-05 markdown unwire to completed
+- reconcile track 10 phase-03 semantic contradiction to completed
+- mark track-10 phase-01 completed with empirical certification
+- reconcile track 10 phase-02 syntactic jaccard to completed
+- record cross-session reports and peer readiness on ceo board
+- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- establish central anke hq session and sibling sessions control board
+
+## [v1.21.0] - 2026-10-02
+
+### Added
+- ACS Session Bus Engine (`src/internal/sessionbus/`): Autonomous multi-agent coordination, messaging, and concurrency control backed by SQLite WAL `~/.acs/sessions/bus.db`.
+- SQLite Fan-Out Messaging: Broadcast mechanism delivering isolated message copies to active session inboxes without cross-session interference.
+- Advisory Resource Locking: Zero-collision atomic lock acquisition with automatic expired-lock reclaim (`DELETE FROM locks WHERE resource = ? AND expires_at <= ?`).
+- 23 Indo-Dutch Persona Roster: Deterministic 3-tier assignment engine (`AssignPersona`) with absolute CEO Anke isolation at index 0 and automatic tmux session naming (`acs-{callname}-{shortid}`).
+- Lifecycle Hook & Prompt Context Banner: Auto-registration of sessions on `SessionStart` and sub-1.5ms unread inbox peek banner injection on `UserPromptSubmit`.
+- 8 Core Session Bus MCP Tools (`bus_*`): `bus_sessions`, `bus_send`, `bus_broadcast`, `bus_inbox`, `bus_lock`, `bus_unlock`, `bus_whoami`, `bus_heartbeat` registered in `AllTools()` and builtin registry.
+- Anke Chat Realtime SSE Routes (`routes_anke.go`): Direct Founder ➔ CEO Anke streaming communication via Server-Sent Events (`POST /api/anke/founder-message`, `GET /api/anke/stream`, `GET /api/anke/history`).
+- Multi-Session Swarm E2E Test Suite & Benchmarks: Latency verified under SLA thresholds (registration <0.25ms, inbox peek <0.085ms, broadcast <0.59ms, persona lookup <150ns).
+
+### Changed
+- Mounted `/mcp/session-bus` HTTP transport in server router and calibrated MCP catalog assertions to 31 tools.
+
+## [v1.20.0] - 2026-10-02
+
+### Added
+- Unified Jinja2 Role Templating Engine: Migrated all 25 agent personas to first-class Jinja2 child templates inheriting from base_role.j2.
+- Sovereign Second Brain & CLI Harness Blocks: Permanent `<Sovereign_Second_Brain>` and `<ACS_CLI_Harness>` injected into all compiled personas.
+- Expanded Core Stdio Tools from 27 to 35: Native integration of 8 acs-lsp AST intelligence tools under 11KB schema budget.
+- English SSOT Provenance Metadata Header on all compiled artifacts.
+- Official Addendum: Hook Chain Watchdog (30s ceiling, 5s pipe deadline, daemon deadlock sweeper).
+
+### Refactored
+- Bound RoleContext.MemoryDBPath to cliconfig.MemoryDBPath().
+- Unwired legacy global-setup frontend routes, sidebar navigation, and backend mutation handlers.
+- Enforced 25-persona threshold assertions in sync-agent-rules.mjs.
+
 ## [v1.18.0] - 2026-10-02
 
 ### Added
