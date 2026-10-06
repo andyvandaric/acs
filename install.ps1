@@ -345,6 +345,20 @@ if (Test-Path $legacyExe) {
 Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
 Ok "Installed: $targetExe"
 
+# --- Persona commands bootstrap ----------------------------------------------
+# Idempotent: `acs persona deploy` writes ~/.claude/commands/*.md.
+# Non-fatal: older pinned binaries may lack the subcommand — installer continues.
+try {
+    & $targetExe persona deploy 2>&1 | Out-Null
+    if ($LASTEXITCODE -eq 0) {
+        Ok "Persona commands deployed"
+    } else {
+        Info "Persona deploy skipped (binary predates persona support)"
+    }
+} catch {
+    Info "Persona deploy skipped: $_"
+}
+
 # --- PATH setup --------------------------------------------------------------
 $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($currentPath -notlike "*$INSTALL_DIR*") {

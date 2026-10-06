@@ -314,6 +314,15 @@ chmod +x "${INSTALL_DIR}/acs"
 rm -f "${INSTALL_DIR}/acs-cli" 2>/dev/null || true
 ok "Installed: ${INSTALL_DIR}/acs"
 
+# ─── Persona commands bootstrap ──────────────────────────────────────────
+# Idempotent: `acs persona deploy` writes ~/.claude/commands/*.md.
+# Non-fatal: older pinned binaries may lack the subcommand — installer continues.
+if "${INSTALL_DIR}/acs" persona deploy 2>/dev/null; then
+  ok "Persona commands deployed"
+else
+  info "Persona deploy skipped (binary predates persona support)"
+fi
+
 # ─── PATH setup ──────────────────────────────────────────────────────────────
 if [[ ":$PATH:" != *":${INSTALL_DIR}:"* ]]; then
   info "Adding $INSTALL_DIR to PATH..."
