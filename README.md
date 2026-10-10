@@ -35,13 +35,15 @@ Install the unified `acs` binary directly via Sovereign CDN:
 
 **Windows** (PowerShell Administrator):
 ```powershell
-irm https://dl.uikode.com/install.ps1 | iex
+irm https://dl.uikode.com/acs/install.ps1 | iex
 ```
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://dl.uikode.com/install.sh | bash
+curl -fsSL https://dl.uikode.com/acs/install.sh | bash
 ```
+
+*(Legacy root fallback `https://dl.uikode.com/install.ps1` and `https://dl.uikode.com/install.sh` remain fully operational for backward compatibility).*
 
 ---
 

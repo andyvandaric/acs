@@ -1,5 +1,6 @@
 # install.ps1 - Install ACS for Windows
-# Usage: irm https://dl.uikode.com/install.ps1 | iex
+# Usage: irm https://dl.uikode.com/acs/install.ps1 | iex
+# Legacy: irm https://dl.uikode.com/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
 
 [CmdletBinding()]
@@ -52,8 +53,12 @@ if ($ListVersions) {
     Write-Host ""
     $vData = $null
     try {
-        $vData = Invoke-RestMethod -Uri "https://dl.uikode.com/versions.json" -UseBasicParsing -TimeoutSec 10
-    } catch {}
+        $vData = Invoke-RestMethod -Uri "https://dl.uikode.com/acs/versions.json" -UseBasicParsing -TimeoutSec 10
+    } catch {
+        try {
+            $vData = Invoke-RestMethod -Uri "https://dl.uikode.com/versions.json" -UseBasicParsing -TimeoutSec 10
+        } catch {}
+    }
 
     if ($vData -and $vData.versions) {
         Write-Host "  Latest Version: $($vData.latest)" -ForegroundColor Green
@@ -106,9 +111,13 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         try {
             [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
             try {
-                Invoke-WebRequest -Uri "https://dl.uikode.com/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                Invoke-WebRequest -Uri "https://dl.uikode.com/acs/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
             } catch {
-                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                try {
+                    Invoke-WebRequest -Uri "https://dl.uikode.com/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                } catch {
+                    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                }
             }
             $childArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tempScript)
             if ($Version) { $childArgs += @("-Version", $Version) }
@@ -149,10 +158,10 @@ $ErrorActionPreference = "Stop"
 
 if ($TargetVersion) {
     $tag = if ($TargetVersion.StartsWith("v")) { $TargetVersion } else { "v$TargetVersion" }
-    $PRIMARY_CDN_BASE = "https://dl.uikode.com/$tag"
+    $PRIMARY_CDN_BASE = "https://dl.uikode.com/acs/$tag"
     $FALLBACK_CDN_BASE = "https://github.com/andyvandaric/acs/releases/download/$tag"
 } else {
-    $PRIMARY_CDN_BASE = "https://dl.uikode.com"
+    $PRIMARY_CDN_BASE = "https://dl.uikode.com/acs"
     $FALLBACK_CDN_BASE = "https://github.com/andyvandaric/acs/releases/latest/download"
 }
 $INSTALL_DIR = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\bin"
@@ -360,15 +369,45 @@ try {
 }
 
 # --- PATH setup --------------------------------------------------------------
+$userProfile = [Environment]::GetFolderPath("UserProfile")
+$acsBin = $INSTALL_DIR
+$envBin = Join-Path $userProfile ".acs\env\bin"
+if (-not (Test-Path $envBin)) {
+    New-Item -ItemType Directory -Path $envBin -Force | Out-Null
+}
+
 $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($currentPath -notlike "*$INSTALL_DIR*") {
-    Info "Adding $INSTALL_DIR to user PATH..."
-    [Environment]::SetEnvironmentVariable("Path", "$INSTALL_DIR;$currentPath", "User")
-    Ok "Added to user PATH"
+$pathParts = @()
+if ($currentPath) {
+    $pathParts = $currentPath -split ';' | Where-Object { $_ -and -not (Test-Path $_ -PathType Leaf) }
 }
-if ($env:Path -notlike "*$INSTALL_DIR*") {
-    $env:Path = "$INSTALL_DIR;$env:Path"
+
+$targetDirs = @($acsBin, $envBin)
+$newParts = @()
+foreach ($dir in $targetDirs) {
+    if ($newParts -notcontains $dir) {
+        $newParts += $dir
+    }
 }
+foreach ($part in $pathParts) {
+    if ($newParts -notcontains $part) {
+        $newParts += $part
+    }
+}
+
+$updatedPath = $newParts -join ';'
+if ($currentPath -ne $updatedPath) {
+    Info "Persisting ACS binaries and isolated toolchain to user PATH..."
+    [Environment]::SetEnvironmentVariable("Path", $updatedPath, "User")
+    Ok "Added $acsBin and $envBin to user PATH"
+}
+
+foreach ($dir in $targetDirs) {
+    if ($env:Path -notlike "*$dir*") {
+        $env:Path = "$dir;$env:Path"
+    }
+}
+
 # Broadcast WM_SETTINGCHANGE so other open shells pick it up
 try {
     Add-Type -Namespace Win32 -Name NativeMethods -MemberDefinition '[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)] public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, UIntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out UIntPtr lpdwResult);'

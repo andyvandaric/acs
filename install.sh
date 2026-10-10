@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 # install.sh — Install ACS for Linux/macOS
-# Usage: curl -fsSL https://dl.uikode.com/install.sh | bash
+# Usage: curl -fsSL https://dl.uikode.com/acs/install.sh | bash
+# Legacy: curl -fsSL https://dl.uikode.com/install.sh | bash
 set -eu
 set -o pipefail 2>/dev/null || true
 
-PRIMARY_CDN_BASE="https://dl.uikode.com"
+PRIMARY_CDN_BASE="https://dl.uikode.com/acs"
 FALLBACK_CDN_BASE="https://github.com/andyvandaric/acs/releases/latest/download"
 INSTALL_DIR="${HOME}/.acs/bin"
 
@@ -86,7 +87,7 @@ if [[ "$LIST_VERSIONS" == "true" ]]; then
   echo "⚡ ACS — Available Releases"
   echo "────────────────────────────────────"
   echo ""
-  VERSIONS_JSON="$(curl -fsSL --connect-timeout 10 --max-time 15 "https://dl.uikode.com/versions.json" 2>/dev/null || true)"
+  VERSIONS_JSON="$(curl -fsSL --connect-timeout 10 --max-time 15 "https://dl.uikode.com/acs/versions.json" 2>/dev/null || curl -fsSL --connect-timeout 10 --max-time 15 "https://dl.uikode.com/versions.json" 2>/dev/null || true)"
   PY_BIN=""
   if command -v python3 >/dev/null 2>&1; then
     PY_BIN="python3"
@@ -132,7 +133,7 @@ if [[ -n "$VERSION_ARG" ]]; then
     v*) TAG="$VERSION_ARG" ;;
     *)  TAG="v$VERSION_ARG" ;;
   esac
-  PRIMARY_CDN_BASE="https://dl.uikode.com/${TAG}"
+  PRIMARY_CDN_BASE="https://dl.uikode.com/acs/${TAG}"
   FALLBACK_CDN_BASE="https://github.com/andyvandaric/acs/releases/download/${TAG}"
 fi
 

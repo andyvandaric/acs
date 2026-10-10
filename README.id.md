@@ -35,13 +35,15 @@ Pasang biner terpadu `acs` langsung melalui Sovereign CDN:
 
 **Windows** (PowerShell Administrator):
 ```powershell
-irm https://dl.uikode.com/install.ps1 | iex
+irm https://dl.uikode.com/acs/install.ps1 | iex
 ```
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://dl.uikode.com/install.sh | bash
+curl -fsSL https://dl.uikode.com/acs/install.sh | bash
 ```
+
+*(Jalur unduh lama `https://dl.uikode.com/install.ps1` dan `https://dl.uikode.com/install.sh` tetap aktif sepenuhnya untuk kompatibilitas mundur).*
 
 ---
 
