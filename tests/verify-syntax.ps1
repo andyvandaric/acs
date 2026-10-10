@@ -66,7 +66,7 @@ Assert-Test "Process cleanup targets both acs and legacy acs-cli" {
 
 # 3. Dual-Track Download Resilience checks
 Assert-Test "Primary CDN base is configured to dl.uikode.com" {
-    $content -match '\$PRIMARY_CDN_BASE\s*=\s*"https://dl\.uikode\.com"'
+    $content -match '\$PRIMARY_CDN_BASE\s*=\s*"https://dl\.uikode\.com/acs"'
 }
 
 Assert-Test "Fallback CDN base is configured to GitHub Releases" {
@@ -107,7 +107,7 @@ Assert-Test "Post-install activation instruction uses acs activate" {
 # 6. Version pinning & listing capabilities
 Assert-Test "Supports -Version parameter and $env:ACS_VERSION" {
     $content -match 'param\s*\(' -and $content -match '\$Version\s*=\s*\$env:ACS_VERSION' -and
-    $content -match '\$PRIMARY_CDN_BASE\s*=\s*"https://dl\.uikode\.com/\$tag"'
+    $content -match '\$PRIMARY_CDN_BASE\s*=\s*"https://dl\.uikode\.com/acs/\$tag"'
 }
 
 Assert-Test "Supports -ListVersions parameter and $env:ACS_LIST" {

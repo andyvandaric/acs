@@ -51,7 +51,7 @@ assert_test "Process termination targets acs and acs-cli" test_process_cleanup
 
 # 3. Dual-Track Download Resilience checks
 test_primary_cdn() {
-  grep -q 'PRIMARY_CDN_BASE="https://dl.uikode.com"' "${INSTALL_SH}"
+  grep -q 'PRIMARY_CDN_BASE="https://dl.uikode.com/acs"' "${INSTALL_SH}"
 }
 assert_test "Primary CDN base is configured to dl.uikode.com" test_primary_cdn
 
@@ -150,7 +150,7 @@ assert_test "Next step activation instructions use acs activate" test_next_step
 test_version_pinning() {
   grep -q 'ACS_VERSION' "${INSTALL_SH}" && \
   grep -q -- '-v|--version' "${INSTALL_SH}" && \
-  grep -q 'PRIMARY_CDN_BASE="https://dl.uikode.com/\${TAG}"' "${INSTALL_SH}"
+  grep -q 'PRIMARY_CDN_BASE="https://dl.uikode.com/acs/\${TAG}"' "${INSTALL_SH}"
 }
 assert_test "Supports --version parameter and ACS_VERSION env var" test_version_pinning
 
