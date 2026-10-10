@@ -1,5 +1,172 @@
 # Changelog
 
+## [v1.32.0] - 2026-10-11
+
+### Highlights
+v1.32.0 delivers canonical session identity and storage with ResolveSessionID and migration 40 acs_tasks, plus zero-lag kanban provenance with auto-sync, presence broadcast, and 45-tool MCP parity. It adds Turnstile-shielded feedback hub, secured Telegram chat gateway, hook IPC fastpath, and fast-track multi-product CDN deploys with per-product isolation.
+
+### ⚠️ Breaking Changes
+- Removed `dev-commit` recipe and deprecated recipes; `install` now enforces tests.
+- Relocated deploy recipes to release pipeline with parameterized paths; `deploy_cdn` is now multi-product with per-product isolation.
+- Bash/PowerShell installers now require `PRODUCT` param with per-prefix `acs`/`vpsease` mirrors and canonical CDN URLs.
+- Tool inputs now require `blueprint_path` contract with unique blueprint per project.
+- Telegram webhooks now enforce secret-token gate.
+
+### Added
+- Session identity: canonical `ResolveSessionID` helper, env-before-PID resolution, `kanbanTableName` const, migration 40 canonical `acs_tasks` with compat view.
+- Session lifecycle: 120s `sessionbus_sweeper` task, deregister + lock release on session end, cross-project `ReapExpiredCEOs`, centralized TTL constants, presence live-window helpers.
+- Kanban provenance/sync: provenance audit columns + composite index + hash, presence binding + WS broadcast, `AutoClaimApprovedTask` + auto-claim on approved gate, phase-tagged commit attach with checklist auto-tick, sync emit to broadcast, single-write reconciler, lifecycle hooks + autosync E2E harness, dynamic phase badge/filter, FTS reader search.
+- Legit auto-promoter: pure `EvaluateLegitPromotion` evaluator, sweep tick, `BuildTasks` registration, observability counters.
+- Chat gateway: inbound types + command parser, service with security gating + nonce pairing, webhook/nonce/topic endpoints, dispatcher + handlers, Telegram wizard + forum mapper, markdown formatter + rate limiter, dual dispatcher + virtual-office bridge.
+- Feedback/Turnstile: bot shield + migrations 36-39 + anti-spam gate, remote forwarder with retry, flusher task with anti-cycle guard + registration, manual sync endpoint with async flush, frontend widget + live badges + sync-now, E2E suite, feedback hub with WebP + rate limiting, local queue + submission route.
+- Hook IPC fastpath: `POST /api/hooks/exec`, `ExecHook` with fail-open probe, daemon IPC fastpath switch.
+- CPU governor/resilience: concurrency clamp by cores + staggered jitter, relaxed pollers on low-core, core-aware deadlock sweeper, dispatcher throttle with WAL mtime fastpath, dashboard grace + circuit breaker + `DashboardCreationTime`.
+- Browser E2E: headless runner + multi-route assertions, Gate 6b runner + release registration + build verification flag, cross-OS recipes, Podman Linux runner + in-container Playwright sweep.
+- Release/CDN: fast-track release pipeline, enhanced multi-product `deploy_cdn`, per-prefix mirror + `cdn-rollback`, `vpsease` binary naming/targeting, `prune-code` CLI with project-matching guard, resilient PATH persistence + dual/triple-track autostart + watchdog recovery.
+- Blueprint approval: `blueprint_path` contract, read-only check + CLI writer, frontmatter SSOT contract/parser, expanded regex + canonical normalizer + resilient gate lookup + claimable duplicate gate.
+- Manager/Virtual Office: manager role guard + zero direct coding + Jinja2 SSOT roles + tool masking, quota report card, 3D second-brain hologram + Tide WS graph, lazy gateways route, license identity modal + experimental banner, spatial integration + centered inspector, 7-tier CWD cascade, detached conpty supervisor + 64KB replay ring + chat history rehydration, synaptic hook engine, zero-second reflex matrix, shell invariants, blacklist filter + vacuum.
+
+### Changed
+- Relocate deploy recipes to release pipeline and parameterize paths; purge `dev-commit`, enforce test on install, clean deprecated recipes.
+- Delegate/resolve session ID to canonical resolver; add `kanbanTableName` const.
+- Align legacy tool counts 37 to 45; lock 45-tool stdio MCP parity and bus handler contract.
+- Replace polling with Tide SWR delta WebSocket cache updates; add provenance liveness badge and phase strip.
+- Bump to v1.32.0 with enhanced multi-product `deploy_cdn`; bump internal runtime version/constants; export `ResolvePath` as single DB path authority.
+- Sync project memory state before release; calibrate browser E2E routes to mounted feedback hub.
+
+### Fixed
+- Export `__TIDE_WS_CONNECTED__`, allow fallback probe without Tide WS; scope presence writes to presence columns only.
+- Make `EnsureTaskTable` view-aware with INSTEAD OF triggers + warm benchmark; fix migration index ordering + TTL purge calibration.
+- Route `lifecycle-done` through validator-routed sync; guard raw-SQL done-bypass; retain APPROVED across resync; gate executor dispatch on Kanban approval.
+- Parse confidence from markdown pipe tables; envelope-aware decode in kanban-create-gate; prompt-token fallback for blueprint path; bound graph clamp payload.
+- Enforce `executil` in `tasks_approve` (45 tools); use direct FTS delete (28 hooks); `Stop` via exit 2 + stop-chain passthrough; return typed `ErrSkipped`, count only indexed files.
+- Harden session/presence: auto-purge stale sessions, default roster filter, purge on terminate, bus ceilings, clock-skew buffer + flush retry, atomic cache write retry on Windows.
+- PTY/session: pass project in spawn body for dynamic CWD, sanitize working dir + Windows UTF-16 pointer, 7-tier cascade + antigravity roots, wire fallback/eager init for stdio MCP serve.
+- Persona/routing: cross-project fallback + alias drainage, dynamic standing authority + strict single-CEO, enrich role fallback + provenance panel, wire task count to sessionbus + kanban routes.
+- Indexing: absolutize code paths at index time, evictor skips non-absolute, dead nil-guard removal + `defer rows.Close`, dedup pre-migration + scoped blueprint lookup, normalize legacy mirror schema.
+- Build/CI: extend prod garble timeout to 300s, golangci-lint to 5m, vendor `x-sync` + CI hardening; stop `ExecuteMemorySummary` closing shared pool; support `vpsease` naming in `deploy_cdn`.
+
+### Documentation
+- Reconcile PRD blueprints to completed: provenance, session-identity, kanban-acs-tasks-migration, feedback-hub/Turnstile, blueprint-path normalization, CPU governor, hook IPC fastpath, dashboard respawn, browser E2E, manager role guard, chat-gateway, virtual-office, license-redirect, hook/gate hardening, code-index/shell SSOT.
+- Author master blueprints for manager guard, direct-execution gate calibration, and post-v1.29.0 wiring; standardize legit-auto-promoter PRD to blueprint standard; add v1.30.0 release notes, Telegram/war-room guidebooks, per-product installer URLs, and walkthrough evidence.
+
+## [v1.31.0] - 2026-10-08
+
+### Added
+
+- add recipient column migration and bidirectional chat history query
+- decouple manager detach lifecycle with 4h persistent idle timeout and active client caching
+- implement detached conpty supervisor with background stdout drain and replay
+- implement 64kb thread-safe circular replay ring buffer
+- wire chat history rehydration on mount and recipient change in AnkeChatDock
+- normalize persona identity extraction and history loading in ankeChatStore
+- implement 7-tier working directory inheritance cascade in session resolver
+- implement claude project slug decoder with greedy tree walk
+- enforce strict directory/extension blacklist filter and vacuum compaction
+- wire kanban lifecycle shims into manifest and reconcile settings allowlist
+- implement zero-second reflex tool decision matrix and shell inspection guard
+- codify windows shell invariants across upstream rules and 25 personas
+- enforce binary search response clamping and truncation handling
+- implement synaptic prompt hook engine and test harness
+- implement kanban lifecycle auto-transition hooks
+- gate license navigation strictly on durable valid status (Wave B)
+- enforce durable status verification in validate routes (Wave A)
+- wire persona deploy to dispatch + setup
+- per-product deploy isolation
+- PRODUCT-param in PowerShell installer
+- PRODUCT-param in bash installer
+- per-prefix acs/vpsease deploy mirror + cdn-rollback target
+- add CLI writer for blueprint approval
+- add read-only blueprint approval check
+- add blueprint_path contract to tool input
+- enforce unique blueprint per project
+
+### Fixed
+
+- wire SanitizeWorkingDir with antigravity candidate roots in routes_sessionbus_pty
+- sanitize targetDir and pass verified UTF-16 pointer in spawnAttached on Windows
+- harden persona routing with cross-project fallback and alias drainage
+- harden persona routing with cross-project fallback and alias drainage
+- use direct fts delete and update hook count to 28
+- sanitize pty working directory, support disk plan status in kanban lifecycle, and trigger realtime chat responder
+- default active roster filter and purge session on terminate
+- auto-purge stale sessions on query and wire bus tool ceilings
+- add retry loop and write fallback for atomic cache write on Windows
+- normalize legacy array task mirror schema
+- dedup pre-migration plus scoped blueprint lookup
+- bound graph clamp payload pre-loop
+- envelope-aware decode in kanban-create-gate
+- prompt-token fallback for blueprint path
+- Stop block via exit 2 + stop-chain passthrough
+- absolutize code paths at index time
+- evictor skips non-absolute code paths
+- dead nil-guard removal + defer rows.Close in dedupeCEOs
+- gate executor dispatch on Kanban approval
+- retain APPROVED blueprint status across resync
+- return typed ErrSkipped for skipped code files
+- count only successfully indexed files in index-code
+- stop ExecuteMemorySummary closing shared singleton pool
+- vendor sync x-sync + CI test hardening to main (#9)
+
+### Changed
+
+- reconcile project memory state
+- bump internal runtime version and constants
+- export ResolvePath as single DB path authority
+
+### Documentation
+
+- mark Phase 04 and master virtual office PRD as completed
+- mark virtual office remote terminal and tmux resilience suite as done
+- update Phase 03 status to done in virtual office terminal plan
+- update Phase 02 status to done in virtual office terminal plan
+- establish virtual office remote terminal and tmux resilience blueprint
+- complete virtual-office-chat-fix plan and reconciliation
+- reconcile PRD blueprints and test audit logs
+- update release changelog and agent configurations
+- reconcile license-validation-redirect-suite completion (Wave C PASS)
+- add license-validation-redirect-suite PRD blueprint (Gate 1B certified 97%)
+- remediate phase-04 log to partial
+- fill phase-04 execution log + KPI rollup
+- per-product canonical installer URLs
+- point install URLs to CDN
+
+## [v1.30.0] - 2026-10-06
+
+### Added
+
+- wire persona deploy to dispatch + setup
+- per-product deploy isolation
+- PRODUCT-param in PowerShell installer
+- PRODUCT-param in bash installer
+- per-prefix acs/vpsease deploy mirror + cdn-rollback target
+- add CLI writer for blueprint approval
+- add read-only blueprint approval check
+- add blueprint_path contract to tool input
+- enforce unique blueprint per project
+
+### Fixed
+
+- Stop block via exit 2 + stop-chain passthrough
+- absolutize code paths at index time
+- evictor skips non-absolute code paths
+- dead nil-guard removal + defer rows.Close in dedupeCEOs
+- gate executor dispatch on Kanban approval
+- retain APPROVED blueprint status across resync
+- return typed ErrSkipped for skipped code files
+- count only successfully indexed files in index-code
+- stop ExecuteMemorySummary closing shared singleton pool
+- vendor sync x-sync + CI test hardening to main (#9)
+
+### Changed
+
+- export ResolvePath as single DB path authority
+
+### Documentation
+
+- per-product canonical installer URLs
+- point install URLs to CDN
+
 ## [v1.29.0] - 2026-10-05
 ### Highlights
 v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual Office studio with PTY streaming at /office. It adds unified memory ingestion with semantic dedupe, 37 core stdio tools, and 3-tier persona governance with 25 unified personas. It unifies hooks to single user-prompt-submit, normalizes subagent_type to bare names, and unwires physical markdown memory sync.
