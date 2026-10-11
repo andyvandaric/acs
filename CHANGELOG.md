@@ -1,5 +1,37 @@
 # Changelog
 
+## [v1.33.0] - 2026-10-12
+
+Highlights: v1.33.0 adds the gate-tiga-lapis tiering classifier with attestation recorder feedback loop, plus fail-closed Turnstile sitekey hardening and bus_heartbeat unread_count. It fixes phantom PROPOSED/presence badges via fence-aware done-gates and status normalization, and stabilizes CI with UPX, SLA warmup, and LatencyBudget hardening.
+
+> **BREAKING CHANGE:** Removed deprecated rules-sync invocations and dev pipeline sync recipes — use embedded SSOT binary. Session-bus messaging frozen to DM-only inter-session SSOT. AI localizer no longer resolves dashboard ports.
+
+### Added
+- Gate-tiga-lapis tiering: static+semantic signals with RED-first tests, historic signal with 800ms timeout guard, composite classifier with escalation-only retier.
+- Attestation recorder with verdict feedback loop; impact-scan classifier wired to recorder (wave 2.5).
+- Turnstile hardening: Wave 1 sitekey config + fail-closed, Wave 2 sitekey injection + rating removal (Gate 3 PASS).
+- bus_heartbeat unread_count (Opsi A, verifier PASS).
+- Blueprint-sync provenance (Opsi A): seed Author/AuthorSession on create with fill-only backfill.
+- Negative guardrail against grep path patterns.
+
+### Changed
+- Bump version to 1.33.0; sync project memory and persist heartbeat RED test guard.
+- Purge deprecated rules-sync invocations and sanitize embedded paths; purge dev pipeline sync recipes in favor of embedded SSOT binary.
+- Freeze session-bus messaging to DM-only inter-session SSOT.
+- Remove dashboard ports from AI localizer endpoint resolution.
+
+### Fixed
+- Tracker SSOT accuracy: fence-aware parseSubPhaseFile and done-gate Status extraction, table-row Status parsing, strip parenthetical blocker clauses before status match, normalize commit_ids, sync linked commit filter tabs to modular sub-phase SSOT, enforce sub-phase completion SSOT over index.md, align outer badge to DB provenance SSOT.
+- Blueprint preview: preserve markdown line-breaks on metadata headers and format preview metadata.
+- Release and SLA stability: raise UPX timeout for large garbled Linux binary, skip UPX on Windows to avoid Defender false-positive, derive release target dir from repo root, deflake memory-graph SLA via warmup query + best-of-5, best-of-5 LatencyBudget for Windows cold cost, resolve 3 FAIL takeover from aborted worker.
+- Isolate RED heartbeat gate behind redgate build tag; suppress contextcheck on frozen ReconcileBlueprints call; calm stop-waiting message with open task summary.
+
+### Documentation
+- Gate 1 complete: all 8 phases verified >=97%; upgrade phase-06/07/08 to 97% with chunk splits, lifecycle, and DoD.
+- New suites: gate-tiga-lapis blueprint suite, feedback-turnstile-sitekey-hardening v1.0.0 (Gate 1B CERTIFY 97%); drift-hardening revised to done-state v1.2.0; office presence idle-visibility PRD as DRAFT (exec ON HOLD).
+- Gate1B upkeep: phase chunk merges/splits, provenance schema, confidence headers, boundary sync, and lifecycle mandates.
+- Discipline and reconciliation: Grep vs Glob and memory recall discipline, completed-state reconciliation for acs-runtime-verification, agentic-phase-commit-enforcer, and kanban suites; Wave 1/Wave 2 Gate 3 PASS tracking.
+
 ## [v1.32.0] - 2026-10-11
 
 ### Highlights
