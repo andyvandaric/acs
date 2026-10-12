@@ -259,21 +259,83 @@ if ($manifest) {
 
 Info "Artifact: $FILE_NAME"
 
+# WHY: TOCTOU H5 — bytes tidak pernah menyentuh disk sebelum SHA256 in-memory
+# cocok; staging kanonis di LOCALAPPDATA (SSOT: repos/installer/install.ps1).
+function Get-StagingDir {
+    $base = $env:LOCALAPPDATA
+    if (-not $base) { $base = $env:TEMP }
+    $dir = Join-Path $base "ACS\staging\acs-install-$(Get-Random)"
+    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+    return $dir
+}
+
+function Get-BytesWithProgress {
+    param([string]$Url)
+    $client = New-Object System.Net.Http.HttpClient
+    try {
+        $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
+        $resp.EnsureSuccessStatusCode()
+        $total = $resp.Content.Headers.ContentLength
+        $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
+        $mem = New-Object System.IO.MemoryStream
+        try {
+            $buf = New-Object byte[] 81920
+            $read = 0
+            $lastMb = -1
+            while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
+                $mem.Write($buf, 0, $n)
+                $read += $n
+                if ($total -and $total -gt 0) {
+                    $mb = [math]::Floor($read / 1MB)
+                    if ($mb -ne $lastMb) { $lastMb = $mb; Write-Progress -Activity "Downloading" -Status "$mb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total))) }
+                }
+            }
+            Write-Progress -Activity "Downloading" -Completed
+            return $mem.ToArray()
+        } finally { $mem.Dispose(); $stream.Dispose() }
+    } finally { $client.Dispose() }
+}
+
+function Test-Sha256Bytes {
+    param([byte[]]$Bytes, [string]$Expected)
+    $sha = [System.Security.Cryptography.SHA256]::Create()
+    try {
+        $hash = $sha.ComputeHash($Bytes)
+        $actual = ([BitConverter]::ToString($hash) -replace '-','').ToLower()
+        return $actual -eq $Expected.ToLower()
+    } finally { $sha.Dispose() }
+}
+
 # --- Download binary (Dual-Track: Primary CDN -> Fallback GitHub) ------------
+# WHY: verify-before-write — SHA256 in-memory via Test-Sha256Bytes SEBELUM tulis disk;
+# tulis-hanya-jika-verified ke staging LOCALAPPDATA (Get-StagingDir).
 Write-Host ""
-$TMP_DIR = Join-Path $env:TEMP "acs-install-$(Get-Random)"
-New-Item -ItemType Directory -Path $TMP_DIR -Force | Out-Null
+$TMP_DIR = Get-StagingDir
 $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloadSuccess = $false
 $primaryUrl = if ($VERSION -and -not $TargetVersion) { "$PRIMARY_CDN_BASE/v$VERSION/$FILE_NAME" } else { "$PRIMARY_CDN_BASE/$FILE_NAME" }
 $fallbackUrl = "$FALLBACK_CDN_BASE/$FILE_NAME"
+$verifiedBytes = $null
 
 Info "Downloading $FILE_NAME from Fast Global CDN..."
 try {
-    Invoke-WebRequest -Uri $primaryUrl -OutFile $TMP_FILE -UseBasicParsing -TimeoutSec 120
-    if ((Test-Path $TMP_FILE) -and ((Get-Item $TMP_FILE).Length -ge 1000000)) {
-        $downloadSuccess = $true
+    $candidate = Get-BytesWithProgress -Url $primaryUrl
+    if ($candidate -and $candidate.Length -ge 1000000) {
+        if ($EXPECTED_SHA) {
+            if (Test-Sha256Bytes -Bytes $candidate -Expected $EXPECTED_SHA) {
+                $verifiedBytes = $candidate
+                $downloadSuccess = $true
+            } else {
+                Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+                Err "SHA-256 mismatch on primary CDN! Expected: $EXPECTED_SHA. Aborted before disk write."
+            }
+        } else {
+            $verifiedBytes = $candidate
+            $downloadSuccess = $true
+        }
+    } else {
+        Warn "Primary CDN download failed: file too small or empty."
     }
 } catch {
     Warn "Primary CDN download failed: $($_.Exception.Message)"
@@ -282,9 +344,23 @@ try {
 if (-not $downloadSuccess) {
     Info "Attempting fallback to GitHub Releases ($fallbackUrl)..."
     try {
-        Invoke-WebRequest -Uri $fallbackUrl -OutFile $TMP_FILE -UseBasicParsing -TimeoutSec 120
-        if ((Test-Path $TMP_FILE) -and ((Get-Item $TMP_FILE).Length -ge 1000000)) {
-            $downloadSuccess = $true
+        $candidate = Get-BytesWithProgress -Url $fallbackUrl
+        if ($candidate -and $candidate.Length -ge 1000000) {
+            if ($EXPECTED_SHA) {
+                if (Test-Sha256Bytes -Bytes $candidate -Expected $EXPECTED_SHA) {
+                    $verifiedBytes = $candidate
+                    $downloadSuccess = $true
+                } else {
+                    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+                    Err "SHA-256 mismatch! Expected: $EXPECTED_SHA, aborted before disk write."
+                }
+            } else {
+                $verifiedBytes = $candidate
+                $downloadSuccess = $true
+            }
+        } else {
+            Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+            Err "Download failed from both CDN and GitHub Releases (size check failed)."
         }
     } catch {
         Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
@@ -292,10 +368,14 @@ if (-not $downloadSuccess) {
     }
 }
 
-if (-not (Test-Path $TMP_FILE)) {
+if (-not $downloadSuccess -or -not $verifiedBytes) {
     Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-    Err "Download failed: file not found at $TMP_FILE"
+    Err "Download failed: verified bytes unavailable."
 }
+
+[System.IO.File]::WriteAllBytes($TMP_FILE, $verifiedBytes)
+$verifiedBytes = $null
+$candidate = $null
 
 $dlSize = (Get-Item $TMP_FILE).Length
 if ($dlSize -lt 1000000) {
@@ -306,26 +386,12 @@ $dlMB = [math]::Round($dlSize / 1MB, 1)
 Ok "Download complete ($dlMB MB)"
 
 # --- Verify SHA-256 ----------------------------------------------------------
+# Pre-write in-memory via Test-Sha256Bytes di atas; blok ini re-assert saja.
 if ($EXPECTED_SHA) {
     Info "Verifying SHA-256 integrity..."
-    $actualSha = $null
-    if (Get-Command Get-FileHash -ErrorAction SilentlyContinue) {
-        $actualSha = (Get-FileHash -Path $TMP_FILE -Algorithm SHA256).Hash.ToLower()
-    } else {
-        $stream = [System.IO.File]::OpenRead($TMP_FILE)
-        try {
-            $sha = [System.Security.Cryptography.SHA256]::Create()
-            $bytes = $sha.ComputeHash($stream)
-            $actualSha = (-join ($bytes | ForEach-Object { "{0:x2}" -f $_ })).ToLower()
-        } finally {
-            $stream.Close()
-        }
-    }
-    if ($actualSha -ne $EXPECTED_SHA.ToLower()) {
-        Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-        Err "SHA-256 mismatch! Expected: $EXPECTED_SHA, Got: $actualSha"
-    }
-    Ok "SHA-256 verified"
+    Ok "SHA-256 verified (pre-write in-memory)"
+} else {
+    Warn "Manifest SHA unavailable; size-guard only."
 }
 
 # --- Install -----------------------------------------------------------------
