@@ -271,29 +271,48 @@ function Get-StagingDir {
 
 function Get-BytesWithProgress {
     param([string]$Url)
-    $client = New-Object System.Net.Http.HttpClient
+    # Ensure System.Net.Http is loaded across both Windows PowerShell 5.1 and PS7+
     try {
-        $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
-        [void]$resp.EnsureSuccessStatusCode()
-        $total = $resp.Content.Headers.ContentLength
-        $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
-        $mem = New-Object System.IO.MemoryStream
+        [void][System.Reflection.Assembly]::LoadWithPartialName("System.Net.Http")
+    } catch {}
+
+    # Prefer HttpClient when available, fallback to WebClient on PS5.1 if type missing
+    if ([System.Type]::GetType("System.Net.Http.HttpClient") -or (Get-Command "New-Object" -ErrorAction SilentlyContinue)) {
         try {
-            $buf = New-Object byte[] 81920
-            $read = 0
-            $lastMb = -1
-            while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
-                $mem.Write($buf, 0, $n)
-                $read += $n
-                if ($total -and $total -gt 0) {
-                    $mb = [math]::Floor($read / 1MB)
-                    if ($mb -ne $lastMb) { $lastMb = $mb; Write-Progress -Activity "Downloading" -Status "$mb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total))) }
-                }
-            }
-            Write-Progress -Activity "Downloading" -Completed
-            return $mem.ToArray()
-        } finally { $mem.Dispose(); $stream.Dispose() }
-    } finally { $client.Dispose() }
+            $client = New-Object System.Net.Http.HttpClient
+            try {
+                $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
+                [void]$resp.EnsureSuccessStatusCode()
+                $total = $resp.Content.Headers.ContentLength
+                $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
+                $mem = New-Object System.IO.MemoryStream
+                try {
+                    $buf = New-Object byte[] 81920
+                    $read = 0
+                    $lastMb = -1
+                    while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
+                        $mem.Write($buf, 0, $n)
+                        $read += $n
+                        if ($total -and $total -gt 0) {
+                            $mb = [math]::Floor($read / 1MB)
+                            if ($mb -ne $lastMb) { $lastMb = $mb; Write-Progress -Activity "Downloading" -Status "$mb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total))) }
+                        }
+                    }
+                    Write-Progress -Activity "Downloading" -Completed
+                    return $mem.ToArray()
+                } finally { $mem.Dispose(); $stream.Dispose() }
+            } finally { $client.Dispose() }
+        } catch {
+            # If HttpClient fails to initialize or execute, fall through to WebClient
+        }
+    }
+
+    $wc = New-Object System.Net.WebClient
+    try {
+        return $wc.DownloadData($Url)
+    } finally {
+        $wc.Dispose()
+    }
 }
 
 function Test-Sha256Bytes {
@@ -314,7 +333,7 @@ $TMP_DIR = Get-StagingDir
 $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
 $downloadSuccess = $false
-$primaryUrl = if ($VERSION -and -not $TargetVersion) { "$PRIMARY_CDN_BASE/v$VERSION/$FILE_NAME" } else { "$PRIMARY_CDN_BASE/$FILE_NAME" }
+$primaryUrl = "$PRIMARY_CDN_BASE/$FILE_NAME"
 $fallbackUrl = "$FALLBACK_CDN_BASE/$FILE_NAME"
 $verifiedBytes = $null
 
