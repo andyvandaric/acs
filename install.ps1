@@ -128,7 +128,7 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         } catch {
             # Fallback: pipe method if file download fails
             Write-Host "  Retrying with pipe method..." -ForegroundColor Yellow
-            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "try { irm https://dl.uikode.com/install.ps1 | iex } catch { irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex }; if (`$LASTEXITCODE -ne 0) { throw `"Execution failed`" }"
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "try { irm https://dl.uikode.com/install.ps1 | iex } catch { irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex }; if (`$LASTEXITCODE -ne 0) { throw 'Execution failed' }"
             if ($LASTEXITCODE -ne 0) {
                 throw "PowerShell 7 execution failed with exit code $LASTEXITCODE"
             }
@@ -274,7 +274,7 @@ function Get-BytesWithProgress {
     $client = New-Object System.Net.Http.HttpClient
     try {
         $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
-        $resp.EnsureSuccessStatusCode()
+        [void]$resp.EnsureSuccessStatusCode()
         $total = $resp.Content.Headers.ContentLength
         $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
         $mem = New-Object System.IO.MemoryStream

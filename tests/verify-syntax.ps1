@@ -80,14 +80,14 @@ Assert-Test "Dual-track manifest fetch logic is present" {
 }
 
 Assert-Test "Dual-track binary download fallback logic is present" {
-    $content -match 'Invoke-WebRequest.*\$primaryUrl' -and
-    $content -match 'Invoke-WebRequest.*\$fallbackUrl'
+    ($content -match 'Invoke-WebRequest.*\$primaryUrl' -or $content -match 'Get-BytesWithProgress.*\$primaryUrl') -and
+    ($content -match 'Invoke-WebRequest.*\$fallbackUrl' -or $content -match 'Get-BytesWithProgress.*\$fallbackUrl')
 }
 
 # 4. Security & Integrity verification
 Assert-Test "SHA-256 integrity verification is enforced" {
-    $content -match 'Get-FileHash.*SHA256' -and
-    $content -match 'SHA-256 mismatch!'
+    ($content -match 'Get-FileHash.*SHA256' -or $content -match 'Test-Sha256Bytes') -and
+    $content -match 'SHA-256 mismatch'
 }
 
 Assert-Test "Minimum file size guard is enforced" {
