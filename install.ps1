@@ -271,15 +271,10 @@ function Get-StagingDir {
 
 function Get-BytesWithProgress {
     param([string]$Url)
-    # Ensure System.Net.Http is loaded across both Windows PowerShell 5.1 and PS7+
-    try {
-        [void][System.Reflection.Assembly]::LoadWithPartialName("System.Net.Http")
-    } catch {}
-
-    # Prefer HttpClient when available, fallback to WebClient on PS5.1 if type missing
-    if ([System.Type]::GetType("System.Net.Http.HttpClient") -or (Get-Command "New-Object" -ErrorAction SilentlyContinue)) {
+    # 1. On PowerShell 7+, use HttpClient for memory stream reading
+    if ($PSVersionTable.PSVersion.Major -ge 7) {
         try {
-            $client = New-Object System.Net.Http.HttpClient
+            $client = [System.Net.Http.HttpClient]::new()
             try {
                 $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
                 [void]$resp.EnsureSuccessStatusCode()
@@ -303,10 +298,11 @@ function Get-BytesWithProgress {
                 } finally { $mem.Dispose(); $stream.Dispose() }
             } finally { $client.Dispose() }
         } catch {
-            # If HttpClient fails to initialize or execute, fall through to WebClient
+            # Fall through to WebClient if HttpClient fails
         }
     }
 
+    # 2. Universal reliable fallback: WebClient
     $wc = New-Object System.Net.WebClient
     try {
         return $wc.DownloadData($Url)
