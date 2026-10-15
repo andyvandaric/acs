@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.33.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.35.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -136,6 +136,5 @@ All operations are unified under the modern `acs` command:
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
 6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-
-7. **Triple-Layer Gate HookEngine (Gate-Tiga-Lapis)**: Tiering static+semantic signals with historic signal timeout guard, escalation-only composite retier, attestation recorder with verdict feedback loop, and impact-scan wiring.
-8. **Turnstile Fail-Closed Hardening**: Server sitekey config with fail-closed hardening plus frontend sitekey injection and rating removal.
-9. **Sovereign Provenance & Realtime Awareness**: Author/AuthorSession seeding on blueprint-sync with fill-only backfill, `unread_count` in session bus heartbeat, and negative guardrail against grep path patterns.
+7. **Anke Command Center & Sovereign Session Bus**: Centralized orchestrator gateway with Anke CEO persona contracts, dual-dispatcher sinks, in-place PTY modal workspaces, and unified `acs:core` namespace management.
+8. **Autonomous Dispatch DAG & Security Attestation**: Watchdog-driven DAG unblocker, strict verifier-stamp gates, fail-closed card claims, SLSA provenance tracking, and Sigstore-backed integrity defenses.

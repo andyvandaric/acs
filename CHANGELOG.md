@@ -1,5 +1,300 @@
 # Changelog
 
+## [v1.35.0] - 2026-10-15
+
+### Added
+- **Kanban & UI**: Lightweight board projection query (`light` parameter) on HTTP and frontend APIs, done-column windowing with pagination, and suite drift detection between disk AST and cards.
+- **Command Center & Personas**: Remounted Gateways route and navigation sidebar as Anke Command Center; configured Anke CEO persona as default role contract.
+- **PTY & Terminal**: Canonical WebSocket route with in-place PTY modal and card-state gating (`in_progress` only).
+- **Security & Turnstile**: Forwarding headers `X-Turnstile-Verified` and `X-Client-Source`, cache seeding with license gate validation, and central verify fallback client.
+- **MCP & Tooling**: Fully qualified domain name (`acs:core`) display labels, lazy browser call-path stubs, and per-server watchdog circuit breaker for MCP restarts.
+- **Caching & Errors**: Typed `ErrEvicted` and `ErrTransport` errors, `LoadDegradedCache` with per-type `degradedTTL`, and stale temp file cleanup on atomic cache writes.
+
+### Changed
+- **MCP Server Initialization**: Deferred bridge synchronization and removed eager local server initialization from `registerMCPServeHandlers` to lazy loading paths.
+- **Scanner Decoupling**: Split scanner sync, tree operations, frontmatter, and subphase parsers into modular helpers.
+- **Task Execution**: Migrated task execution pipeline to direct-path `DispatchReadyTasks`.
+
+### Fixed
+- **Project Resolution**: Enforced fail-closed behavior across blueprint sync, scanner, commit minting, and attachment resolution.
+- **Execution Boundaries**: Bound stdio tool calls to a 5-minute timeout and enforce context cancellation at `ExecuteTool` boundaries.
+- **Kanban State Guarding**: Gated `autoCompleteCard` with blueprint approval, protected done cards from backlog demotion during upserts, and blocked empty-tab artifact overwrites.
+- **Session & Identity Security**: Enforced AgentID ownership on CEO reaffirmations, guarded against live-row upsert hijacking on `RegisterSession`, and validated caller ownership on heartbeats.
+- **Audit & Persistence**: Added `task_status_audit` row generation upon task transitions and synchronized `atomicWriteFile` retries on Windows.
+- **Network Resilience**: Fixed cold-start navigation freezes via background warm-up and added proper 410 Gone / 426 status passthroughs for PTY streams.
+
+## [v1.34.0] - 2026-10-15
+
+### Added
+
+- send X-Turnstile-Verified and X-Client-Source headers on forward
+- narrow Revoke to ErrEvicted and preserve cache on ErrTransport [phase-02]
+- introduce ErrEvicted and ErrTransport typed errors [phase-02]
+- sweep stale temp orphans on atomic cache write [phase-01]
+- Wave 3 Chunk 3A done-column windowing and load more pagination
+- implement LoadDegradedCache and per-type degradedTTL [phase-01]
+- Wave 2 Chunk 2B consume light projection and streamline polling in KanbanStandalone
+- extract signatureValid and isFresh predicates [phase-01]
+- Wave 2 Chunk 2A add light parameter support in frontend API
+- detect suite drift between disk AST and kanban card [phase-02]
+- Wave 1 Chunk 1B HTTP route light projection parameter
+- real markdown parser for SuiteConvergenceVerdict + guarded card sync [phase-02]
+- Wave 1 Chunk 1A lightweight board projection query
+- add acs:core FQN display labels and input normalization (Option C Phase 02/03)
+- precise open-task display with status and titles [phase-02]
+- report-only stray sweeper + invariant lock test (chunk 3G)
+- codify naming rule and lock with parity guardrail (Wave 1)
+- prune stale mirror rows with TTL and title capture [phase-01]
+- prune stale mirror rows with TTL and title capture [phase-01]
+- route secret-unset feedback submit via VerifyFeedbackToken central fallback
+- thread project through kanban hook payload (chunk 3C)
+- Anke Command Center copy + error and focus states (Wave 3 P03 C3)
+- chat help/status replies via SafeGo (Wave 2 P02 C2)
+- Sidebar nav as Anke Command Center (Wave 3 P03 C2)
+- wire DualDispatcher with real sinks (Wave 2 P02 C1)
+- remount Gateways route as Anke Command Center (Wave 3 P03 C1)
+- default role to Anke CEO persona (Wave 1 C2)
+- Anke CEO persona contract default (Wave 1 C1)
+- sitekey refresh hook with license-key fetch and atomic cache update
+- central verify HTTP client with hook wiring
+- central verify fallback branch for secret-unset path
+- canonical WS route + in-place PTY modal (PTY Wave 2)
+- CLI commits merge-safe preserves phase suffix (Wave 2 P10 chunk 10d)
+- append-only per-phase commit entries (Wave 2 P10 chunk 10c)
+- dynamic project resolution for commit attachment (Wave 2 P10 chunk 10b)
+- preserve empty checklist subphase headers in merge (Wave 2 P09 chunk 9b)
+- dual-tag commit phase parse (Wave 2 P10 chunk 10a)
+- warning-only blueprint format lint (Phase 11 chunk 11c)
+- fail-closed project resolver helper (Wave 2 Chunk 2A)
+- parse per-phase author/confidence/date (Wave 2 P09 chunk 9a)
+- attributed sweeper close via validated path (Wave 1 P01 gate-A)
+- SessionStart auto-register write path with kill-switch (Phase 03 chunk 3B)
+- pin identity-resolution contract with typed absent signal (bus Phase 03 chunk 3A)
+- wire generic browser fallback in stdio serve (Phase 02 chunk 2-2)
+- miss-then-fallback hook in stdio server (Phase 02 chunk 2-1)
+- register remaining 18 browser lazy stubs (Wave 1 chunk 1A)
+- lazy browser call-path stubs in stdio serve (chunk B)
+- retryable lazy browser sync with partial merge (chunk A)
+- P08 C8c E2E loop coverage + fallback flip-site gate
+- P08 C8b verifier-stamp issuance helper
+- anke chat disconnect-surfacing + bounded manual retry + anke content-guard
+- P08 C8a strict autoCompleteCard gate
+- P08 C8a2 strict verifier-stamp token
+- P07 7c repo-root layered workspace default
+- unify role tools to acs:core FQN (Wave 1)
+- split roster/locks loading into initial + refresh contract
+- P07 name normalization case-preserved post-5d
+- P07 register working_dir metadata absolute
+- wire turnstile cache seed after license gate
+- offline log-and-continue for turnstile seed (Phase-05 Chunk 3)
+- idempotent turnstile seed with TTL skip (Phase-05 Chunk 2)
+- seed turnstile cache after license gate (Phase-05 Chunk 1)
+- add SessionStart verify-only core pin reconciler (2B)
+- P05 modal PTY disabled-gate + opener WS retarget
+- P05 PTY card gate in_progress-only
+- add SyncEnabledServersLazy bounded lazy-sync entry
+- P04 preview SWR nav back-next a11y GREEN
+- dual-builder DefaultSiteKey ldflags parity from provisioning env
+- wire ldflags tier-1 to exported DefaultSiteKey, remove W1 stub
+- declare exported DefaultSiteKey var for ldflags injection (Phase-02 C1)
+- ready auto-claim PATCH atomic ready->in_progress fail-closed (C1-T6)
+- emit source label on feedback config endpoint (C3)
+- per-env ConfigDir cache store with TTL and corrupt-degrade (C2)
+- wire board list into Tide with WS status patching
+- resolve chain with source label + cache stub (C1)
+- ready-card claim advisory fail-open (C1-T5)
+- hard-block Agent dispatch on backlog card (C1-T4)
+- Phase 07 C1-T3 no-card warn banner fail-open (rev2)
+- Phase 03 Chunk 4 dispatcher-DAG unblocker wiring
+- wire AV + Sign gates post-P01
+- Wave A P01 lifecycle + P02 verdict GREEN
+- wire UpdateTaskExecution claim audit row (Wave 0 0c)
+- add UpdateTaskStatusAttributed audited wrapper (Wave 0 0b)
+- local daemon curl allowlist with git-guard tests (P06-B2)
+- keyless sigstore gate with SLSA provenance (P05 C1-C2)
+- AV pre-submit gate with EICAR fixtures (P04 C1-C2)
+- Phase 03 Chunk 3 zero-wait autonomous watchdog heartbeat-aware + privileged release
+- Phase 03 Chunk 1 DAG unblocker + visited-set fail-closed (Wave 2 v1.34.0)
+- Phase 04 Chunk 3 modal provenance tab integration (Wave 4 v1.34.0)
+- Phase 04 Chunk 2 provenance tab timeline component and tests (Wave 4 v1.34.0)
+- Phase 01 Chunk 4 sub-agent spawn auto-registration wiring (Wave 4 v1.34.0)
+- Phase 07 Chunk 3 kanban-ready fallback, governance clause, persona intent transformer (Wave 4 v1.34.0)
+- Phase 06 Chunk 3 PostTool agent attestation writer handler and tests (Wave 4 v1.34.0)
+- Phase 08 Chunk 2 orchestrator mandate routing matrix wiring (Wave 4 v1.34.0)
+- Phase 01 Chunk 2 MCP bus_lock/bus_unlock wrapper over Chunk 1 (Wave 4 v1.34.0)
+- Phase 01 Chunk 3b handler fail-closed, required fields, and 2-plane ping (Wave 4 v1.34.0)
+- Phase 02 Chunk 3 provenance store + dedup escapeLikePattern (Wave 4 v1.34.0)
+- Phase 01 Chunk 3a identity fail-closed + single-CEO guard (Wave 4 v1.34.0)
+- Phase 02 Chunk 2 provenance domain model + timeline (Wave 4 v1.34.0)
+- Phase 02 qualify LSP refs to acs-lsp namespace (Wave 4)
+- Phase 07 Chunk 2 wire kanban-workflow-gate registration (Wave 4 v1.34.0)
+- block conventional LSP namespace, redirect to acs-lsp
+- Phase 04 Chunk 1 provenance contracts & agentic API client (Wave 3 v1.34.0)
+- upload release assets to gh releases and fail-closed gate_publish
+- Phase 03 Chunk 2 autonomous dispatch reflex gate + quarantine (Wave 2 v1.34.0)
+- Phase 06 Chunk 2 manager delegation T04-T18 matrix (Wave 2 v1.34.0)
+- Phase 07 Chunk 1 slice kanban-workflow-gate C1-T1 C1-T2 + test
+- phase-06 chunk 1 manager delegation gate
+- Phase 01 Chunk 1 chunk lock engine + test (Wave 1 v1.34.0)
+- Phase 08 Chunk 1a persona struct triggers + roster router (Wave 1 v1.34.0)
+
+### Fixed
+
+- accept numeric or string id in RemoteFeedbackResponse [phase-01]
+- auto-start idle reaper on manual instances + inject interval [phase-01]
+- align remote feedback endpoints with /api/v1/feedback Hono route
+- synchronize atomicWriteFile and harden Windows retry loop [phase-01]
+- resolve golangci-lint contextcheck and hermetic central verify test double
+- RecordTaskActivityAdvanced skip-with-warning on empty project (chunk 3F)
+- emit audit row on status transition [phase-02]
+- require explicit project in kanban-protocol fragment (chunk 3E)
+- fail-closed blueprint-sync project resolution (chunk 3B)
+- hold phase-04 IN PROGRESS to disarm reconcile re-flip
+- fail-closed blueprint-scanner project resolution (chunk 3A)
+- fail-closed commit mint via resolver (guard 2C)
+- background warm-up kills first-navigate cold-start hang
+- 426 passthrough with contextual log (PTY Wave 1)
+- fail-closed attach defaults via resolver (guard 2B-ii)
+- align TestRecordCommitTask seed with commit project resolver
+- thread resolver through commit lookups, align attach seeds (guard 2B-i)
+- fail-closed nil ctx in ExecuteTool clears contextcheck lint
+- fail-closed supersede + upsert-to-done guard stops auto-flip
+- extract browser fallback out of register body (deferred wiring)
+- enforce cancellation at ExecuteTool dispatch boundary (stdio resilience file 2a)
+- bound stdio tool-call dispatch with 5m timeout (stdio resilience file 1)
+- session/tree-bound commit attach guard (P2)
+- reject empty-tabs kanban artifacts at tool layer (P0)
+- read-merge guard for UpdateTaskArtifacts empty wipe (P0)
+- remove nil-ctx guard violating contextcheck (1C follow-up)
+- skip frozen feedback E2E/Routes assertions under prod tag
+- revert worker allowlists to inherit-all, debugger proper 17-entry allowlist (Wave 5)
+- skip async-flush submit test under prod tag
+- log dev-fallback-secret submits where live-reachable
+- skip dev-default turnstile assertions under prod tag
+- P06 honesty label fallback offline jujur
+- wire ExperimentalBanner server siteKey into FeedbackModal
+- P05 PTY stream 410 Gone + attach fail-closed
+- gate MCP respawn with per-server watchdog circuit breaker (2C)
+- wire server siteKey prop into FeedbackModal Turnstile gate
+- log dev fail-open passthrough with token-requirement parity note
+- gate dev test-token bypass behind env.IsDev()
+- suppress contextcheck false-positive on reconcileOneCommit call
+- gate autoCompleteCard with blueprint approval + attributed lifecycle
+- deep-link ?tab= opens Walkthrough directly + validated tab param
+- fail-closed blueprint guard in ReconcileTasks sweeper + regression test
+- audit INSERT + migrate task_status_audit in EnsureTaskTable (Wave 0 0a)
+- protect done cards from backlog demotion via upsert/merge
+- idempotent UTF-8 stdio guard with regression tests (P06-B1)
+- schtasks least-privilege and zero-console docstrings (P03-stealth C1-C2)
+- deterministic gates seed and canonical acs resolve (P01 C1-C4)
+- Phase 07 Ch2b rev2 daemon-free block-path tests + P07 doc sync
+- Phase 07 Chunk 2 prd-phase-commit-enforcer HookInput compile fix
+- require AgentID ownership on same-ID CEO reaffirm (GAP-2)
+- reject live-row upsert hijack on RegisterSession (GAP-1)
+- enforce caller ownership on UpdateHeartbeat (B3)
+- Phase 02 Chunk 1b migration count 40 to 41 (Wave 2 v1.34.0)
+- Phase 02 Chunk 1a provenance schema migration #41 + test (Wave 1 v1.34.0)
+
+### Changed
+
+- split refresh hook into orchestrator plus fetch helper
+- split scanner sync+tree pure-move (Phase 11 chunk 11d2)
+- split scanner frontmatter+subphase pure-move (Phase 11 chunk 11d1)
+- regenerate downstream mirrors with acs:core FQN (Wave 4)
+- remove eager local-server init from registerMCPServeHandlers (1B)
+- defer bridge sync to lazy path in newLocalMCPServer (1A)
+- remove test-out.txt junk + honest IN PROGRESS virtual-office index (#11 #12)
+- triage stray suites Task #4 (9 files, 0 deleted)
+- remove legit_promoter tick, keep proper reconcile paths
+- B3 target annotation (P06-B3)
+- sync downstream mirrors after acs-lsp namespace qualification (Wave 4 follow-up)
+- remove root pollution logs and task dumps
+- Phase 03 Chunk 2b migrate to DispatchReadyTasks direct path (Wave 3 v1.34.0)
+
+### Documentation
+
+- reconcile master PRD blueprints, audit suites, and project memory
+- reconcile blueprints to DONE with full commit evidence
+- certify Hard Gate 1B pass 97% and harden phase-06 verify regex
+- mark acs-core-namespace Option C PRD and sub-phases as completed
+- Hard Gate 1B re-audit sync, confidence 98.9% (acs-core-namespace)
+- reconcile blueprint to live ground truth (Gate-1B PASS 97%)
+- mark sub-phases completed for session-bus auto-registration
+- commit Session-Bus Auto-Registration REV 2 blueprint and phase specs
+- add operator recovery runbook and CLI bootstrap spec (Phase 02)
+- document Tier 4 per-scenario reachability for browser fallback (Wave 4 chunk 4B2)
+- document Tier 4 per-agent reachability for search fallback (Wave 2 chunk 2C)
+- note scanner-COMPLETED unreachable for prose-only phases (P3)
+- Wave D P08 DONE with evidence
+- virtual-office closeout upgrade 77 to 98 percent readiness
+- record rules-sync purge amendment in phase-02 (Wave 4 closeout)
+- unify on-demand skills to acs:core Tier-1 (Wave 3)
+- unify MCP tool references to acs:core (Wave 2)
+- Wave D P06/P07 DONE with evidence
+- turnstile buyer-permanent FINAL-FROZEN suite
+- erratum exit-list lines post-2D shift (phase-03)
+- P06/P07 persistence DoD tmux supervisor resume
+- refresh P06/P07 stale headers + gateway-only CLI
+- document acs-mcp-local legacy vs core pin contract (2D)
+- fix stale tool-count and caller comments (0A)
+- P05 IN PROGRESS implementasi 5abcd + phase table
+- P04 IN PROGRESS implementasi bb7ad8d2 + phase table
+- stamp Gate-1B PASS + Hard Gate 2 approval markers + E0 evidence
+- STAMP rev2 PASS promosi DONE kartu task-1791692043314821100
+- Full-DoD evidence rev2 hookengine build+suite, race deferred CI
+- P03 DoD probe-GREEN + coverage-keep
+- P03 IN PROGRESS wiring e62c8c0f + phase table
+- remediate phase-02 R3 + phase-03 R4 to live AST ground truth
+- remediate index R1 + phase-01 R2 pointers to live AST ground truth
+- sync index.md wave-status honest + phase table
+- remediate P07-P08 to honest status + audit evidence
+- remediate P05-P06 to honest NOT STARTED + audit evidence
+- promote STAMP PASS 2026-10-13 with verifier evidence
+- remediate P03-P04 to honest NOT STARTED + audit evidence
+- remediate P01-P02 to honest IN PROGRESS + audit evidence
+- promote STAMP PASS 2026-10-13 with verifier evidence
+- resync honest Wave 5 breakdown task-1791692043314821100
+- normalize confidence to pending Gate1B honest basis
+- erratum nominal-vs-split eval/state + race BLOCKED jujur
+- normalize confidence HIGH to 97% with Gate1B basis
+- fix E2E path to src/tests/e2e + numeric confidence 97%
+- normalize P07 header to IN PROGRESS per 2026-10-13 audit
+- tick P03/P04 DoD with Wave-2 evidence (build, VT, SOP, msg)
+- downgrade P02 to IN PROGRESS per Gate1B re-audit
+- sync index.md with audit ground truth
+- merge supply-chain signing + WDSI SOP (P04/P05 SOP-final)
+- reconcile phase claims vs git reality (P03/P04 GAPs, index DONE flip, 41e5d074 mapping)
+- Task #16 agents-registry three-layer table + decision tree
+- stamp Phase 00 DONE Wave 0 floor
+- sync confidence 97 round-3 CONFIRMED
+- persist kanban-realtime-ssot phases + wild-done index (Wave B gate)
+- stamp 7 phase files SUPERSEDED, zero pending checklist
+- fix Glob-empty claim rev2 REVISE 94% (Wave 0 unblock)
+- stamp Phase 03 DONE Chunk4 wiring GREEN
+- stamp Phase 08 COMPLETED verdict-6 STAMP PASS
+- gate-close hygiene confidence HIGH plus evidence
+- stamp Phase 04 COMPLETED 31/31 with STAMP PASS
+- Phase 03 Chunk 3 STAMP PASS watchdog 5 passing tests
+- stamp Phase 01 DONE with DoD evidence
+- Phase 04 Chunk 3 VERIFIED with 24 passing tests evidence
+- Phase 07 Ch2b STAMP PASS prd-phase-commit-enforcer rev2
+- correct garble seed docstring to acs-stable-v1 SSOT
+- Phase 08 status and C6 evidence sync with roster refs
+- close GAP2 3 blockers with DoD ticks and verdicts (defender-fp-zero-cost)
+- close 6 sync gaps with STAMP evidence (defender-fp-zero-cost)
+- Phase 06 flip COMPLETED with conditional waivers
+- persist defender-fp-zero-cost blueprint rev3 (index + 6 phases, all waves >=97%)
+- Phase 06 evidence sync, 21 DoD boxes ticked, HOLD IN PROGRESS
+- Phase 05 flip COMPLETED on Opus STAMP + CEO ruling
+- cite ad47b09c P03-Chunk3 Evidence
+- record RED-ONLY gate Chunk 1 obsolete
+- promote phase-02 to DONE (verifier STAMP)
+- sync phase-02 status, confidence basis, known gaps
+- catat status P03-Chunk1 + P07-Chunk2 terverifikasi (3317bf38, 16cb8b62)
+- commit suite artefak Phase 02 + reconciler header
+- document B3/GAP-1/GAP-2 ownership enforcements (B2)
+- mark phase-01-hook-redirect COMPLETED
+
 ## [v1.33.0] - 2026-10-12
 
 Highlights: v1.33.0 adds the gate-tiga-lapis tiering classifier with attestation recorder feedback loop, plus fail-closed Turnstile sitekey hardening and bus_heartbeat unread_count. It fixes phantom PROPOSED/presence badges via fence-aware done-gates and status normalization, and stabilizes CI with UPX, SLA warmup, and LatencyBudget hardening.
