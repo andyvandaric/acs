@@ -5,14 +5,17 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="Logo ACS">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Versi](https://img.shields.io/badge/Versi-1.12.0-orange?style=for-the-badge)
+![Versi](https://img.shields.io/badge/Versi-1.35.0-orange?style=for-the-badge)
 ![Lisensi](https://img.shields.io/badge/Lisensi-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
+[![Website](https://img.shields.io/badge/Official_Website-uikode.com%2Facs-6366f1?style=for-the-badge&logo=googlechrome&logoColor=white)](https://uikode.com/acs)
 
 **Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.**<br>
 *(Stop burning tokens. Stop freezing terminals. Take back sovereign control.)*
 
 [English](README.md) | [Bahasa Indonesia](#bahasa-indonesia)
+
+🌐 **Portal Resmi & Lisensi Komersial:** [uikode.com/acs](https://uikode.com/acs)
 </div>
 
 ---
@@ -26,6 +29,8 @@
 Anda menggunakan agen AI coding untuk membangun software kelas dunia, bukan untuk membuang berjam-jam waktu Anda mengurai file konfigurasi atau melihat *context window* Anda lenyap sebelum baris kode pertama ditulis.
 
 **Agnostic Config Suites (ACS)** adalah **Sistem Operasi Berdaulat Lokal (Local Sovereign OS)** berperforma tinggi. ACS mengubah agen AI yang rentan dan boros token menjadi mesin rekayasa perangkat lunak otonom yang tangguh, hemat biaya, dan deterministik.
+
+Pelajari selengkapnya di [Portal Resmi](https://uikode.com/acs) — [ACS Core](https://uikode.com/acs) menyatukan CLI, kokpit dashboard, dan multi-agent swarm dalam satu biner berdaulat.
 
 ---
 
@@ -47,7 +52,7 @@ curl -fsSL https://dl.uikode.com/install.sh | bash
 
 ### ⚡ Panduan Cepat & Aktivasi Lisensi
 
-ACS dilindungi oleh lisensi komersial terproteksi:
+ACS dilindungi oleh lisensi komersial terproteksi. Beli dan kelola lisensi di [Portal Lisensi Komersial](https://uikode.com/acs):
 
 1. **Aktivasi Lisensi**:
    ```bash
@@ -116,7 +121,8 @@ Seluruh operasional dipersatukan di bawah perintah modern **`acs`**:
 | Perintah | Deskripsi |
 |---|---|
 | `acs kanban` | Papan visual pelacak tugas lokal dan pemantau PRD Blueprint |
-| `acs mcp [list\|add\|remove]` | Mengelola server dan tools Model Context Protocol (MCP) |
+| `acs adopt` | Adopsi repositori tercepat dengan AI profiler, guardrails, dan GUI animasi |
+| `acs mcp [list\|add\|remove\|serve]` | Mengelola server dan tools Model Context Protocol (MCP) |
 | `acs accounts` | Mengelola akun penyedia model AI dan alokasi kuota |
 | `acs articles` | Mesin penelusuran artikel riset dan basis pengetahuan offline |
 | `acs sessions` | Memeriksa dan mengelola riwayat sesi eksekusi agen AI |
@@ -126,15 +132,22 @@ Seluruh operasional dipersatukan di bawah perintah modern **`acs`**:
 
 ### ✨ Keunggulan Arsitektur ACS
 
-1. **Integrasi Model Context Protocol (MCP) Bawaan**: Terhubung mulus ke sistem berkas, otomasi browser, code intelligence berbasis Language Server (LSP), dan riset web.
+1. **Integrasi Model Context Protocol (MCP) Bawaan**: Terhubung mulus ke sistem berkas, otomasi browser, code intelligence berbasis Language Server (LSP), dan riset web melalui 45 Built-In Core Stdio MCP Tools + 80 CloakBrowser Stealth Sub-Tools di atas server harness stdio JSON-RPC 2.0.
 2. **Arsitektur Token Siaga Nol (Zero-Idle-Token)**: Mengurangi pemborosan token latar belakang hingga 89%, menyediakan ruang konteks maksimal untuk pembuatan kode.
 3. **Smart Circuit Breaker Anti-Flapping**: Deteksi dini kegagalan jaringan dan masa tenggang menjamin stabilitas tanpa siklus restart berulang.
 4. **Relay Cerdas Kuota Otonom (EDF)**: Algoritma cerdas memprioritaskan akun kuota AI yang mendekati batas reset untuk efisiensi maksimal.
-5. **Deteksi Otomatis Proyek Lintas Workspace**: Secara otomatis mengenali seluruh workspace dan menyajikan status PRD blueprint pada kokpit Kanban.
+5. **Deteksi Otomatis Proyek Lintas Workspace**: Secara otomatis mengenali seluruh workspace dan menyajikan status PRD blueprint pada kokpit Kanban. Jalankan `acs adopt` untuk adopsi repositori tercepat dengan AI profiler dan guardrails.
+6. **Kanban Interaktif & Tata Kelola Visual**: Resolver URL kartu langsung, mesin diagram Mermaid pan-zoom interaktif, inspeksi commit, badge verifikasi ganda, dan pelacakan eksekusi multi-wave.
+7. **Anke Command Center & Sovereign Session Bus**: Gateway orkestrator terpusat dengan kontrak persona CEO Anke, sink dual-dispatcher, workspace modal PTY in-place, dan manajemen namespace `acs:core` terpadu. Didukung 28 Role Personas berbasis Jinja2 SSOT (CEO Anke, Architect, Executor, Verifier, Bug Hunter, dan lainnya) dengan tool masking ketat.
+8. **Dispatch DAG Otonom & Atestasi Keamanan**: Pembuka blokir DAG berbasis watchdog, gerbang stamp verifier yang ketat, klaim kartu fail-closed, pelacakan provenance SLSA, dan pertahanan integritas berbasis Sigstore.
+9. **Sovereign Second Brain**: Sub-10ms Contentless Trigram Code Search (<0,5% disk, tanpa biaya vector API) dipadukan dengan SQLite FTS5 Memory Engine untuk recall keputusan dan milestone secara instan.
+10. **Windows Zero-Console Flash Invariant**: Seluruh subprocess berjalan sepenuhnya tersembunyi via `internal/executil` (`CREATE_NO_WINDOW | DETACHED_PROCESS`) plus Win32 API `SW_HIDE` — tanpa popup terminal.
+11. **Dashboard Web SolidJS**: Kokpit lokal 22 rute dengan Kanban SSOT 4-Tab dan Virtual Office (Anke Chat IPC bi-directional full-duplex via SSE) di `http://127.0.0.1:20130`.
 
 ---
 
 <div align="center">
 <b>Dibangun untuk para software engineer berkecepatan tinggi.</b><br>
-Distribusi Resmi: <a href="https://uikode.com/acs">https://uikode.com/acs</a>
+🌐 Portal Resmi & Lisensi Komersial: <a href="https://uikode.com/acs">https://uikode.com/acs</a><br>
+Beli dan kelola lisensi Anda di [ACS Core](https://uikode.com/acs) melalui [Portal Resmi](https://uikode.com/acs).
 </div>

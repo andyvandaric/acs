@@ -8,11 +8,14 @@
 ![Version](https://img.shields.io/badge/Version-1.35.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
+[![Website](https://img.shields.io/badge/Official_Website-uikode.com%2Facs-6366f1?style=for-the-badge&logo=googlechrome&logoColor=white)](https://uikode.com/acs)
 
 **Stop burning tokens. Stop freezing terminals. Take back sovereign control.**<br>
 *(Berhenti membakar token. Berhenti mengalami terminal freeze. Ambil kembali kendali berdaulat.)*
 
 [English](#english) | [Bahasa Indonesia](README.id.md)
+
+🌐 **Official Website & Commercial Portal:** [uikode.com/acs](https://uikode.com/acs)
 </div>
 
 ---
@@ -26,6 +29,8 @@
 You run AI coding agents to ship world-class software, not to waste hours untangling fragile configurations or watching your context window vanish before writing line 1.
 
 **Agnostic Config Suites (ACS)** is a high-performance **Local Sovereign Operating System**. It turns unpredictable AI coding assistants into an unbreakable, deterministic, cost-optimized engineering powerhouse.
+
+Learn more on the [Official Product Website](https://uikode.com/acs) — [ACS Core](https://uikode.com/acs) unifies CLI, dashboard cockpit, and multi-agent swarm in one sovereign binary.
 
 ---
 
@@ -47,7 +52,7 @@ curl -fsSL https://dl.uikode.com/install.sh | bash
 
 ### ⚡ Quick Start & License Activation
 
-ACS is protected by a proprietary commercial license:
+ACS is protected by a proprietary commercial license. Purchase and manage licenses at the [Commercial License Portal](https://uikode.com/acs):
 
 1. **Activate License**:
    ```bash
@@ -122,6 +127,7 @@ All operations are unified under the modern `acs` command:
 | `acs articles` | Query offline synthesized research and knowledge base |
 | `acs sessions` | Inspect and manage active agent execution sessions |
 | `acs logs` | Tail real-time service logs |
+| `acs adopt` | Fastest repository adoption with AI profiler, guardrails, and animated GUI |
 | `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
 | `acs rules compile-roles` | Compile Gonja Jinja2 role templates into unified agent rules |
 | `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
@@ -130,11 +136,22 @@ All operations are unified under the modern `acs` command:
 
 ### ✨ Architectural Pillars
 
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools and stdio JSON-RPC 2.0 server harness.
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 45 Built-In Core Stdio MCP Tools + 80 CloakBrowser Stealth Sub-Tools over a stdio JSON-RPC 2.0 server harness.
 2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
-5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-
-7. **Anke Command Center & Sovereign Session Bus**: Centralized orchestrator gateway with Anke CEO persona contracts, dual-dispatcher sinks, in-place PTY modal workspaces, and unified `acs:core` namespace management.
+5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit. Run `acs adopt` for the fastest repository adoption with AI profiler and guardrails.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-wave execution tracking.
+7. **Anke Command Center & Sovereign Session Bus**: Centralized orchestrator gateway with Anke CEO persona contracts, dual-dispatcher sinks, in-place PTY modal workspaces, and unified `acs:core` namespace management. Powered by 28 Role Personas based on Jinja2 SSOT (CEO Anke, Architect, Executor, Verifier, Bug Hunter, and more) with strict tool masking.
 8. **Autonomous Dispatch DAG & Security Attestation**: Watchdog-driven DAG unblocker, strict verifier-stamp gates, fail-closed card claims, SLSA provenance tracking, and Sigstore-backed integrity defenses.
+9. **Sovereign Second Brain**: Sub-10ms Contentless Trigram Code Search (<0.5% disk, zero API vector cost) paired with a SQLite FTS5 Memory Engine for instant recall of decisions and milestones.
+10. **Windows Zero-Console Flash Invariant**: All subprocesses run fully hidden via `internal/executil` (`CREATE_NO_WINDOW | DETACHED_PROCESS`) plus Win32 API `SW_HIDE` — no terminal popups, ever.
+11. **SolidJS Web Dashboard**: 22-route local cockpit with 4-Tab Kanban SSOT and Virtual Office (Anke Chat bi-directional IPC full-duplex via SSE) at `http://127.0.0.1:20130`.
+
+---
+
+<div align="center">
+<b>Built for high-velocity software engineers.</b><br>
+🌐 Official Website & Commercial Portal: <a href="https://uikode.com/acs">https://uikode.com/acs</a><br>
+Purchase and manage your license on [ACS Core](https://uikode.com/acs) via the [Official Product Website](https://uikode.com/acs).
+</div>
