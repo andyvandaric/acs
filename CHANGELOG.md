@@ -1,5 +1,36 @@
 # Changelog
 
+## [v1.36.0] - 2026-11-04 — The Sovereign Agentic Architecture Release
+
+### 1. 🛡️ Dual-Runtime Unified Workflow SSOT (`hook-gate-contract/v2`)
+- **Single Canon Contract**: Formalized `hook-gate-contract/v2` across Claude Code and Hermes Agent runtimes, eliminating architectural drift and establishing identical gate enforcement rules.
+- **4-Anchor Dispatch Mandate**: All subagent dispatches require 4 verified anchors (`workspace_path`, `ground_truth`, `file_boundaries`, `template_contracts`) with strict fail-closed rejection on missing or hallucinated boundaries.
+- **3 Execution Tiers**: Enforced binary execution thresholds: Direct Execution (≤100 LOC, single domain, ≤2 files), Tasklist Mode (≤7 files), and Modular PRD Blueprints (`index.md` + granular `phase-*.md` sub-phases).
+- **Dual-Adapter Runtime Parity**:
+  - *Claude Adapter*: 30 blocking hook shims mapped in `agentic-stack/claude/hooks/manifest.json`, validated via two-way `assert-active.mjs` parity gate.
+  - *Hermes Adapter*: `agentic-stack/hermes/plugins/acs-gates/` lifecycle plugin intercepting `pre_tool_call`, delegating directly to 7 Go security gates via `acs __hook exec`.
+- **Buyer Sanitation & Watermark**: Stripped developer identities and offensive directives from `acs-default` buyer profiles, establishing the official production watermark: `⚡ ACS-AGENT · by UIKode Team`.
+- **Skills & MCP Parity**: Synchronized 52/52 SSOT skills with SHA-256 verification and unified multi-server declarations in `.mcp.json`.
+
+### 2. 🧠 Sovereign Second Brain & Memory Synergy
+- **Unified SQLite WAL SSoT**: Consolidated all knowledge, project decisions, and milestones into a single high-performance database (`acs-memory.db`), completely superseding legacy flat-file stores (`.omc/notepad.md`, `.omc/wiki/`).
+- **Sub-Millisecond Code Search**: Native trigram search engine (`search_code`) operating as Tier 1 Primary lookup (<1ms latency) with zero external runtime dependencies.
+- **Hermes Hippocampus Recall Hook**: Capped (≤2KB) non-blocking contextual brief generated at session start via FTS5 query with a strict 200ms deadline.
+- **Unified Knowledge Graph**: Interconnected entity relationships graph (`get_memory_graph`) and cross-referenced research articles (`articles.db`).
+
+### 3. ⚡ Hermes Fleet Hardening & Dynamic Parity Patcher
+- **In-Process Patch Engine**: Automated daemon patcher (`hermes_patches_gateway_parity.go`) applying 5 idempotent anchored patches to maintain delegation inheritance, child process wiring, thinking relays, and machinery silencing after upstream updates.
+- **Branch-Aware Update Guard**: Proactively inspects active git branch (`git rev-parse --abbrev-ref HEAD`), blocking destructive `git reset --hard` on custom user branches.
+- **Zero-Latency Plugin Topology**: Disabled 28 third-party API-dependent plugins (cloud browsers, external image/video generators, 3rd-party web search) across all profiles, cutting startup latency by up to 3x while preserving 100% of native fast tools.
+- **PID-Safe Process Lifecycle**: Re-engineered process supervisor in `components.go` to exclude calling processes from recursive termination.
+
+### 4. 📋 Kanban Governance, Command Center & CLI Runtime
+- **3-Tier Hybrid Anti-Duplication Engine**: Prevents task card duplication using combined Tier 1 FTS5/metadata, Tier 2 Trigram similarity (≥0.70), and Tier 3 BGE-M3 vector embeddings (≥0.75) with offline fallback.
+- **Anke Command Center & PTY Streaming**: Real-time WebSocket terminal modal with session-isolated PTY streams, reactive state management via `@uikode/tide`, and automated blueprint status synchronization.
+- **Zero Console Flashing on Windows**: All subprocesses, scheduled tasks, and daemon bridges execute with `CREATE_NO_WINDOW | DETACHED_PROCESS` via `executil` — 0x terminal popup flash.
+- **Subprocess License Whitelist**: Added `__hook` to public command whitelists in `src/main.go`, preventing automated internal hooks from triggering interactive license validation prompts.
+- **Dynamic Welcome Announcements**: Auto-updating announcement cards (`welcome-v136`) delivered via `/api/announcements` to introduce release features seamlessly to dashboard users.
+
 ## [v1.35.0] - 2026-10-15
 
 ### Added
