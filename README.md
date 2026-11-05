@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.35.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.36.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -125,6 +125,7 @@ All operations are unified under the modern `acs` command:
 | `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
 | `go run -tags buildtools . rules compile-roles` | Build-time pipeline command (invoked by `just rules-sync`) — compiles Gonja Jinja2 role templates; NOT part of the release `acs` binary |
 | `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
+| `acs sessionbus` | Cross-agent session bus messaging, inbox reflex, and claim management |
 
 ---
 
@@ -135,6 +136,6 @@ All operations are unified under the modern `acs` command:
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
 4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
 5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the Kanban cockpit.
-6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive pan-zoom Mermaid diagram engine, commit inspection, dual verification badges, and multi-
-7. **Anke Command Center & Sovereign Session Bus**: Centralized orchestrator gateway with Anke CEO persona contracts, dual-dispatcher sinks, in-place PTY modal workspaces, and unified `acs:core` namespace management.
-8. **Autonomous Dispatch DAG & Security Attestation**: Watchdog-driven DAG unblocker, strict verifier-stamp gates, fail-closed card claims, SLSA provenance tracking, and Sigstore-backed integrity defenses.
+6. **Interactive Kanban & Visual Governance**: Direct card URL resolver, interactive subphase tracking, soft-delete trash bin, and physical blueprint reseed engine.
+7. **Agentic Preset & Endpoint Orchestration**: Standardized EndpointModelPicker with latency tests, custom endpoint routing, hybrid combobox model selector, and Hermes profile configuration.
+8. **Inter-Agent SessionBus & Hook Gate Engine**: Scaled session coordination bus with dual-key prompt heartbeats, tier-based gate contract v2, and memory write guards.
