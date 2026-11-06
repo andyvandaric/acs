@@ -1,5 +1,33 @@
 # Changelog
 
+## [v1.36.1] - 2026-11-06
+
+### Added
+- In-memory TTL cache, model usage structs, and metrics derivation backend logic.
+- `/usage/antigravity-quotas` route with local token usage correlation.
+- `ModelQuotaDetail` struct with isolated 5-hour and weekly quota extraction.
+- Multi-tier contextual phase resolution and wave support with plan fallback in phase locator.
+- `ModelUsageBreakdown` dual-dimension visualization wired into Usage page via `createTide`.
+- `AntigravityQuotaTracker` component with zero-division guard.
+- Account column to `UsageTable` bound to `AntigravityQuotaTracker`.
+- Pre-PRD idea assessment skill `acs-assess`.
+
+### Changed
+- Updated `account quota summary` struct and plan checklist alignment.
+- Bumped version to 1.36.1.
+
+### Fixed
+- Decoupled `9router` and headroom process log pipes from anonymous OS pipes to direct OS file handles.
+- Preserved phase tags and bindings during commit audit and activity correlator commit attachment.
+- Corrected walkthrough section merging and commit accumulation.
+- Added body trailer context to plan sync commit reflex.
+
+### Documentation
+- Added Windows Defender exclusion guide and zero-threat certification.
+- Standardized phase commit tags, kanban pipe tokens, and PRD phase templates.
+- Formalized swarm consortium rules R9/R10, deployment barriers, and Section 6 Traceability Matrix.
+- Integrated R11 autonomous idle beacon reflex into phase specifications.
+
 ## [Unreleased]
 
 ## [v1.36.0] - 2026-11-06

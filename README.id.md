@@ -37,7 +37,6 @@ Pasang biner terpadu `acs` langsung melalui Sovereign CDN:
 ```powershell
 irm https://dl.uikode.com/install.ps1 | iex
 ```
-*Catatan Windows Defender*: Jika muncul peringatan heuristik saat pengunduhan, tambahkan folder ACS ke pengecualian di PowerShell Administrator: `Add-MpPreference -ExclusionPath "$HOME\.acs"`, lalu jalankan kembali perintah di atas. Biner rilis resmi terverifikasi bersih (0 threats) via `MpCmdRun.exe`.
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
