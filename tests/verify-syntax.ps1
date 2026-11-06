@@ -79,9 +79,9 @@ Assert-Test "Dual-track manifest fetch logic is present" {
     $content -match 'Invoke-RestMethod.*\$FALLBACK_MANIFEST_URL'
 }
 
-Assert-Test "Dual-track binary download fallback logic is present" {
-    ($content -match 'Invoke-WebRequest.*\$primaryUrl' -or $content -match 'Get-BytesWithProgress.*\$primaryUrl') -and
-    ($content -match 'Invoke-WebRequest.*\$fallbackUrl' -or $content -match 'Get-BytesWithProgress.*\$fallbackUrl')
+Assert-Test "Authorized ticket stream binary download logic is present" {
+    $content -match 'download/ticket' -and
+    $content -match 'Get-BytesWithProgress.*\$DOWNLOAD_STREAM_URL'
 }
 
 # 4. Security & Integrity verification

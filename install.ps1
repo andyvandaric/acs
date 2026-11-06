@@ -1,12 +1,13 @@
 # install.ps1 - Install ACS for Windows
-# Usage: irm https://dl.uikode.com/acs/install.ps1 | iex
-# Legacy: irm https://dl.uikode.com/install.ps1 | iex
-# Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1
+# Usage: $env:ACS_DOWNLOAD_CODE="<CODE>"; irm https://dl.uikode.com/install.ps1 | iex
+# Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1 -Code <CODE>
 
 [CmdletBinding()]
 param(
     [Alias("v")]
     [string]$Version = $env:ACS_VERSION,
+    [Alias("c", "code")]
+    [string]$DownloadCode = $env:ACS_DOWNLOAD_CODE,
     [Alias("k", "key")]
     [string]$LicenseKey = $env:ACS_LICENSE_KEY,
     [Alias("l", "list")]
@@ -29,19 +30,21 @@ if ($Help) {
     Write-Host "ACS - Universal Installer" -ForegroundColor Cyan
     Write-Host "------------------------------------"
     Write-Host "Usage:"
-    Write-Host "  .\install.ps1 [options]"
-    Write-Host "  irm https://dl.uikode.com/install.ps1 | iex"
+    Write-Host "  .\install.ps1 -Code <CODE> [options]"
+    Write-Host "  `$env:ACS_DOWNLOAD_CODE='<CODE>'; irm https://dl.uikode.com/install.ps1 | iex"
     Write-Host ""
     Write-Host "Options:"
+    Write-Host "  -Code, -c <code-8-chars>   8-character ACS download code from https://uikode.com/member"
     Write-Host "  -Version, -v <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
     Write-Host "  -LicenseKey, -k <key>      ACS license key (or set `$env:ACS_LICENSE_KEY)"
     Write-Host "  -ListVersions, -l          List all available releases on CDN"
     Write-Host "  -Help, -h                  Show this help screen"
     Write-Host ""
     Write-Host "Environment Variables:"
-    Write-Host "  `$env:ACS_VERSION = 'v1.4.0' Pinned version for piped iex execution"
-    Write-Host "  `$env:ACS_LICENSE_KEY = 'KEY' ACS license key for automated activation"
-    Write-Host "  `$env:ACS_LIST = '1'         List available versions"
+    Write-Host "  `$env:ACS_DOWNLOAD_CODE = 'CODE'   8-character single-use code from Member Area"
+    Write-Host "  `$env:ACS_VERSION = 'v1.4.0'       Pinned version for piped iex execution"
+    Write-Host "  `$env:ACS_LICENSE_KEY = 'KEY'      ACS license key for automated activation"
+    Write-Host "  `$env:ACS_LIST = '1'               List available versions"
     Write-Host ""
     return
 }
@@ -106,34 +109,51 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
         Write-Host "  OK PowerShell 7 found at: $pwshPath" -ForegroundColor Green
         Write-Host "  Re-launching installer in pwsh..." -ForegroundColor Cyan
 
-        # Save the installer script to a temp file to avoid re-download issues
-        $tempScript = Join-Path $env:TEMP "acs-install-relaunch.ps1"
+        # Reuse existing script file if running locally, or download to temp if piped
+        $isLocalFile = ($PSCommandPath -and (Test-Path $PSCommandPath))
+        $tempScript = if ($isLocalFile) { $PSCommandPath } else { Join-Path $env:TEMP "acs-install-relaunch.ps1" }
         try {
-            [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
-            try {
-                Invoke-WebRequest -Uri "https://dl.uikode.com/acs/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
-            } catch {
+            if (-not $isLocalFile) {
+                [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
                 try {
-                    Invoke-WebRequest -Uri "https://dl.uikode.com/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                    Invoke-WebRequest -Uri "https://dl.uikode.com/acs/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
                 } catch {
-                    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                    try {
+                        Invoke-WebRequest -Uri "https://dl.uikode.com/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                    } catch {
+                        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1" -OutFile $tempScript -UseBasicParsing -TimeoutSec 30
+                    }
                 }
             }
             $childArgs = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $tempScript)
             if ($Version) { $childArgs += @("-Version", $Version) }
+            if ($DownloadCode) { $childArgs += @("-Code", $DownloadCode) }
+            if ($LicenseKey) { $childArgs += @("-LicenseKey", $LicenseKey) }
             & $pwshPath @childArgs
-            if ($LASTEXITCODE -ne 0) {
-                throw "PowerShell 7 child execution failed with exit code $LASTEXITCODE"
+            $childExit = $LASTEXITCODE
+            if ($childExit -ne 0) {
+                if ($PSCommandPath) {
+                    exit $childExit
+                }
+                return
             }
         } catch {
-            # Fallback: pipe method if file download fails
+            # Fallback: pipe method if script file launch fails completely
             Write-Host "  Retrying with pipe method..." -ForegroundColor Yellow
-            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "try { irm https://dl.uikode.com/install.ps1 | iex } catch { irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex }; if (`$LASTEXITCODE -ne 0) { throw 'Execution failed' }"
+            $pipeEnv = ""
+            if ($DownloadCode) { $pipeEnv += "`$env:ACS_DOWNLOAD_CODE='$DownloadCode'; " }
+            if ($LicenseKey) { $pipeEnv += "`$env:ACS_LICENSE_KEY='$LicenseKey'; " }
+            & $pwshPath -NoProfile -ExecutionPolicy Bypass -Command "$pipeEnv try { irm https://dl.uikode.com/install.ps1 | iex } catch { irm https://raw.githubusercontent.com/andyvandaric/acs/main/install.ps1 | iex }"
             if ($LASTEXITCODE -ne 0) {
-                throw "PowerShell 7 execution failed with exit code $LASTEXITCODE"
+                if ($PSCommandPath) {
+                    exit $LASTEXITCODE
+                }
+                return
             }
         } finally {
-            Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
+            if (-not $isLocalFile) {
+                Remove-Item $tempScript -Force -ErrorAction SilentlyContinue
+            }
         }
 
         # Propagate PATH after pwsh finishes
@@ -152,7 +172,8 @@ if ($PSVersionTable.PSVersion.Major -lt 7) {
 function Install-ACS {
 param(
     [string]$TargetVersion,
-    [string]$LicenseKey
+    [string]$LicenseKey,
+    [string]$DownloadCode
 )
 $ErrorActionPreference = "Stop"
 
@@ -181,6 +202,30 @@ Write-Host ""
 Write-Host "$markBolt ACS - Agnostic Config Suites" -ForegroundColor Cyan
 Write-Host ("-" * 36)
 Write-Host ""
+
+# --- Download Code & License Key Validation (Zero-Leak Gate) -----------------
+if (-not $DownloadCode -and -not $LicenseKey) {
+    if ([Environment]::UserInteractive -and -not [Console]::IsInputRedirected) {
+        Write-Host ">> Masukkan 8-karakter Download Code Anda dari https://uikode.com/member" -ForegroundColor Cyan
+        $entered = Read-Host "Download Code"
+        if ($entered) {
+            $DownloadCode = $entered.Trim().ToUpper()
+        }
+    }
+}
+
+if (-not $DownloadCode -and -not $LicenseKey) {
+    Write-Host ""
+    Write-Host "$script:markErr Download Code diperlukan untuk mengunduh biner resmi ACS Core." -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Panduan Pengambilan Kode:" -ForegroundColor Yellow
+    Write-Host "1. Login ke Member Area: https://uikode.com/member"
+    Write-Host "2. Pada lisensi aktif Anda, klik 'Generate Download Code' (kode 8-karakter, berlaku 15 menit)."
+    Write-Host "3. Jalankan kembali script instalasi berikut di PowerShell:"
+    Write-Host '   $env:ACS_DOWNLOAD_CODE="<KODE_8_KARAKTER>"; irm https://dl.uikode.com/install.ps1 | iex' -ForegroundColor Cyan
+    Write-Host ""
+    throw "Instalasi dibatalkan: Download Code tidak ditemukan."
+}
 
 if ($TargetVersion) {
     Info "Target Version: $tag (Pinned)"
@@ -321,21 +366,58 @@ function Test-Sha256Bytes {
     } finally { $sha.Dispose() }
 }
 
-# --- Download binary (Dual-Track: Primary CDN -> Fallback GitHub) ------------
-# WHY: verify-before-write — SHA256 in-memory via Test-Sha256Bytes SEBELUM tulis disk;
-# tulis-hanya-jika-verified ke staging LOCALAPPDATA (Get-StagingDir).
+# --- Download binary (Authorized Ticket Stream) -----------------------------
+# WHY: Zero-leak gate — direct static downloads are prohibited. Binary is streamed
+# only to clients holding a valid single-use ticket bound to their terminal IP.
 Write-Host ""
 $TMP_DIR = Get-StagingDir
 $TMP_FILE = Join-Path $TMP_DIR $FILE_NAME
 
+$API_BASE = if ($env:ACS_API_URL) { $env:ACS_API_URL.TrimEnd('/') } else { "https://api.uikode.com" }
+Info "Requesting authorized download ticket from $API_BASE..."
+
+$ticketPayload = @{
+    platform = $PLATFORM
+    product = "acs-core"
+}
+if ($DownloadCode) {
+    $ticketPayload["code"] = $DownloadCode.Trim().ToUpper()
+} elseif ($LicenseKey) {
+    $ticketPayload["license_key"] = $LicenseKey.Trim()
+}
+
+$ticketJson = $ticketPayload | ConvertTo-Json -Compress
+$ticketResp = $null
+try {
+    $ticketResp = Invoke-RestMethod -Uri "$API_BASE/api/v1/download/ticket" -Method Post -Body $ticketJson -ContentType "application/json" -TimeoutSec 15
+} catch {
+    $errMsg = $_.Exception.Message
+    try {
+        if ($_.ErrorDetails -and $_.ErrorDetails.Message) {
+            $errJson = $_.ErrorDetails.Message | ConvertFrom-Json
+            if ($errJson.error) { $errMsg = $errJson.error }
+        }
+    } catch {}
+    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+    Err "Gagal mendapatkan izin unduh dari server tiket: $errMsg`n`nPastikan Download Code Anda valid (didapatkan di https://uikode.com/member) dan lisensi berstatus aktif."
+}
+
+if (-not $ticketResp -or -not $ticketResp.success -or -not $ticketResp.data -or -not $ticketResp.data.download_url) {
+    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+    Err "Respon server tiket tidak valid atau tidak memuat URL unduhan."
+}
+
+$downloadPath = $ticketResp.data.download_url
+$DOWNLOAD_STREAM_URL = if ($downloadPath.StartsWith("http")) { $downloadPath } else { "$API_BASE$downloadPath" }
+Ok "Download ticket verified (expires in $($ticketResp.data.expires_in_seconds)s)"
+
+Write-Host ""
+Info "Downloading $FILE_NAME via authorized secure stream..."
 $downloadSuccess = $false
-$primaryUrl = "$PRIMARY_CDN_BASE/$FILE_NAME"
-$fallbackUrl = "$FALLBACK_CDN_BASE/$FILE_NAME"
 $verifiedBytes = $null
 
-Info "Downloading $FILE_NAME from Fast Global CDN..."
 try {
-    $candidate = Get-BytesWithProgress -Url $primaryUrl
+    $candidate = Get-BytesWithProgress -Url $DOWNLOAD_STREAM_URL
     if ($candidate -and $candidate.Length -ge 1000000) {
         if ($EXPECTED_SHA) {
             if (Test-Sha256Bytes -Bytes $candidate -Expected $EXPECTED_SHA) {
@@ -343,44 +425,19 @@ try {
                 $downloadSuccess = $true
             } else {
                 Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-                Err "SHA-256 mismatch on primary CDN! Expected: $EXPECTED_SHA. Aborted before disk write."
+                Err "SHA-256 mismatch! File rusak atau tidak valid. Expected: $EXPECTED_SHA. Aborted before disk write."
             }
         } else {
             $verifiedBytes = $candidate
             $downloadSuccess = $true
         }
     } else {
-        Warn "Primary CDN download failed: file too small or empty."
+        Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+        Err "Unduhan biner gagal: ukuran file terlalu kecil atau kosong."
     }
 } catch {
-    Warn "Primary CDN download failed: $($_.Exception.Message)"
-}
-
-if (-not $downloadSuccess) {
-    Info "Attempting fallback to GitHub Releases ($fallbackUrl)..."
-    try {
-        $candidate = Get-BytesWithProgress -Url $fallbackUrl
-        if ($candidate -and $candidate.Length -ge 1000000) {
-            if ($EXPECTED_SHA) {
-                if (Test-Sha256Bytes -Bytes $candidate -Expected $EXPECTED_SHA) {
-                    $verifiedBytes = $candidate
-                    $downloadSuccess = $true
-                } else {
-                    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-                    Err "SHA-256 mismatch! Expected: $EXPECTED_SHA, aborted before disk write."
-                }
-            } else {
-                $verifiedBytes = $candidate
-                $downloadSuccess = $true
-            }
-        } else {
-            Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-            Err "Download failed from both CDN and GitHub Releases (size check failed)."
-        }
-    } catch {
-        Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
-        Err "Download failed from both CDN and GitHub Releases. Check your connection: $($_.Exception.Message)"
-    }
+    Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
+    Err "Unduhan stream biner gagal: $($_.Exception.Message)"
 }
 
 if (-not $downloadSuccess -or -not $verifiedBytes) {
@@ -637,7 +694,7 @@ if ($setupExitCode -eq 0) {
 
 # --- Run with error capture ---------------------------------------------------
 try {
-    Install-ACS -TargetVersion $Version -LicenseKey $LicenseKey
+    Install-ACS -TargetVersion $Version -LicenseKey $LicenseKey -DownloadCode $DownloadCode
 } catch {
     Write-Host ""
     Write-Host ("-" * 36) -ForegroundColor Red

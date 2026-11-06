@@ -31,16 +31,16 @@ You run AI coding agents to ship world-class software, not to waste hours untang
 
 ### 📦 Installation
 
-Install the unified `acs` binary directly via Sovereign CDN:
+To download and install the official `acs` binary, generate your single-use 8-character **Download Code** from the Member Portal at [uikode.com/member](https://uikode.com/member):
 
 **Windows** (PowerShell Administrator):
 ```powershell
-irm https://dl.uikode.com/install.ps1 | iex
+$env:ACS_DOWNLOAD_CODE="<YOUR_CODE>"; irm https://dl.uikode.com/install.ps1 | iex
 ```
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://dl.uikode.com/install.sh | bash
+ACS_DOWNLOAD_CODE="<YOUR_CODE>" curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
 ---

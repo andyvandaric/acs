@@ -66,11 +66,11 @@ test_dual_track_manifest() {
 }
 assert_test "Dual-track manifest fetch URLs configured" test_dual_track_manifest
 
-test_dual_track_download() {
-  grep -q 'PRIMARY_DOWNLOAD_URL="\${PRIMARY_CDN_BASE}/\${FILE_NAME}"' "${INSTALL_SH}" && \
-  grep -q 'FALLBACK_DOWNLOAD_URL="\${FALLBACK_CDN_BASE}/\${FILE_NAME}"' "${INSTALL_SH}"
+test_authorized_download_ticket() {
+  grep -q 'download/ticket' "${INSTALL_SH}" && \
+  grep -q 'curl.*DOWNLOAD_STREAM_URL' "${INSTALL_SH}"
 }
-assert_test "Dual-track binary download URLs configured" test_dual_track_download
+assert_test "Authorized ticket stream binary download logic configured" test_authorized_download_ticket
 
 # 4. Inline Python Manifest Parser Check
 test_python_parser_syntax() {

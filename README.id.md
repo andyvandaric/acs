@@ -31,16 +31,16 @@ Anda menggunakan agen AI coding untuk membangun software kelas dunia, bukan untu
 
 ### 📦 Instalasi Resmi
 
-Pasang biner terpadu `acs` langsung melalui Sovereign CDN:
+Untuk mengunduh dan memasang biner resmi `acs`, dapatkan 8-karakter **Download Code** dari Member Portal di [uikode.com/member](https://uikode.com/member) (berlaku 15 menit):
 
 **Windows** (PowerShell Administrator):
 ```powershell
-irm https://dl.uikode.com/install.ps1 | iex
+$env:ACS_DOWNLOAD_CODE="<KODE_8_KARAKTER>"; irm https://dl.uikode.com/install.ps1 | iex
 ```
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
-curl -fsSL https://dl.uikode.com/install.sh | bash
+ACS_DOWNLOAD_CODE="<KODE_8_KARAKTER>" curl -fsSL https://dl.uikode.com/install.sh | bash
 ```
 
 ---

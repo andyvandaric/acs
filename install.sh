@@ -29,12 +29,18 @@ warn() { echo "⚠️  $*" >&2; }
 err() { echo "❌ $*" >&2; exit 1; }
 
 VERSION_ARG=""
+CODE_ARG=""
+LICENSE_KEY="${ACS_LICENSE_KEY:-}"
 LIST_VERSIONS=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -v|--version)
       VERSION_ARG="${2:-}"
+      shift 2
+      ;;
+    -c|--code|--download-code)
+      CODE_ARG="${2:-}"
       shift 2
       ;;
     -k|--license-key|--key)
@@ -49,16 +55,18 @@ while [[ $# -gt 0 ]]; do
       echo "ACS — Universal Installer"
       echo ""
       echo "Usage:"
-      echo "  ./install.sh [options]"
-      echo "  curl -fsSL https://dl.uikode.com/install.sh | [VARS] bash [options]"
+      echo "  ./install.sh -c <CODE> [options]"
+      echo "  ACS_DOWNLOAD_CODE='<CODE>' curl -fsSL https://dl.uikode.com/install.sh | bash"
       echo ""
       echo "Options:"
+      echo "  -c, --code <code-8-chars>   8-character ACS download code from https://uikode.com/member"
       echo "  -v, --version <version>     Install or rollback to specific version (e.g. v1.4.0 or 1.4.0)"
       echo "  -k, --license-key <key>     ACS license key (or set ACS_LICENSE_KEY)"
       echo "  -l, --list, --list-versions List all available releases on CDN"
       echo "  -h, --help                  Show this help message"
       echo ""
       echo "Environment variables:"
+      echo "  ACS_DOWNLOAD_CODE=<code8>   8-character single-use code from Member Area"
       echo "  ACS_VERSION=<version>       Target version (for piped curl execution)"
       echo "  ACS_LICENSE_KEY=<key>       ACS license key (for piped curl execution)"
       echo "  ACS_LIST=1                  List versions (for piped curl execution)"
@@ -70,12 +78,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+DOWNLOAD_CODE="${CODE_ARG:-${ACS_DOWNLOAD_CODE:-}}"
+
 if [[ -n "${ACS_VERSION:-}" && -z "$VERSION_ARG" ]]; then
   VERSION_ARG="$ACS_VERSION"
-fi
-
-if [[ -n "${ACS_LICENSE_KEY:-}" && -z "${LICENSE_KEY:-}" ]]; then
-  LICENSE_KEY="$ACS_LICENSE_KEY"
 fi
 
 if [[ "${ACS_LIST:-}" == "1" || "${ACS_LIST:-}" == "true" ]]; then
@@ -141,6 +147,28 @@ echo ""
 echo "⚡ ACS — Agnostic Config Suites"
 echo "────────────────────────────────────"
 echo ""
+
+# ─── Download Code & License Key Validation (Zero-Leak Gate) ─────────────────
+if [[ -z "$DOWNLOAD_CODE" && -z "$LICENSE_KEY" ]]; then
+  if [ -t 0 ]; then
+    echo ">> Masukkan 8-karakter Download Code Anda dari https://uikode.com/member:"
+    read -r entered_code
+    if [[ -n "$entered_code" ]]; then
+      DOWNLOAD_CODE="$(echo "$entered_code" | tr '[:lower:]' '[:upper:]' | xargs)"
+    fi
+  fi
+fi
+
+if [[ -z "$DOWNLOAD_CODE" && -z "$LICENSE_KEY" ]]; then
+  echo "" >&2
+  err "Download Code diperlukan untuk mengunduh biner resmi ACS Core.
+
+Panduan Pengambilan Kode:
+1. Login ke Member Area: https://uikode.com/member
+2. Pada lisensi aktif Anda, klik 'Generate Download Code' (kode 8-karakter, berlaku 15 menit).
+3. Jalankan kembali perintah instalasi berikut di terminal:
+   ACS_DOWNLOAD_CODE=\"<KODE_8_KARAKTER>\" curl -fsSL https://dl.uikode.com/install.sh | bash"
+fi
 
 if [[ -n "$VERSION_ARG" ]]; then
   info "Target Version: ${TAG} (Pinned)"
@@ -247,24 +275,59 @@ fi
 
 info "Artifact: ${FILE_NAME}"
 
-# ─── Download binary directly from Fast CDN with Fallback (Dual-Track) ───────
+# ─── Download binary (Authorized Ticket Stream) ──────────────────────────────
+# WHY: Zero-leak gate — direct static downloads are prohibited. Binary is streamed
+# only to clients holding a valid single-use ticket bound to their terminal IP.
 echo ""
-info "Downloading ${FILE_NAME} from Fast Global CDN..."
-
 TMP_DIR="$(mktemp -d)"
 TMP_FILE="${TMP_DIR}/${FILE_NAME}"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-if [[ -n "$VERSION" && -z "$VERSION_ARG" ]]; then
-  PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/v${VERSION}/${FILE_NAME}"
-else
-  PRIMARY_DOWNLOAD_URL="${PRIMARY_CDN_BASE}/${FILE_NAME}"
-fi
-FALLBACK_DOWNLOAD_URL="${FALLBACK_CDN_BASE}/${FILE_NAME}"
+API_BASE="${ACS_API_URL:-https://api.uikode.com}"
+API_BASE="${API_BASE%/}"
+info "Requesting authorized download ticket from ${API_BASE}..."
 
-if ! curl -fsSL --connect-timeout 15 --max-time 120 "${PRIMARY_DOWNLOAD_URL}" -o "${TMP_FILE}"; then
-  warn "Primary CDN download failed. Trying GitHub Releases fallback..."
-  curl -fsSL --connect-timeout 15 --max-time 120 "${FALLBACK_DOWNLOAD_URL}" -o "${TMP_FILE}" || err "Download failed from both CDN and GitHub Releases."
+if [[ -n "$DOWNLOAD_CODE" ]]; then
+  REQ_PAYLOAD="{\"code\":\"${DOWNLOAD_CODE}\",\"platform\":\"${PLATFORM}\",\"product\":\"acs-core\"}"
+else
+  REQ_PAYLOAD="{\"license_key\":\"${LICENSE_KEY}\",\"platform\":\"${PLATFORM}\",\"product\":\"acs-core\"}"
+fi
+
+TICKET_JSON="$(curl -fsSL --connect-timeout 10 --max-time 20 \
+  -X POST "${API_BASE}/api/v1/download/ticket" \
+  -H "Content-Type: application/json" \
+  -d "$REQ_PAYLOAD" 2>/dev/null || true)"
+
+DOWNLOAD_PATH="$("$PY_CMD" -c "
+import sys, json
+try:
+    data = json.loads(sys.stdin.read())
+    if data.get('success') and 'data' in data:
+        print(data['data'].get('download_url', ''))
+    else:
+        err_msg = data.get('error', 'Respon server tidak valid')
+        print('ERR:' + str(err_msg))
+except Exception as e:
+    print('ERR:' + str(e))
+" <<< "$TICKET_JSON" 2>/dev/null || true)"
+
+if [[ "$DOWNLOAD_PATH" == ERR:* || -z "$DOWNLOAD_PATH" ]]; then
+  ERR_MSG="${DOWNLOAD_PATH#ERR:}"
+  err "Gagal mendapatkan izin unduh dari server tiket: ${ERR_MSG:-Kode tidak valid atau server tidak merespons}.
+Pastikan Download Code Anda valid (didapatkan di https://uikode.com/member) dan lisensi berstatus aktif."
+fi
+
+if [[ "$DOWNLOAD_PATH" == http* ]]; then
+  DOWNLOAD_STREAM_URL="$DOWNLOAD_PATH"
+else
+  DOWNLOAD_STREAM_URL="${API_BASE}${DOWNLOAD_PATH}"
+fi
+
+ok "Download ticket verified"
+info "Downloading ${FILE_NAME} via authorized secure stream..."
+
+if ! curl -fsSL --connect-timeout 15 --max-time 180 "${DOWNLOAD_STREAM_URL}" -o "${TMP_FILE}"; then
+  err "Unduhan stream biner gagal. Silakan coba kembali dengan kode baru dari Member Area."
 fi
 
 if [[ ! -f "$TMP_FILE" ]]; then
