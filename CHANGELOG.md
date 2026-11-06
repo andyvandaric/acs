@@ -1,5 +1,35 @@
 # Changelog
 
+## [v1.37.0] - 2026-11-06
+
+### Added
+- Tabbed navigation and project configuration parity UI.
+- Upstream endpoint configuration with auth tokens and live validation for projects.
+- Panic shield protection on the `mcp serve` loop.
+- 16MB stdio scanner buffer with non-fatal recovery mechanism.
+- Subprocess stdout and stderr stream isolation during installation.
+- Modular package boundary claim guard enforcement.
+
+### Changed
+- Extracted `ProjectMcpServerGrid` component to satisfy the 500 LOC architectural limit.
+- Modularized reusable Claude endpoint authentication and diagnostic components.
+- Synchronized upstream rulesets to embedded and downstream mirror targets.
+
+### Fixed
+- Isolated `acs mcp serve` background processes from build and release kill sweeps.
+- Calibrated headroom startup safety timeout threshold to 45 seconds in `ComponentCard`.
+- Cleared stale headroom user-stopped markers when terminating orphaned instances.
+- Normalized commit identifiers with phase suffix trimming and workspace anchor resolution.
+- Made `ninerouter` test suites hermetic and suppressed console popup windows on spawn.
+- Handled update statuses as check-only operations across end-to-end tests.
+- Refreshed embed cache by touching `main.go` prior to `garble` builds.
+- Suppressed `contextcheck` linter warnings on `planSyncer.run`.
+
+### Documentation
+- Standardized installation instructions to require download codes and documented anti-leak measures.
+- Documented blueprint phase gates for smart pre-commits, MCP stdio resilience, and tabbed global/project configuration parity.
+- Finalized documentation for Defender false-positive remediation and 9router zombie process recovery.
+
 ## [v1.36.1] - 2026-11-06
 
 ### Added

@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.36.1-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.37.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -81,6 +81,7 @@ ACS is protected by a proprietary commercial license:
 - **Local Data Sovereignty**: All prompt histories, project metrics, and configurations stay 100% on your local machine. Zero external data sharing.
 - **Silent Background Operation**: Services and background tools run completely in the background without intrusive terminal popups or desktop interruptions.
 - **Resilient Service Architecture**: Dashboard and proxy services run with independent lifecycles to ensure continuous uptime during maintenance.
+- **Panic Shield & Boundary Protection**: MCP serve loop protected with panic shield, isolated subprocess execution streams, and modular package boundary claim guards.
 
 ---
 
@@ -132,10 +133,7 @@ All operations are unified under the modern `acs` command:
 
 ### ✨ Architectural Pillars
 
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools and stdio JSON-RPC 2.0 server harness.
+1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools, 16MB stdio scanner buffers with non-fatal recovery, project upstream endpoint support, and stdio JSON-RPC 2.0 server harness.
 2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
 3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
-4. **Autonomous Quota Relay (EDF)**: Smart scheduler prioritizes expiring AI provider quotas to maximize usage efficiency.
-5. **Universal Project Auto-Discovery**: Automatically recognizes existing workspaces and surfaces active PRD blueprints in the cockpit.
-6. **Antigravity Quota Tracking & Dual-Dimension Analytics**: Live tracking of 5H and weekly quotas correlated with local token usage, supplemented by dual-dimension model usage breakdowns.
-7. **Contextual Phase & Wave Resolution**: Multi-tier contextual phase locator supporting wave execution and automatic plan fallback.
+4. **Agentic Tabbed Navigation & Config Parity**: Unified cockpit UI featuring tabbed navigation and real-time project configuration parity.
