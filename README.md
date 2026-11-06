@@ -37,6 +37,7 @@ Install the unified `acs` binary directly via Sovereign CDN:
 ```powershell
 irm https://dl.uikode.com/install.ps1 | iex
 ```
+*Note for Windows Defender*: If a heuristic alert appears during download, add the ACS directory to Defender exclusions in an Administrator PowerShell: `Add-MpPreference -ExclusionPath "$HOME\.acs"` then rerun the command. Official release binaries are verified clean (0 threats) via `MpCmdRun.exe`.
 
 **Linux / macOS** (Bash / Zsh):
 ```bash
