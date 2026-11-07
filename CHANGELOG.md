@@ -11,7 +11,7 @@
 - Modular package boundary claim guard enforcement.
 
 ### Changed
-- Extracted `ProjectMcpServerGrid` component to satisfy the 500 LOC architectural limit.
+- Extracted `ProjectMcpServerGrid` component for improved modularity.
 - Modularized reusable Claude endpoint authentication and diagnostic components.
 - Synchronized upstream rulesets to embedded and downstream mirror targets.
 
@@ -23,7 +23,7 @@
 - Made `ninerouter` test suites hermetic and suppressed console popup windows on spawn.
 - Handled update statuses as check-only operations across end-to-end tests.
 - Refreshed embed cache by touching `main.go` prior to `garble` builds.
-- Suppressed `contextcheck` linter warnings on `planSyncer.run`.
+- Suppressed `context-propagation` linter warnings on `task-synchronizer.run`.
 
 ### Documentation
 - Standardized installation instructions to require download codes and documented anti-leak measures.
@@ -40,7 +40,7 @@
 - `ModelUsageBreakdown` dual-dimension visualization wired into Usage page via `createTide`.
 - `AntigravityQuotaTracker` component with zero-division guard.
 - Account column to `UsageTable` bound to `AntigravityQuotaTracker`.
-- Pre-PRD idea assessment skill `acs-assess`.
+- Pre-assessment idea assessment skill `acs-assess`.
 
 ### Changed
 - Updated `account quota summary` struct and plan checklist alignment.
@@ -54,7 +54,7 @@
 
 ### Documentation
 - Added Windows Defender exclusion guide and zero-threat certification.
-- Standardized phase commit tags, kanban pipe tokens, and PRD phase templates.
+- Standardized phase commit tags, kanban pipe tokens, and feature plan phase templates.
 - Formalized swarm consortium rules R9/R10, deployment barriers, and Section 6 Traceability Matrix.
 - Integrated R11 autonomous idle beacon reflex into phase specifications.
 
@@ -71,7 +71,7 @@
 - **9router Auto-Heal**: Implemented a 5-streak graduated escalation ladder for daemon zombie recovery, adaptive backoff, and pipeline deploy-lock sentinels.
 - **Session Bus & Coordination**: Introduced session heartbeat renewals, recipient-validated message queues, dual-key session registration, and unread inbox coordination banners.
 - **Licensing & Modular Addons**: Added Addon Studio storefront, local trial claims schema (migration 43), freemium quota enforcement, and Ed25519 payload verification.
-- **Kanban Upgrades**: Soft-delete trash bin with 30-day retention (migration 45/47), blueprint reseed engine, commit trailer parsing for automated phase status updates, and segmented pill deck navigation.
+- **Kanban Upgrades**: Soft-delete trash bin with 30-day retention (migration 45/47), blueprint reseed engine, metadata tag parsing for automated phase status updates, and segmented pill deck navigation.
 - **Spatial Studio & Code Intel**: Added 3D WebGL Virtual Office spatial view, fast trigram code search (`/api/memory/code-search`), and real-time codebase index watcher.
 
 ### Changed
@@ -117,67 +117,67 @@
 ### Added
 
 - send X-Turnstile-Verified and X-Client-Source headers on forward
-- narrow Revoke to ErrEvicted and preserve cache on ErrTransport [phase-02]
-- introduce ErrEvicted and ErrTransport typed errors [phase-02]
-- sweep stale temp orphans on atomic cache write [phase-01]
-- Wave 3 Chunk 3A done-column windowing and load more pagination
-- implement LoadDegradedCache and per-type degradedTTL [phase-01]
-- Wave 2 Chunk 2B consume light projection and streamline polling in KanbanStandalone
-- extract signatureValid and isFresh predicates [phase-01]
-- Wave 2 Chunk 2A add light parameter support in frontend API
-- detect suite drift between disk AST and kanban card [phase-02]
-- Wave 1 Chunk 1B HTTP route light projection parameter
-- real markdown parser for SuiteConvergenceVerdict + guarded card sync [phase-02]
-- Wave 1 Chunk 1A lightweight board projection query
+- narrow Revoke to ErrEvicted and preserve cache on ErrTransport
+- introduce ErrEvicted and ErrTransport typed errors
+- sweep stale temp orphans on atomic cache write
+- done-column windowing and load more pagination
+- implement LoadDegradedCache and per-type degradedTTL
+- consume light projection and streamline polling in KanbanStandalone
+- extract signatureValid and isFresh predicates
+- add light parameter support in frontend API
+- detect suite drift between disk AST and kanban card
+- HTTP route light projection parameter
+- real markdown parser for SuiteConvergenceVerdict + guarded card sync
+- lightweight board projection query
 - add acs:core FQN display labels and input normalization (Option C Phase 02/03)
-- precise open-task display with status and titles [phase-02]
-- report-only stray sweeper + invariant lock test (chunk 3G)
-- codify naming rule and lock with parity guardrail (Wave 1)
-- prune stale mirror rows with TTL and title capture [phase-01]
-- prune stale mirror rows with TTL and title capture [phase-01]
+- precise open-task display with status and titles
+- report-only stray sweeper + invariant lock test
+- codify naming rule and lock with parity guardrail
+- prune stale mirror rows with TTL and title capture
+- prune stale mirror rows with TTL and title capture
 - route secret-unset feedback submit via VerifyFeedbackToken central fallback
-- thread project through kanban hook payload (chunk 3C)
-- Anke Command Center copy + error and focus states (Wave 3 P03 C3)
-- chat help/status replies via SafeGo (Wave 2 P02 C2)
-- Sidebar nav as Anke Command Center (Wave 3 P03 C2)
-- wire DualDispatcher with real sinks (Wave 2 P02 C1)
-- remount Gateways route as Anke Command Center (Wave 3 P03 C1)
-- default role to Anke CEO persona (Wave 1 C2)
-- Anke CEO persona contract default (Wave 1 C1)
+- thread project through kanban hook payload
+- Anke Command Center copy + error and focus states
+- chat help/status replies via SafeGo
+- Sidebar nav as Anke Command Center
+- wire DualDispatcher with real sinks
+- remount Gateways route as Anke Command Center
+- default role to Anke CEO persona
+- Anke CEO persona contract default
 - sitekey refresh hook with license-key fetch and atomic cache update
 - central verify HTTP client with hook wiring
 - central verify fallback branch for secret-unset path
-- canonical WS route + in-place PTY modal (PTY Wave 2)
-- CLI commits merge-safe preserves phase suffix (Wave 2 P10 chunk 10d)
-- append-only per-phase commit entries (Wave 2 P10 chunk 10c)
-- dynamic project resolution for commit attachment (Wave 2 P10 chunk 10b)
-- preserve empty checklist subphase headers in merge (Wave 2 P09 chunk 9b)
-- dual-tag commit phase parse (Wave 2 P10 chunk 10a)
-- warning-only blueprint format lint (Phase 11 chunk 11c)
-- fail-closed project resolver helper (Wave 2 Chunk 2A)
-- parse per-phase author/confidence/date (Wave 2 P09 chunk 9a)
-- attributed sweeper close via validated path (Wave 1 P01 gate-A)
-- SessionStart auto-register write path with kill-switch (Phase 03 chunk 3B)
-- pin identity-resolution contract with typed absent signal (bus Phase 03 chunk 3A)
-- wire generic browser fallback in stdio serve (Phase 02 chunk 2-2)
-- miss-then-fallback hook in stdio server (Phase 02 chunk 2-1)
-- register remaining 18 browser lazy stubs (Wave 1 chunk 1A)
-- lazy browser call-path stubs in stdio serve (chunk B)
-- retryable lazy browser sync with partial merge (chunk A)
+- canonical WS route + in-place PTY modal (PTY
+- CLI commits merge-safe preserves phase suffix
+- append-only per-phase commit entries
+- dynamic project resolution for commit attachment
+- preserve empty checklist subphase headers in merge
+- dual-tag commit phase parse
+- warning-only blueprint format lint (Phase 11
+- fail-closed project resolver helper
+- parse per-phase author/confidence/date
+- attributed sweeper close via validated path gate-A)
+- SessionStart auto-register write path with kill-switch (Phase 03
+- pin identity-resolution contract with typed absent signal (bus Phase 03
+- wire generic browser fallback in stdio serve (Phase 02-2)
+- miss-then-fallback hook in stdio server (Phase 02-1)
+- register remaining 18 browser lazy stubs
+- lazy browser call-path stubs in stdio serve
+- retryable lazy browser sync with partial merge
 - P08 C8c E2E loop coverage + fallback flip-site gate
 - P08 C8b verifier-stamp issuance helper
 - anke chat disconnect-surfacing + bounded manual retry + anke content-guard
 - P08 C8a strict autoCompleteCard gate
 - P08 C8a2 strict verifier-stamp token
 - P07 7c repo-root layered workspace default
-- unify role tools to acs:core FQN (Wave 1)
+- unify role tools to acs:core FQN
 - split roster/locks loading into initial + refresh contract
 - P07 name normalization case-preserved post-5d
 - P07 register working_dir metadata absolute
 - wire turnstile cache seed after license gate
-- offline log-and-continue for turnstile seed (Phase-05 Chunk 3)
-- idempotent turnstile seed with TTL skip (Phase-05 Chunk 2)
-- seed turnstile cache after license gate (Phase-05 Chunk 1)
+- offline log-and-continue for turnstile seed (sub-phase
+- idempotent turnstile seed with TTL skip (sub-phase
+- seed turnstile cache after license gate (sub-phase
 - add SessionStart verify-only core pin reconciler (2B)
 - P05 modal PTY disabled-gate + opener WS retarget
 - P05 PTY card gate in_progress-only
@@ -185,7 +185,7 @@
 - P04 preview SWR nav back-next a11y GREEN
 - dual-builder DefaultSiteKey ldflags parity from provisioning env
 - wire ldflags tier-1 to exported DefaultSiteKey, remove W1 stub
-- declare exported DefaultSiteKey var for ldflags injection (Phase-02 C1)
+- declare exported DefaultSiteKey var for ldflags injection (sub-phase C1)
 - ready auto-claim PATCH atomic ready->in_progress fail-closed (C1-T6)
 - emit source label on feedback config endpoint (C3)
 - per-env ConfigDir cache store with TTL and corrupt-degrade (C2)
@@ -194,59 +194,59 @@
 - ready-card claim advisory fail-open (C1-T5)
 - hard-block Agent dispatch on backlog card (C1-T4)
 - Phase 07 C1-T3 no-card warn banner fail-open (rev2)
-- Phase 03 Chunk 4 dispatcher-DAG unblocker wiring
+- Phase 03 dispatcher-DAG unblocker wiring
 - wire AV + Sign gates post-P01
 - Wave A P01 lifecycle + P02 verdict GREEN
-- wire UpdateTaskExecution claim audit row (Wave 0 0c)
-- add UpdateTaskStatusAttributed audited wrapper (Wave 0 0b)
+- wire UpdateTaskExecution claim audit row 0c)
+- add UpdateTaskStatusAttributed audited wrapper 0b)
 - local daemon curl allowlist with git-guard tests (P06-B2)
 - keyless sigstore gate with SLSA provenance (P05 C1-C2)
 - AV pre-submit gate with EICAR fixtures (P04 C1-C2)
-- Phase 03 Chunk 3 zero-wait autonomous watchdog heartbeat-aware + privileged release
-- Phase 03 Chunk 1 DAG unblocker + visited-set fail-closed (Wave 2 v1.34.0)
-- Phase 04 Chunk 3 modal provenance tab integration (Wave 4 v1.34.0)
-- Phase 04 Chunk 2 provenance tab timeline component and tests (Wave 4 v1.34.0)
-- Phase 01 Chunk 4 sub-agent spawn auto-registration wiring (Wave 4 v1.34.0)
-- Phase 07 Chunk 3 kanban-ready fallback, governance clause, persona intent transformer (Wave 4 v1.34.0)
-- Phase 06 Chunk 3 PostTool agent attestation writer handler and tests (Wave 4 v1.34.0)
-- Phase 08 Chunk 2 orchestrator mandate routing matrix wiring (Wave 4 v1.34.0)
-- Phase 01 Chunk 2 MCP bus_lock/bus_unlock wrapper over Chunk 1 (Wave 4 v1.34.0)
-- Phase 01 Chunk 3b handler fail-closed, required fields, and 2-plane ping (Wave 4 v1.34.0)
-- Phase 02 Chunk 3 provenance store + dedup escapeLikePattern (Wave 4 v1.34.0)
-- Phase 01 Chunk 3a identity fail-closed + single-CEO guard (Wave 4 v1.34.0)
-- Phase 02 Chunk 2 provenance domain model + timeline (Wave 4 v1.34.0)
-- Phase 02 qualify LSP refs to acs-lsp namespace (Wave 4)
-- Phase 07 Chunk 2 wire kanban-workflow-gate registration (Wave 4 v1.34.0)
+- Phase 03 zero-wait autonomous watchdog heartbeat-aware + privileged release
+- Phase 03 DAG unblocker + visited-set fail-closed v1.34.0)
+- Phase 04 modal provenance tab integration v1.34.0)
+- Phase 04 provenance tab timeline component and tests v1.34.0)
+- Phase 01 sub-agent spawn auto-registration wiring v1.34.0)
+- Phase 07 kanban-ready fallback, governance clause, persona intent transformer v1.34.0)
+- Phase 06 PostTool agent attestation writer handler and tests v1.34.0)
+- Phase 08 orchestrator mandate routing matrix wiring v1.34.0)
+- Phase 01 MCP bus_lock/bus_unlock wrapper over v1.34.0)
+- Phase 01 handler fail-closed, required fields, and 2-plane ping v1.34.0)
+- Phase 02 provenance store + dedup escapeLikePattern v1.34.0)
+- Phase 01 identity fail-closed + single-CEO guard v1.34.0)
+- Phase 02 provenance domain model + timeline v1.34.0)
+- Phase 02 qualify LSP refs to acs-lsp namespace
+- Phase 07 wire kanban-workflow-gate registration v1.34.0)
 - block conventional LSP namespace, redirect to acs-lsp
-- Phase 04 Chunk 1 provenance contracts & agentic API client (Wave 3 v1.34.0)
+- Phase 04 provenance contracts & agentic API client v1.34.0)
 - upload release assets to gh releases and fail-closed gate_publish
-- Phase 03 Chunk 2 autonomous dispatch reflex gate + quarantine (Wave 2 v1.34.0)
-- Phase 06 Chunk 2 manager delegation T04-T18 matrix (Wave 2 v1.34.0)
-- Phase 07 Chunk 1 slice kanban-workflow-gate C1-T1 C1-T2 + test
-- phase-06 chunk 1 manager delegation gate
-- Phase 01 Chunk 1 chunk lock engine + test (Wave 1 v1.34.0)
-- Phase 08 Chunk 1a persona struct triggers + roster router (Wave 1 v1.34.0)
+- Phase 03 autonomous dispatch reflex gate + quarantine v1.34.0)
+- Phase 06 manager delegation T04-T18 matrix v1.34.0)
+- Phase 07 slice kanban-workflow-gate C1-T1 C1-T2 + test
+- sub-phase manager delegation gate
+- Phase 01 engine + test v1.34.0)
+- Phase 08 persona struct triggers + roster router v1.34.0)
 
 ### Fixed
 
-- accept numeric or string id in RemoteFeedbackResponse [phase-01]
-- auto-start idle reaper on manual instances + inject interval [phase-01]
+- accept numeric or string id in RemoteFeedbackResponse
+- auto-start idle reaper on manual instances + inject interval
 - align remote feedback endpoints with /api/v1/feedback Hono route
-- synchronize atomicWriteFile and harden Windows retry loop [phase-01]
-- resolve golangci-lint contextcheck and hermetic central verify test double
-- RecordTaskActivityAdvanced skip-with-warning on empty project (chunk 3F)
-- emit audit row on status transition [phase-02]
-- require explicit project in kanban-protocol fragment (chunk 3E)
-- fail-closed blueprint-sync project resolution (chunk 3B)
-- hold phase-04 IN PROGRESS to disarm reconcile re-flip
-- fail-closed blueprint-scanner project resolution (chunk 3A)
+- synchronize atomicWriteFile and harden Windows retry loop
+- resolve golangci-lint context-propagation and hermetic central verify test double
+- RecordTaskActivityAdvanced skip-with-warning on empty project
+- emit audit row on status transition
+- require explicit project in kanban-protocol fragment
+- fail-closed blueprint-sync project resolution
+- hold sub-phase IN PROGRESS to disarm reconcile re-flip
+- fail-closed blueprint-scanner project resolution
 - fail-closed commit mint via resolver (guard 2C)
 - background warm-up kills first-navigate cold-start hang
-- 426 passthrough with contextual log (PTY Wave 1)
+- 426 passthrough with contextual log (PTY
 - fail-closed attach defaults via resolver (guard 2B-ii)
 - align TestRecordCommitTask seed with commit project resolver
 - thread resolver through commit lookups, align attach seeds (guard 2B-i)
-- fail-closed nil ctx in ExecuteTool clears contextcheck lint
+- fail-closed nil ctx in ExecuteTool clears context-propagation lint
 - fail-closed supersede + upsert-to-done guard stops auto-flip
 - extract browser fallback out of register body (deferred wiring)
 - enforce cancellation at ExecuteTool dispatch boundary (stdio resilience file 2a)
@@ -254,9 +254,9 @@
 - session/tree-bound commit attach guard (P2)
 - reject empty-tabs kanban artifacts at tool layer (P0)
 - read-merge guard for UpdateTaskArtifacts empty wipe (P0)
-- remove nil-ctx guard violating contextcheck (1C follow-up)
+- remove nil-ctx guard violating context-propagation (1C follow-up)
 - skip frozen feedback E2E/Routes assertions under prod tag
-- revert worker allowlists to inherit-all, debugger proper 17-entry allowlist (Wave 5)
+- revert worker allowlists to inherit-all, debugger proper 17-entry allowlist
 - skip async-flush submit test under prod tag
 - log dev-fallback-secret submits where live-reachable
 - skip dev-default turnstile assertions under prod tag
@@ -266,62 +266,62 @@
 - gate MCP respawn with per-server watchdog circuit breaker (2C)
 - wire server siteKey prop into FeedbackModal Turnstile gate
 - log dev fail-open passthrough with token-requirement parity note
-- gate dev test-token bypass behind env.IsDev()
-- suppress contextcheck false-positive on reconcileOneCommit call
+- gate dev test-token bypass behind env.IsDev
+- suppress context-propagation false-positive on reconcileOneCommit call
 - gate autoCompleteCard with blueprint approval + attributed lifecycle
 - deep-link ?tab= opens Walkthrough directly + validated tab param
 - fail-closed blueprint guard in ReconcileTasks sweeper + regression test
-- audit INSERT + migrate task_status_audit in EnsureTaskTable (Wave 0 0a)
+- audit INSERT + migrate task_status_audit in EnsureTaskTable 0a)
 - protect done cards from backlog demotion via upsert/merge
 - idempotent UTF-8 stdio guard with regression tests (P06-B1)
 - schtasks least-privilege and zero-console docstrings (P03-stealth C1-C2)
 - deterministic gates seed and canonical acs resolve (P01 C1-C4)
 - Phase 07 Ch2b rev2 daemon-free block-path tests + P07 doc sync
-- Phase 07 Chunk 2 prd-phase-commit-enforcer HookInput compile fix
+- Phase 07 phase-commit-enforcer HookInput compile fix
 - require AgentID ownership on same-ID CEO reaffirm (GAP-2)
 - reject live-row upsert hijack on RegisterSession (GAP-1)
 - enforce caller ownership on UpdateHeartbeat (B3)
-- Phase 02 Chunk 1b migration count 40 to 41 (Wave 2 v1.34.0)
-- Phase 02 Chunk 1a provenance schema migration #41 + test (Wave 1 v1.34.0)
+- Phase 02 migration count 40 to 41 v1.34.0)
+- Phase 02 provenance schema migration #41 + test v1.34.0)
 
 ### Changed
 
 - split refresh hook into orchestrator plus fetch helper
-- split scanner sync+tree pure-move (Phase 11 chunk 11d2)
-- split scanner frontmatter+subphase pure-move (Phase 11 chunk 11d1)
-- regenerate downstream mirrors with acs:core FQN (Wave 4)
+- split scanner sync+tree pure-move (Phase 11
+- split scanner frontmatter+subphase pure-move (Phase 11
+- regenerate downstream mirrors with acs:core FQN
 - remove eager local-server init from registerMCPServeHandlers (1B)
 - defer bridge sync to lazy path in newLocalMCPServer (1A)
 - remove test-out.txt junk + honest IN PROGRESS virtual-office index (#11 #12)
 - triage stray suites Task #4 (9 files, 0 deleted)
 - remove legit_promoter tick, keep proper reconcile paths
 - B3 target annotation (P06-B3)
-- sync downstream mirrors after acs-lsp namespace qualification (Wave 4 follow-up)
+- sync downstream mirrors after acs-lsp namespace qualification follow-up)
 - remove root pollution logs and task dumps
-- Phase 03 Chunk 2b migrate to DispatchReadyTasks direct path (Wave 3 v1.34.0)
+- Phase 03 migrate to DispatchReadyTasks direct path v1.34.0)
 
 ### Documentation
 
-- reconcile master PRD blueprints, audit suites, and project memory
+- reconcile master feature plan blueprints, audit suites, and project memory
 - reconcile blueprints to DONE with full commit evidence
-- certify Hard Gate 1B pass 97% and harden phase-06 verify regex
-- mark acs-core-namespace Option C PRD and sub-phases as completed
+- certify Hard Gate 1B pass 97% and harden sub-phase verify regex
+- mark acs-core-namespace Option C feature plan and sub-phases as completed
 - Hard Gate 1B re-audit sync, confidence 98.9% (acs-core-namespace)
 - reconcile blueprint to live ground truth (Gate-1B PASS 97%)
 - mark sub-phases completed for session-bus auto-registration
 - commit Session-Bus Auto-Registration REV 2 blueprint and phase specs
 - add operator recovery runbook and CLI bootstrap spec (Phase 02)
-- document Tier 4 per-scenario reachability for browser fallback (Wave 4 chunk 4B2)
-- document Tier 4 per-agent reachability for search fallback (Wave 2 chunk 2C)
+- document Tier 4 per-scenario reachability for browser fallback
+- document Tier 4 per-agent reachability for search fallback
 - note scanner-COMPLETED unreachable for prose-only phases (P3)
 - Wave D P08 DONE with evidence
 - virtual-office closeout upgrade 77 to 98 percent readiness
-- record rules-sync purge amendment in phase-02 (Wave 4 closeout)
-- unify on-demand skills to acs:core Tier-1 (Wave 3)
-- unify MCP tool references to acs:core (Wave 2)
+- record rules-sync purge amendment in sub-phase closeout)
+- unify on-demand skills to acs:core Tier-1
+- unify MCP tool references to acs:core
 - Wave D P06/P07 DONE with evidence
 - turnstile buyer-permanent FINAL-FROZEN suite
-- erratum exit-list lines post-2D shift (phase-03)
+- erratum exit-list lines post-2D shift
 - P06/P07 persistence DoD tmux supervisor resume
 - refresh P06/P07 stale headers + gateway-only CLI
 - document acs-mcp-local legacy vs core pin contract (2D)
@@ -333,8 +333,8 @@
 - Full-DoD evidence rev2 hookengine build+suite, race deferred CI
 - P03 DoD probe-GREEN + coverage-keep
 - P03 IN PROGRESS wiring e62c8c0f + phase table
-- remediate phase-02 R3 + phase-03 R4 to live AST ground truth
-- remediate index R1 + phase-01 R2 pointers to live AST ground truth
+- remediate sub-phase R3 + sub-phase R4 to live AST ground truth
+- remediate index R1 + sub-phase R2 pointers to live AST ground truth
 - sync index.md wave-status honest + phase table
 - remediate P07-P08 to honest status + audit evidence
 - remediate P05-P06 to honest NOT STARTED + audit evidence
@@ -342,7 +342,7 @@
 - remediate P03-P04 to honest NOT STARTED + audit evidence
 - remediate P01-P02 to honest IN PROGRESS + audit evidence
 - promote STAMP PASS 2026-10-13 with verifier evidence
-- resync honest Wave 5 breakdown task-1791692043314821100
+- resync honest breakdown task-1791692043314821100
 - normalize confidence to pending Gate1B honest basis
 - erratum nominal-vs-split eval/state + race BLOCKED jujur
 - normalize confidence HIGH to 97% with Gate1B basis
@@ -354,19 +354,19 @@
 - merge supply-chain signing + WDSI SOP (P04/P05 SOP-final)
 - reconcile phase claims vs git reality (P03/P04 GAPs, index DONE flip, 41e5d074 mapping)
 - Task #16 agents-registry three-layer table + decision tree
-- stamp Phase 00 DONE Wave 0 floor
+- stamp Phase 00 DONE floor
 - sync confidence 97 round-3 CONFIRMED
 - persist kanban-realtime-ssot phases + wild-done index (Wave B gate)
 - stamp 7 phase files SUPERSEDED, zero pending checklist
-- fix Glob-empty claim rev2 REVISE 94% (Wave 0 unblock)
+- fix Glob-empty claim rev2 REVISE 94% unblock)
 - stamp Phase 03 DONE Chunk4 wiring GREEN
 - stamp Phase 08 COMPLETED verdict-6 STAMP PASS
 - gate-close hygiene confidence HIGH plus evidence
 - stamp Phase 04 COMPLETED 31/31 with STAMP PASS
-- Phase 03 Chunk 3 STAMP PASS watchdog 5 passing tests
+- Phase 03 STAMP PASS watchdog 5 passing tests
 - stamp Phase 01 DONE with DoD evidence
-- Phase 04 Chunk 3 VERIFIED with 24 passing tests evidence
-- Phase 07 Ch2b STAMP PASS prd-phase-commit-enforcer rev2
+- Phase 04 VERIFIED with 24 passing tests evidence
+- Phase 07 Ch2b STAMP PASS phase-commit-enforcer rev2
 - correct garble seed docstring to acs-stable-v1 SSOT
 - Phase 08 status and C6 evidence sync with roster refs
 - close GAP2 3 blockers with DoD ticks and verdicts (defender-fp-zero-cost)
@@ -376,13 +376,13 @@
 - Phase 06 evidence sync, 21 DoD boxes ticked, HOLD IN PROGRESS
 - Phase 05 flip COMPLETED on Opus STAMP + CEO ruling
 - cite ad47b09c P03-Chunk3 Evidence
-- record RED-ONLY gate Chunk 1 obsolete
-- promote phase-02 to DONE (verifier STAMP)
-- sync phase-02 status, confidence basis, known gaps
+- record RED-ONLY gate obsolete
+- promote sub-phase to DONE (verifier STAMP)
+- sync sub-phase status, confidence basis, known gaps
 - catat status P03-Chunk1 + P07-Chunk2 terverifikasi (3317bf38, 16cb8b62)
 - commit suite artefak Phase 02 + reconciler header
 - document B3/GAP-1/GAP-2 ownership enforcements (B2)
-- mark phase-01-hook-redirect COMPLETED
+- mark sub-phase-hook-redirect COMPLETED
 
 ## [v1.33.0] - 2026-10-12
 
@@ -392,8 +392,8 @@ Highlights: v1.33.0 adds the gate-tiga-lapis tiering classifier with attestation
 
 ### Added
 - Gate-tiga-lapis tiering: static+semantic signals with RED-first tests, historic signal with 800ms timeout guard, composite classifier with escalation-only retier.
-- Attestation recorder with verdict feedback loop; impact-scan classifier wired to recorder (wave 2.5).
-- Turnstile hardening: Wave 1 sitekey config + fail-closed, Wave 2 sitekey injection + rating removal (Gate 3 PASS).
+- Attestation recorder with verdict feedback loop; impact-scan classifier wired to recorder.5).
+- Turnstile hardening: sitekey config + fail-closed, sitekey injection + rating removal (Gate 3 PASS).
 - bus_heartbeat unread_count (Opsi A, verifier PASS).
 - Blueprint-sync provenance (Opsi A): seed Author/AuthorSession on create with fill-only backfill.
 - Negative guardrail against grep path patterns.
@@ -408,13 +408,13 @@ Highlights: v1.33.0 adds the gate-tiga-lapis tiering classifier with attestation
 - Tracker SSOT accuracy: fence-aware parseSubPhaseFile and done-gate Status extraction, table-row Status parsing, strip parenthetical blocker clauses before status match, normalize commit_ids, sync linked commit filter tabs to modular sub-phase SSOT, enforce sub-phase completion SSOT over index.md, align outer badge to DB provenance SSOT.
 - Blueprint preview: preserve markdown line-breaks on metadata headers and format preview metadata.
 - Release and SLA stability: raise UPX timeout for large garbled Linux binary, skip UPX on Windows to avoid Defender false-positive, derive release target dir from repo root, deflake memory-graph SLA via warmup query + best-of-5, best-of-5 LatencyBudget for Windows cold cost, resolve 3 FAIL takeover from aborted worker.
-- Isolate RED heartbeat gate behind redgate build tag; suppress contextcheck on frozen ReconcileBlueprints call; calm stop-waiting message with open task summary.
+- Isolate RED heartbeat gate behind redgate build tag; suppress context-propagation on frozen ReconcileBlueprints call; calm stop-waiting message with open task summary.
 
 ### Documentation
-- Gate 1 complete: all 8 phases verified >=97%; upgrade phase-06/07/08 to 97% with chunk splits, lifecycle, and DoD.
-- New suites: gate-tiga-lapis blueprint suite, feedback-turnstile-sitekey-hardening v1.0.0 (Gate 1B CERTIFY 97%); drift-hardening revised to done-state v1.2.0; office presence idle-visibility PRD as DRAFT (exec ON HOLD).
-- Gate1B upkeep: phase chunk merges/splits, provenance schema, confidence headers, boundary sync, and lifecycle mandates.
-- Discipline and reconciliation: Grep vs Glob and memory recall discipline, completed-state reconciliation for acs-runtime-verification, agentic-phase-commit-enforcer, and kanban suites; Wave 1/Wave 2 Gate 3 PASS tracking.
+- Gate 1 complete: all 8 phases verified >=97%; upgrade sub-phase/07/08 to 97% with, lifecycle, and DoD.
+- New suites: gate-tiga-lapis blueprint suite, feedback-turnstile-sitekey-hardening v1.0.0 (Gate 1B CERTIFY 97%); drift-hardening revised to done-state v1.2.0; office presence idle-visibility feature plan as DRAFT (exec ON HOLD).
+- Gate1B upkeep: phase/splits, provenance schema, confidence headers, boundary sync, and lifecycle mandates.
+- Discipline and reconciliation: Grep vs Glob and memory recall discipline, completed-state reconciliation for acs-runtime-verification, agentic-phase-commit-enforcer, and kanban suites;/ Gate 3 PASS tracking.
 
 ## [v1.32.0] - 2026-10-11
 
@@ -463,8 +463,8 @@ v1.32.0 delivers canonical session identity and storage with ResolveSessionID an
 - Build/CI: extend prod garble timeout to 300s, golangci-lint to 5m, vendor `x-sync` + CI hardening; stop `ExecuteMemorySummary` closing shared pool; support `vpsease` naming in `deploy_cdn`.
 
 ### Documentation
-- Reconcile PRD blueprints to completed: provenance, session-identity, kanban-acs-tasks-migration, feedback-hub/Turnstile, blueprint-path normalization, CPU governor, hook IPC fastpath, dashboard respawn, browser E2E, manager role guard, chat-gateway, virtual-office, license-redirect, hook/gate hardening, code-index/shell SSOT.
-- Author master blueprints for manager guard, direct-execution gate calibration, and post-v1.29.0 wiring; standardize legit-auto-promoter PRD to blueprint standard; add v1.30.0 release notes, Telegram/war-room guidebooks, per-product installer URLs, and walkthrough evidence.
+- Reconcile feature plan blueprints to completed: provenance, session-identity, kanban-acs-tasks-migration, feedback-hub/Turnstile, blueprint-path normalization, CPU governor, hook IPC fastpath, dashboard respawn, browser E2E, manager role guard, chat-gateway, virtual-office, license-redirect, hook/gate hardening, code-index/shell SSOT.
+- Author master blueprints for manager guard, direct-execution gate calibration, and post-v1.29.0 wiring; standardize legit-auto-promoter feature plan to blueprint standard; add v1.30.0 release notes, Telegram/war-room guidebooks, per-product installer URLs, and walkthrough evidence.
 
 ## [v1.31.0] - 2026-10-08
 
@@ -532,18 +532,18 @@ v1.32.0 delivers canonical session identity and storage with ResolveSessionID an
 
 ### Documentation
 
-- mark Phase 04 and master virtual office PRD as completed
+- mark Phase 04 and master virtual office feature plan as completed
 - mark virtual office remote terminal and tmux resilience suite as done
 - update Phase 03 status to done in virtual office terminal plan
 - update Phase 02 status to done in virtual office terminal plan
 - establish virtual office remote terminal and tmux resilience blueprint
 - complete virtual-office-chat-fix plan and reconciliation
-- reconcile PRD blueprints and test audit logs
+- reconcile feature plan blueprints and test audit logs
 - update release changelog and agent configurations
 - reconcile license-validation-redirect-suite completion (Wave C PASS)
-- add license-validation-redirect-suite PRD blueprint (Gate 1B certified 97%)
-- remediate phase-04 log to partial
-- fill phase-04 execution log + KPI rollup
+- add license-validation-redirect-suite feature plan blueprint (Gate 1B certified 97%)
+- remediate sub-phase log to partial
+- fill sub-phase execution log + KPI rollup
 - per-product canonical installer URLs
 - point install URLs to CDN
 
@@ -616,7 +616,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 
 ### Documentation
 - Guides modernize to ACS standard across getting-started with acs binary naming, deep-dive, and developer reference waves 1 through 3.
-- Handbooks add Claude Code CLI v2.1.289 developer and member editions, usage guide for stack and kanban, and single-anke-per-project PRD suite.
+- Handbooks add Claude Code CLI v2.1.289 developer and member editions, usage guide for stack and kanban, and single-anke-per-project feature plan suite.
 - Rules codify 4-tier execution hierarchy, MCP-first invariant, audit-first architect dispatch, Authoritative English, builtin MCP over curl, and upstream SSOT modification guidelines.
 - Suites certify session bus visual and PTY, session auto-fork and compact, memory semantic dedupe and anti-drift, usage transparency, persona 3-tier governance, fleet hardening, and Windows autoheal as 100% completed.
 
@@ -735,7 +735,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - add SessionBusDBPath facade with env override and unit tests (chunk-1a)
 - compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
 - enforce 25-persona threshold and correct SSOT terminology in sync script
-- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate copywriter and campaign-specialist to jinja2 templates (sub-phase-chunk-1.6)
 - migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
 - migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
 - bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
@@ -745,20 +745,20 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - exclude builtin stdio harness and tri-engine browser from project mcp generation
 - isolate 9router from stop-all and generic stack stop
 - cleanup duplicate mcp selection cards and enforce locked master harness
-- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
-- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
-- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
-- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
-- implement unified ingestion pipeline and atomic batch ingester (phase-04)
-- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
-- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
-- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
-- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
-- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- re-route AsyncWriter batch commit to IngestBatch
+- implement acs memory unwire and deprecate physical markdown sync
+- implement physical markdown unwire engine and tombstone daemon
+- re-route InsertEntry to IngestEntry unified pipeline
+- implement unified ingestion pipeline and atomic batch ingester
+- integrate tier 3 semantic contradiction engine and relations graph
+- implement tier 3 semantic contradiction engine
+- implement dual-trigger watchdog and in-loop rolling context injection
+- implement tier 1 dedupe schema migration and store integration
+- integrate EvaluateSyntacticSupersede and multi-tag guard
 - standardize official claude plugin ssot to acs@uikode
-- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
-- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
-- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- implement tier 1 exact dedupe core engine
+- implement rich precompact serialization and rolling fence format (sub-phase-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (sub-phase-chunk-1.1,1.2)
 - standardize acs:core plugin registration to acs@acs with automated marketplace schema
 
 ### Fixed
@@ -797,8 +797,8 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 
 ### Documentation
 
-- certify system-resilience phase-01 service-resilience 100% completed
-- certify system-resilience phase-02 local-release 100% completed
+- certify system-resilience sub-phase service-resilience 100% completed
+- certify system-resilience sub-phase local-release 100% completed
 - certify installer-claude-windows-16bit-autoheal suite 100% completed
 - certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
 - draft sessionbus-direct-chat-and-pm-dispatch blueprint
@@ -807,49 +807,49 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
 - author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
 - certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
-- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- mark sub-phase session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
 - certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
-- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- reconcile 35-tool deep audit and hardening feature plan to 100% completed
 - certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
-- reconcile phase-04 snapshot handoff engine to completed
+- reconcile sub-phase snapshot handoff engine to completed
 - reconcile admin-session-and-license-device-lock suite to completed
 - certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
-- reconcile phase-03 frontend usage page to completed
-- reconcile phase-01 and phase-02 usage transparency backend to completed
-- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
-- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- reconcile sub-phase frontend usage page to completed
+- reconcile sub-phase and sub-phase usage transparency backend to completed
+- apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
+- update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
 - reconcile phase-02b dynamic operator identity resolution to completed
-- reconcile phase-03 conpty isolation and desk binding to completed
+- reconcile sub-phase conpty isolation and desk binding to completed
 - author phase-02b dynamic operator identity resolution chain blueprint
-- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
-- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
-- reconcile phase-02 fleet disallowed-tools and routing to completed
+- refine sub-phase with universal stack-agnostic dual-engine task dispatcher
+- expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile sub-phase fleet disallowed-tools and routing to completed
 - mark Phase 02 dashboard studio page as completed
-- reconcile phase-01 base role and boundary enforcement to completed
-- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- reconcile sub-phase base role and boundary enforcement to completed
+- author master feature plan and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
 - mark obsolete persona blueprints as superseded by jinja2 3-tier governance
 - reconcile completed statuses for session bus, agent harness, and memory dedupe suites
 - align visual studio to /office route with IAP beta preview badge and modular licensing
-- remediate session bus visual and pty PRD with REST contracts and P9 chunks
-- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- remediate session bus visual and pty feature plan with REST contracts and P9 chunks
+- author modular feature plan for session bus visual studio and pty streaming (phases 01-04)
 - document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
-- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- remediate acs-session-bus feature plan to 98.8% confidence score across 5 sub-phases
 - modularize acs-session-bus blueprint into 5 granular phases
 - document v1.20.0 release notes
 - enrich second brain and investigation rulesets and register 48 skills in skills-index
 - certify acs-session-auto-fork-and-compact suite 100% completed
-- reconcile track 9 phase-04 verification and e2e to completed
-- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- reconcile track 9 sub-phase verification and e2e to completed
+- reconcile track 9 sub-phase dual-trigger watchdog to completed
 - certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
-- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 sub-phase verification and benchmarks to completed
 - reconcile track 10 master plan phase 05 to completed
-- reconcile track 10 phase-05 markdown unwire to completed
-- reconcile track 10 phase-03 semantic contradiction to completed
-- mark track-10 phase-01 completed with empirical certification
-- reconcile track 10 phase-02 syntactic jaccard to completed
+- reconcile track 10 sub-phase markdown unwire to completed
+- reconcile track 10 sub-phase semantic contradiction to completed
+- mark track-10 sub-phase completed with empirical certification
+- reconcile track 10 sub-phase syntactic jaccard to completed
 - record cross-session reports and peer readiness on ceo board
-- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- assign track 9 to idle sibling sessions f4a0f1f6 and 9ff9b53a
 - establish central anke hq session and sibling sessions control board
 
 ## [v1.27.0] - 2026-10-04
@@ -966,7 +966,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - add SessionBusDBPath facade with env override and unit tests (chunk-1a)
 - compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
 - enforce 25-persona threshold and correct SSOT terminology in sync script
-- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate copywriter and campaign-specialist to jinja2 templates (sub-phase-chunk-1.6)
 - migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
 - migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
 - bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
@@ -976,20 +976,20 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - exclude builtin stdio harness and tri-engine browser from project mcp generation
 - isolate 9router from stop-all and generic stack stop
 - cleanup duplicate mcp selection cards and enforce locked master harness
-- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
-- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
-- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
-- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
-- implement unified ingestion pipeline and atomic batch ingester (phase-04)
-- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
-- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
-- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
-- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
-- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- re-route AsyncWriter batch commit to IngestBatch
+- implement acs memory unwire and deprecate physical markdown sync
+- implement physical markdown unwire engine and tombstone daemon
+- re-route InsertEntry to IngestEntry unified pipeline
+- implement unified ingestion pipeline and atomic batch ingester
+- integrate tier 3 semantic contradiction engine and relations graph
+- implement tier 3 semantic contradiction engine
+- implement dual-trigger watchdog and in-loop rolling context injection
+- implement tier 1 dedupe schema migration and store integration
+- integrate EvaluateSyntacticSupersede and multi-tag guard
 - standardize official claude plugin ssot to acs@uikode
-- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
-- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
-- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- implement tier 1 exact dedupe core engine
+- implement rich precompact serialization and rolling fence format (sub-phase-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (sub-phase-chunk-1.1,1.2)
 - standardize acs:core plugin registration to acs@acs with automated marketplace schema
 
 ### Fixed
@@ -1028,8 +1028,8 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 
 ### Documentation
 
-- certify system-resilience phase-01 service-resilience 100% completed
-- certify system-resilience phase-02 local-release 100% completed
+- certify system-resilience sub-phase service-resilience 100% completed
+- certify system-resilience sub-phase local-release 100% completed
 - certify installer-claude-windows-16bit-autoheal suite 100% completed
 - certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
 - draft sessionbus-direct-chat-and-pm-dispatch blueprint
@@ -1038,49 +1038,49 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
 - author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
 - certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
-- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- mark sub-phase session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
 - certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
-- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- reconcile 35-tool deep audit and hardening feature plan to 100% completed
 - certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
-- reconcile phase-04 snapshot handoff engine to completed
+- reconcile sub-phase snapshot handoff engine to completed
 - reconcile admin-session-and-license-device-lock suite to completed
 - certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
-- reconcile phase-03 frontend usage page to completed
-- reconcile phase-01 and phase-02 usage transparency backend to completed
-- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
-- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- reconcile sub-phase frontend usage page to completed
+- reconcile sub-phase and sub-phase usage transparency backend to completed
+- apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
+- update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
 - reconcile phase-02b dynamic operator identity resolution to completed
-- reconcile phase-03 conpty isolation and desk binding to completed
+- reconcile sub-phase conpty isolation and desk binding to completed
 - author phase-02b dynamic operator identity resolution chain blueprint
-- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
-- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
-- reconcile phase-02 fleet disallowed-tools and routing to completed
+- refine sub-phase with universal stack-agnostic dual-engine task dispatcher
+- expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile sub-phase fleet disallowed-tools and routing to completed
 - mark Phase 02 dashboard studio page as completed
-- reconcile phase-01 base role and boundary enforcement to completed
-- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- reconcile sub-phase base role and boundary enforcement to completed
+- author master feature plan and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
 - mark obsolete persona blueprints as superseded by jinja2 3-tier governance
 - reconcile completed statuses for session bus, agent harness, and memory dedupe suites
 - align visual studio to /office route with IAP beta preview badge and modular licensing
-- remediate session bus visual and pty PRD with REST contracts and P9 chunks
-- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- remediate session bus visual and pty feature plan with REST contracts and P9 chunks
+- author modular feature plan for session bus visual studio and pty streaming (phases 01-04)
 - document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
-- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- remediate acs-session-bus feature plan to 98.8% confidence score across 5 sub-phases
 - modularize acs-session-bus blueprint into 5 granular phases
 - document v1.20.0 release notes
 - enrich second brain and investigation rulesets and register 48 skills in skills-index
 - certify acs-session-auto-fork-and-compact suite 100% completed
-- reconcile track 9 phase-04 verification and e2e to completed
-- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- reconcile track 9 sub-phase verification and e2e to completed
+- reconcile track 9 sub-phase dual-trigger watchdog to completed
 - certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
-- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 sub-phase verification and benchmarks to completed
 - reconcile track 10 master plan phase 05 to completed
-- reconcile track 10 phase-05 markdown unwire to completed
-- reconcile track 10 phase-03 semantic contradiction to completed
-- mark track-10 phase-01 completed with empirical certification
-- reconcile track 10 phase-02 syntactic jaccard to completed
+- reconcile track 10 sub-phase markdown unwire to completed
+- reconcile track 10 sub-phase semantic contradiction to completed
+- mark track-10 sub-phase completed with empirical certification
+- reconcile track 10 sub-phase syntactic jaccard to completed
 - record cross-session reports and peer readiness on ceo board
-- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- assign track 9 to idle sibling sessions f4a0f1f6 and 9ff9b53a
 - establish central anke hq session and sibling sessions control board
 
 ## [v1.26.0] - 2026-10-04
@@ -1197,7 +1197,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - add SessionBusDBPath facade with env override and unit tests (chunk-1a)
 - compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
 - enforce 25-persona threshold and correct SSOT terminology in sync script
-- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate copywriter and campaign-specialist to jinja2 templates (sub-phase-chunk-1.6)
 - migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
 - migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
 - bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
@@ -1207,20 +1207,20 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - exclude builtin stdio harness and tri-engine browser from project mcp generation
 - isolate 9router from stop-all and generic stack stop
 - cleanup duplicate mcp selection cards and enforce locked master harness
-- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
-- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
-- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
-- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
-- implement unified ingestion pipeline and atomic batch ingester (phase-04)
-- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
-- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
-- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
-- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
-- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- re-route AsyncWriter batch commit to IngestBatch
+- implement acs memory unwire and deprecate physical markdown sync
+- implement physical markdown unwire engine and tombstone daemon
+- re-route InsertEntry to IngestEntry unified pipeline
+- implement unified ingestion pipeline and atomic batch ingester
+- integrate tier 3 semantic contradiction engine and relations graph
+- implement tier 3 semantic contradiction engine
+- implement dual-trigger watchdog and in-loop rolling context injection
+- implement tier 1 dedupe schema migration and store integration
+- integrate EvaluateSyntacticSupersede and multi-tag guard
 - standardize official claude plugin ssot to acs@uikode
-- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
-- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
-- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- implement tier 1 exact dedupe core engine
+- implement rich precompact serialization and rolling fence format (sub-phase-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (sub-phase-chunk-1.1,1.2)
 - standardize acs:core plugin registration to acs@acs with automated marketplace schema
 
 ### Fixed
@@ -1259,7 +1259,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 
 ### Documentation
 
-- certify system-resilience phase-02 local-release 100% completed
+- certify system-resilience sub-phase local-release 100% completed
 - certify installer-claude-windows-16bit-autoheal suite 100% completed
 - certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
 - draft sessionbus-direct-chat-and-pm-dispatch blueprint
@@ -1268,49 +1268,49 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
 - author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
 - certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
-- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- mark sub-phase session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
 - certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
-- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- reconcile 35-tool deep audit and hardening feature plan to 100% completed
 - certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
-- reconcile phase-04 snapshot handoff engine to completed
+- reconcile sub-phase snapshot handoff engine to completed
 - reconcile admin-session-and-license-device-lock suite to completed
 - certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
-- reconcile phase-03 frontend usage page to completed
-- reconcile phase-01 and phase-02 usage transparency backend to completed
-- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
-- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- reconcile sub-phase frontend usage page to completed
+- reconcile sub-phase and sub-phase usage transparency backend to completed
+- apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
+- update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
 - reconcile phase-02b dynamic operator identity resolution to completed
-- reconcile phase-03 conpty isolation and desk binding to completed
+- reconcile sub-phase conpty isolation and desk binding to completed
 - author phase-02b dynamic operator identity resolution chain blueprint
-- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
-- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
-- reconcile phase-02 fleet disallowed-tools and routing to completed
+- refine sub-phase with universal stack-agnostic dual-engine task dispatcher
+- expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile sub-phase fleet disallowed-tools and routing to completed
 - mark Phase 02 dashboard studio page as completed
-- reconcile phase-01 base role and boundary enforcement to completed
-- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- reconcile sub-phase base role and boundary enforcement to completed
+- author master feature plan and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
 - mark obsolete persona blueprints as superseded by jinja2 3-tier governance
 - reconcile completed statuses for session bus, agent harness, and memory dedupe suites
 - align visual studio to /office route with IAP beta preview badge and modular licensing
-- remediate session bus visual and pty PRD with REST contracts and P9 chunks
-- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- remediate session bus visual and pty feature plan with REST contracts and P9 chunks
+- author modular feature plan for session bus visual studio and pty streaming (phases 01-04)
 - document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
-- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- remediate acs-session-bus feature plan to 98.8% confidence score across 5 sub-phases
 - modularize acs-session-bus blueprint into 5 granular phases
 - document v1.20.0 release notes
 - enrich second brain and investigation rulesets and register 48 skills in skills-index
 - certify acs-session-auto-fork-and-compact suite 100% completed
-- reconcile track 9 phase-04 verification and e2e to completed
-- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- reconcile track 9 sub-phase verification and e2e to completed
+- reconcile track 9 sub-phase dual-trigger watchdog to completed
 - certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
-- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 sub-phase verification and benchmarks to completed
 - reconcile track 10 master plan phase 05 to completed
-- reconcile track 10 phase-05 markdown unwire to completed
-- reconcile track 10 phase-03 semantic contradiction to completed
-- mark track-10 phase-01 completed with empirical certification
-- reconcile track 10 phase-02 syntactic jaccard to completed
+- reconcile track 10 sub-phase markdown unwire to completed
+- reconcile track 10 sub-phase semantic contradiction to completed
+- mark track-10 sub-phase completed with empirical certification
+- reconcile track 10 sub-phase syntactic jaccard to completed
 - record cross-session reports and peer readiness on ceo board
-- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- assign track 9 to idle sibling sessions f4a0f1f6 and 9ff9b53a
 - establish central anke hq session and sibling sessions control board
 
 ## [v1.25.0] - 2026-10-04
@@ -1427,7 +1427,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - add SessionBusDBPath facade with env override and unit tests (chunk-1a)
 - compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
 - enforce 25-persona threshold and correct SSOT terminology in sync script
-- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate copywriter and campaign-specialist to jinja2 templates (sub-phase-chunk-1.6)
 - migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
 - migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
 - bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
@@ -1437,20 +1437,20 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - exclude builtin stdio harness and tri-engine browser from project mcp generation
 - isolate 9router from stop-all and generic stack stop
 - cleanup duplicate mcp selection cards and enforce locked master harness
-- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
-- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
-- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
-- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
-- implement unified ingestion pipeline and atomic batch ingester (phase-04)
-- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
-- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
-- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
-- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
-- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- re-route AsyncWriter batch commit to IngestBatch
+- implement acs memory unwire and deprecate physical markdown sync
+- implement physical markdown unwire engine and tombstone daemon
+- re-route InsertEntry to IngestEntry unified pipeline
+- implement unified ingestion pipeline and atomic batch ingester
+- integrate tier 3 semantic contradiction engine and relations graph
+- implement tier 3 semantic contradiction engine
+- implement dual-trigger watchdog and in-loop rolling context injection
+- implement tier 1 dedupe schema migration and store integration
+- integrate EvaluateSyntacticSupersede and multi-tag guard
 - standardize official claude plugin ssot to acs@uikode
-- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
-- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
-- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- implement tier 1 exact dedupe core engine
+- implement rich precompact serialization and rolling fence format (sub-phase-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (sub-phase-chunk-1.1,1.2)
 - standardize acs:core plugin registration to acs@acs with automated marketplace schema
 
 ### Fixed
@@ -1488,7 +1488,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 
 ### Documentation
 
-- certify system-resilience phase-02 local-release 100% completed
+- certify system-resilience sub-phase local-release 100% completed
 - certify installer-claude-windows-16bit-autoheal suite 100% completed
 - certify sessionbus-direct-chat-and-pm-dispatch suite 100% completed
 - draft sessionbus-direct-chat-and-pm-dispatch blueprint
@@ -1497,49 +1497,49 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
 - author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
 - certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
-- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- mark sub-phase session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
 - certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
-- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- reconcile 35-tool deep audit and hardening feature plan to 100% completed
 - certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
-- reconcile phase-04 snapshot handoff engine to completed
+- reconcile sub-phase snapshot handoff engine to completed
 - reconcile admin-session-and-license-device-lock suite to completed
 - certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
-- reconcile phase-03 frontend usage page to completed
-- reconcile phase-01 and phase-02 usage transparency backend to completed
-- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
-- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- reconcile sub-phase frontend usage page to completed
+- reconcile sub-phase and sub-phase usage transparency backend to completed
+- apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
+- update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
 - reconcile phase-02b dynamic operator identity resolution to completed
-- reconcile phase-03 conpty isolation and desk binding to completed
+- reconcile sub-phase conpty isolation and desk binding to completed
 - author phase-02b dynamic operator identity resolution chain blueprint
-- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
-- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
-- reconcile phase-02 fleet disallowed-tools and routing to completed
+- refine sub-phase with universal stack-agnostic dual-engine task dispatcher
+- expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile sub-phase fleet disallowed-tools and routing to completed
 - mark Phase 02 dashboard studio page as completed
-- reconcile phase-01 base role and boundary enforcement to completed
-- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- reconcile sub-phase base role and boundary enforcement to completed
+- author master feature plan and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
 - mark obsolete persona blueprints as superseded by jinja2 3-tier governance
 - reconcile completed statuses for session bus, agent harness, and memory dedupe suites
 - align visual studio to /office route with IAP beta preview badge and modular licensing
-- remediate session bus visual and pty PRD with REST contracts and P9 chunks
-- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- remediate session bus visual and pty feature plan with REST contracts and P9 chunks
+- author modular feature plan for session bus visual studio and pty streaming (phases 01-04)
 - document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
-- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- remediate acs-session-bus feature plan to 98.8% confidence score across 5 sub-phases
 - modularize acs-session-bus blueprint into 5 granular phases
 - document v1.20.0 release notes
 - enrich second brain and investigation rulesets and register 48 skills in skills-index
 - certify acs-session-auto-fork-and-compact suite 100% completed
-- reconcile track 9 phase-04 verification and e2e to completed
-- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- reconcile track 9 sub-phase verification and e2e to completed
+- reconcile track 9 sub-phase dual-trigger watchdog to completed
 - certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
-- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 sub-phase verification and benchmarks to completed
 - reconcile track 10 master plan phase 05 to completed
-- reconcile track 10 phase-05 markdown unwire to completed
-- reconcile track 10 phase-03 semantic contradiction to completed
-- mark track-10 phase-01 completed with empirical certification
-- reconcile track 10 phase-02 syntactic jaccard to completed
+- reconcile track 10 sub-phase markdown unwire to completed
+- reconcile track 10 sub-phase semantic contradiction to completed
+- mark track-10 sub-phase completed with empirical certification
+- reconcile track 10 sub-phase syntactic jaccard to completed
 - record cross-session reports and peer readiness on ceo board
-- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- assign track 9 to idle sibling sessions f4a0f1f6 and 9ff9b53a
 - establish central anke hq session and sibling sessions control board
 
 ## [v1.24.0] - 2026-10-04
@@ -1652,7 +1652,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - add SessionBusDBPath facade with env override and unit tests (chunk-1a)
 - compile and mirror all 25 unified personas with Second Brain harness reflex and hook watchdog addendum
 - enforce 25-persona threshold and correct SSOT terminology in sync script
-- migrate copywriter and campaign-specialist to jinja2 templates (phase-01-chunk-1.6)
+- migrate copywriter and campaign-specialist to jinja2 templates (sub-phase-chunk-1.6)
 - migrate security-reviewer and growth-strategist to jinja2 and enforce english SSOT header
 - migrate researcher, browser, devtools-optimizer, and ui-designer to jinja2 templates
 - bind cliconfig.MemoryDBPath to compile-roles and add unit tests (chunk-3.2)
@@ -1662,20 +1662,20 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - exclude builtin stdio harness and tri-engine browser from project mcp generation
 - isolate 9router from stop-all and generic stack stop
 - cleanup duplicate mcp selection cards and enforce locked master harness
-- re-route AsyncWriter batch commit to IngestBatch (phase-04-writer)
-- implement acs memory unwire and deprecate physical markdown sync (phase-05-chunk-05-b)
-- implement physical markdown unwire engine and tombstone daemon (phase-05-chunk-05-a)
-- re-route InsertEntry to IngestEntry unified pipeline (phase-04-wrapper)
-- implement unified ingestion pipeline and atomic batch ingester (phase-04)
-- integrate tier 3 semantic contradiction engine and relations graph (phase-03)
-- implement tier 3 semantic contradiction engine (phase-03-chunk-3a)
-- implement dual-trigger watchdog and in-loop rolling context injection (phase-03)
-- implement tier 1 dedupe schema migration and store integration (phase-01-chunk-01-c)
-- integrate EvaluateSyntacticSupersede and multi-tag guard (phase-02)
+- re-route AsyncWriter batch commit to IngestBatch
+- implement acs memory unwire and deprecate physical markdown sync
+- implement physical markdown unwire engine and tombstone daemon
+- re-route InsertEntry to IngestEntry unified pipeline
+- implement unified ingestion pipeline and atomic batch ingester
+- integrate tier 3 semantic contradiction engine and relations graph
+- implement tier 3 semantic contradiction engine
+- implement dual-trigger watchdog and in-loop rolling context injection
+- implement tier 1 dedupe schema migration and store integration
+- integrate EvaluateSyntacticSupersede and multi-tag guard
 - standardize official claude plugin ssot to acs@uikode
-- implement tier 1 exact dedupe core engine (phase-01-chunk-01-a)
-- implement rich precompact serialization and rolling fence format (phase-02-chunk-2.1,2.2)
-- implement POST /api/memory/snapshot endpoint for in-loop session compaction (phase-01-chunk-1.1,1.2)
+- implement tier 1 exact dedupe core engine
+- implement rich precompact serialization and rolling fence format (sub-phase-chunk-2.1,2.2)
+- implement POST /api/memory/snapshot endpoint for in-loop session compaction (sub-phase-chunk-1.1,1.2)
 - standardize acs:core plugin registration to acs@acs with automated marketplace schema
 
 ### Fixed
@@ -1720,49 +1720,49 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - certify virtual-office-terminal-modal-and-anke-ai-wiring suite 100% completed
 - author virtual-office-terminal-modal-and-anke-ai-wiring blueprint
 - certify virtual-office-real-wiring-and-full-duplex-sessionbus suite 100% completed
-- mark phase-02 session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
+- mark sub-phase session auto-discovery engine as completednCo-Authored-By: Claude Code <noreply@anthropic.com>
 - certify kanban-awareness-dual-db-unification-and-ceo-governance suite 100% completed
-- reconcile 35-tool deep audit and hardening PRD to 100% completed
+- reconcile 35-tool deep audit and hardening feature plan to 100% completed
 - certify acs-persona-3tier-governance-and-fleet-hardening suite 100% completed
-- reconcile phase-04 snapshot handoff engine to completed
+- reconcile sub-phase snapshot handoff engine to completed
 - reconcile admin-session-and-license-device-lock suite to completed
 - certify acs-dashboard-usage-transparency suite 100% completed across all 4 phases
-- reconcile phase-03 frontend usage page to completed
-- reconcile phase-01 and phase-02 usage transparency backend to completed
-- apply Hard Gate 1B patch delta to phase-04 blueprint (8 chunks, 99.2% confidence)
-- update phase-04 blueprint with strict P9 chunks, schema migration, and KPIs
+- reconcile sub-phase frontend usage page to completed
+- reconcile sub-phase and sub-phase usage transparency backend to completed
+- apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
+- update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
 - reconcile phase-02b dynamic operator identity resolution to completed
-- reconcile phase-03 conpty isolation and desk binding to completed
+- reconcile sub-phase conpty isolation and desk binding to completed
 - author phase-02b dynamic operator identity resolution chain blueprint
-- refine phase-04 with universal stack-agnostic dual-engine task dispatcher
-- expand phase-04 to stack-agnostic autonomous task dispatcher and handoff engine
-- reconcile phase-02 fleet disallowed-tools and routing to completed
+- refine sub-phase with universal stack-agnostic dual-engine task dispatcher
+- expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
+- reconcile sub-phase fleet disallowed-tools and routing to completed
 - mark Phase 02 dashboard studio page as completed
-- reconcile phase-01 base role and boundary enforcement to completed
-- author master prd and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
+- reconcile sub-phase base role and boundary enforcement to completed
+- author master feature plan and 5 sub-phases for acs-persona-3tier-governance-and-fleet-hardening
 - mark obsolete persona blueprints as superseded by jinja2 3-tier governance
 - reconcile completed statuses for session bus, agent harness, and memory dedupe suites
 - align visual studio to /office route with IAP beta preview badge and modular licensing
-- remediate session bus visual and pty PRD with REST contracts and P9 chunks
-- author modular PRD for session bus visual studio and pty streaming (phases 01-04)
+- remediate session bus visual and pty feature plan with REST contracts and P9 chunks
+- author modular feature plan for session bus visual studio and pty streaming (phases 01-04)
 - document v1.21.0 release notes for ACS Session Bus and Multi-Agent Swarm
-- remediate acs-session-bus PRD to 98.8% confidence score across 5 sub-phases
+- remediate acs-session-bus feature plan to 98.8% confidence score across 5 sub-phases
 - modularize acs-session-bus blueprint into 5 granular phases
 - document v1.20.0 release notes
 - enrich second brain and investigation rulesets and register 48 skills in skills-index
 - certify acs-session-auto-fork-and-compact suite 100% completed
-- reconcile track 9 phase-04 verification and e2e to completed
-- reconcile track 9 phase-03 dual-trigger watchdog to completed
+- reconcile track 9 sub-phase verification and e2e to completed
+- reconcile track 9 sub-phase dual-trigger watchdog to completed
 - certify acs-memory-semantic-dedupe-and-anti-drift suite 100% completed
-- reconcile track 10 phase-06 verification and benchmarks to completed
+- reconcile track 10 sub-phase verification and benchmarks to completed
 - reconcile track 10 master plan phase 05 to completed
-- reconcile track 10 phase-05 markdown unwire to completed
-- reconcile track 10 phase-03 semantic contradiction to completed
-- mark track-10 phase-01 completed with empirical certification
-- reconcile track 10 phase-02 syntactic jaccard to completed
+- reconcile track 10 sub-phase markdown unwire to completed
+- reconcile track 10 sub-phase semantic contradiction to completed
+- mark track-10 sub-phase completed with empirical certification
+- reconcile track 10 sub-phase syntactic jaccard to completed
 - record cross-session reports and peer readiness on ceo board
-- assign track 9 wave 1 to idle sibling sessions f4a0f1f6 and 9ff9b53a
+- assign track 9 to idle sibling sessions f4a0f1f6 and 9ff9b53a
 - establish central anke hq session and sibling sessions control board
 
 ## [v1.21.0] - 2026-10-02
@@ -1773,7 +1773,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - Advisory Resource Locking: Zero-collision atomic lock acquisition with automatic expired-lock reclaim (`DELETE FROM locks WHERE resource = ? AND expires_at <= ?`).
 - 23 Indo-Dutch Persona Roster: Deterministic 3-tier assignment engine (`AssignPersona`) with absolute CEO Anke isolation at index 0 and automatic tmux session naming (`acs-{callname}-{shortid}`).
 - Lifecycle Hook & Prompt Context Banner: Auto-registration of sessions on `SessionStart` and sub-1.5ms unread inbox peek banner injection on `UserPromptSubmit`.
-- 8 Core Session Bus MCP Tools (`bus_*`): `bus_sessions`, `bus_send`, `bus_broadcast`, `bus_inbox`, `bus_lock`, `bus_unlock`, `bus_whoami`, `bus_heartbeat` registered in `AllTools()` and builtin registry.
+- 8 Core Session Bus MCP Tools (`bus_*`): `bus_sessions`, `bus_send`, `bus_broadcast`, `bus_inbox`, `bus_lock`, `bus_unlock`, `bus_whoami`, `bus_heartbeat` registered in `AllTools` and builtin registry.
 - Anke Chat Realtime SSE Routes (`routes_anke.go`): Direct Founder ➔ CEO Anke streaming communication via Server-Sent Events (`POST /api/anke/founder-message`, `GET /api/anke/stream`, `GET /api/anke/history`).
 - Multi-Session Swarm E2E Test Suite & Benchmarks: Latency verified under SLA thresholds (registration <0.25ms, inbox peek <0.085ms, broadcast <0.59ms, persona lookup <150ns).
 
@@ -1790,7 +1790,7 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - Official Addendum: Hook Chain Watchdog (30s ceiling, 5s pipe deadline, daemon deadlock sweeper).
 
 ### Refactored
-- Bound RoleContext.MemoryDBPath to cliconfig.MemoryDBPath().
+- Bound RoleContext.MemoryDBPath to cliconfig.MemoryDBPath.
 - Unwired legacy global-setup frontend routes, sidebar navigation, and backend mutation handlers.
 - Enforced 25-persona threshold assertions in sync-agent-rules.mjs.
 
@@ -1868,46 +1868,46 @@ v1.16.0 ships a sovereign multi-agent governance engine with a full bug-hunter b
 ### Added
 
 #### Bug Hunter Agent (`bug-hunter`)
-- Standalone `bug-hunter` binary and thin `acs` shim (phase-03).
-- Universal public facade API (phase-02).
-- Packages migrated to `pkg/bughunter`; AI engine decoupled (phase-01).
-- Wave 1: deterministic traps and in-browser hook.
-- Wave 2: AST discovery and headed auth session manager.
-- Wave 3: adversarial exploration engine and delta minimizer.
-- Wave 4: triage codegen reporter and CLI engine.
+- Standalone `bug-hunter` binary and thin `acs` shim.
+- Universal public facade API.
+- Packages migrated to `pkg/bughunter`; AI engine decoupled.
+-: deterministic traps and in-browser hook.
+-: AST discovery and headed auth session manager.
+-: adversarial exploration engine and delta minimizer.
+-: triage codegen reporter and CLI engine.
 
 #### Bug Hunter Security Hardening
-- Wave 1: session sealing and secret redaction.
-- Wave 2: active injection and OWASP vulnerability engine.
-- Wave 3: transport security, anti-MITM, and IDOR matrix.
-- Wave 4: client anti-RE and executive pentest reporting.
+-: session sealing and secret redaction.
+-: active injection and OWASP vulnerability engine.
+-: transport security, anti-MITM, and IDOR matrix.
+-: client anti-RE and executive pentest reporting.
 - Live HTTP probing security auditors and AI triage integrated into agent.
 
 #### Kanban Search & Anti-Duplication Engine
-- Multi-field tokenized search predicate and tests (phase-01).
-- SQLite FTS5 table triggers and tokenized query engine (phase-02).
-- 3-tier hybrid anti-duplication engine with unikey BGE-M3 and zero-token fallback (phase-03).
-- Step 0 pre-creation probe and 3-tier hybrid anti-duplication rules enforced (phase-04).
+- Multi-field tokenized search predicate and tests.
+- SQLite FTS5 table triggers and tokenized query engine.
+- 3-tier hybrid anti-duplication engine with unikey BGE-M3 and zero-token fallback.
+- Step 0 pre-creation probe and 3-tier hybrid anti-duplication rules enforced.
 - Task search logic extracted into dedicated `tasks_search.go`.
 
 #### Multi-OS Core & Agentic Stack Parity
-- Wave 1: 9router path precedence and frontend store resilience.
-- Wave 2: hook registration matcher parity and zero console flash.
-- Wave 3: multi-OS core runtime daemon and IPC hardening.
+-: 9router path precedence and frontend store resilience.
+-: hook registration matcher parity and zero console flash.
+-: multi-OS core runtime daemon and IPC hardening.
 
 #### Agentic Persona & Hook Pipeline
-- Auditor persona and timestamped audit standard (phase-01).
-- Hook pipeline hardening, leaf tool masking, and hook engine transition (phase-02).
-- State FSM, inner circle pipeline, and audit templates (phase-03).
-- Rules sync automated in build; workspace persona index repair (phase-04).
-- Agentic wave 1: modelengine completion and adversarial planner.
-- Agentic wave 2: AI semantic triage and logic flaw detector.
-- Agentic wave 3: dual-mode CLI and executive pentest reporter.
-- Agentic wave 4: E2E security verification suite.
+- Auditor persona and timestamped audit standard.
+- Hook pipeline hardening, leaf tool masking, and hook engine transition.
+- State FSM, inner circle pipeline, and audit templates.
+- Rules sync automated in build; workspace persona index repair.
+- Agentic: modelengine completion and adversarial planner.
+- Agentic: AI semantic triage and logic flaw detector.
+- Agentic: dual-mode CLI and executive pentest reporter.
+- Agentic: E2E security verification suite.
 
 #### Sovereign Knowledge & Sync
-- Client SPKI pinning transport and knowledge envelope unpacker (phase-03).
-- Client DPAPI encrypted cache and E2E synchronization (phase-04).
+- Client SPKI pinning transport and knowledge envelope unpacker.
+- Client DPAPI encrypted cache and E2E synchronization.
 - Periodic 623-second knowledge sync task registered with license guard (wave-02).
 - Sovereign admin session injection and hardware node-lock (wave-02).
 - Hardware auto-claim binding, 3-day offline cache cap, and device eviction enforcement.
@@ -1926,14 +1926,14 @@ v1.16.0 ships a sovereign multi-agent governance engine with a full bug-hunter b
 - Runtime operating system included in CLI-auth request.
 - Runtime operating system included in online validation request.
 - Legacy `acs-cli` token included in version output for updater backwards compatibility.
-- External harness Docker packaging and action runner (phase-04).
+- External harness Docker packaging and action runner.
 
 ---
 
 ### Changed
 
 - `acs-cli` occurrences migrated to canonical `acs` with legacy fallback.
-- Mirrored personas and PRD templates synchronized across agentic stack.
+- Mirrored personas and feature plan templates synchronized across agentic stack.
 - Release journal state artifacts added to `.gitignore`.
 - Version bumped to `0.18.2`.
 
@@ -1956,19 +1956,19 @@ v1.16.0 ships a sovereign multi-agent governance engine with a full bug-hunter b
 ### Documentation
 
 - v1.16.0 sovereign MAS governance engine release documented.
-- Kanban search and anti-duplication mini-PRD completed (waves 1–2 verified); upgraded to 3-tier hybrid engine with unikey BGE-M3.
-- FTS5 data backfill and REST creation short-circuit patched into mini-PRD.
-- Universal bug hunter extraction master PRD and phases 01–04 authored and reconciled to completed.
+- Kanban search and anti-duplication mini-feature plan completed (waves 1–2 verified); upgraded to 3-tier hybrid engine with unikey BGE-M3.
+- FTS5 data backfill and REST creation short-circuit patched into mini-feature plan.
+- Universal bug hunter extraction master feature plan and phases 01–04 authored and reconciled to completed.
 - Bilingual content parity sub-phases 01–04 reconciled to completed.
-- Multi-OS core and agentic stack parity PRD reconciled to completed; circular dependency eliminated.
+- Multi-OS core and agentic stack parity feature plan reconciled to completed; circular dependency eliminated.
 - Sovereign knowledge and UI-ADM persistence suite master blueprint and 4-phase specs established.
-- ACS chat gateway and headless bridge modular PRD suite authored.
-- ACS virtual office studio modular PRD suite authored; 3D kanban whiteboard simplified to 4 canonical columns.
-- ACS agent personas least-privilege and alignment modular PRD suite authored.
-- Browser automation E2E pipeline modular PRD suite authored.
-- Release pipeline hardening modular PRD blueprint drafted.
+- ACS chat gateway and headless bridge modular feature plan suite authored.
+- ACS virtual office studio modular feature plan suite authored; 3D kanban whiteboard simplified to 4 canonical columns.
+- ACS agent personas least-privilege and alignment modular feature plan suite authored.
+- Browser automation E2E pipeline modular feature plan suite authored.
+- Release pipeline hardening modular feature plan blueprint drafted.
 - `index.md` `cliconfig.ResolveACSBinary` alignment finalized.
-- Multi-agent architecture documented; portal showcase updated (phase-05).
+- Multi-agent architecture documented; portal showcase updated.
 - Historical system audits and multi-agent architecture research archived.
 
 ## [v1.15.1] - 2026-09-23
@@ -2010,17 +2010,17 @@ v1.15.1 delivers the full ACS Knowledge Base architecture with bilingual content
 ## [v1.14.0] - 2026-09-22
 ### Highlights
 
-v1.14.0 delivers Architectural Blindspots Remediation Suite across phase-01 to phase-04, including Kanban URL resolver, PID liveness reaper, AST verification gate, and SQLite write mutex. Release engineering hardens Gate 13 failure handling, Winget verification, and portal version decoupling. Governance docs add markdownlint gates, English normalization, and PRD freshness guards.
+v1.14.0 delivers Architectural Blindspots Remediation Suite across sub-phase to sub-phase, including Kanban URL resolver, PID liveness reaper, AST verification gate, and SQLite write mutex. Release engineering hardens Gate 13 failure handling, Winget verification, and portal version decoupling. Governance docs add markdownlint gates, English normalization, and feature plan freshness guards.
 
 **BREAKING CHANGES:** None.
 
 ### Added
 
-- Added Unified Kanban Direct Card URL Resolver for phase-04.
-- Added Stale Claims PID Liveness Reaper and Garbage Collection for phase-03.
-- Added AST Verification Gate and Anti-Silent-Fallback Protocol for phase-02.
-- Added SQLite Concurrency Write Mutex and DSN Normalization for phase-01.
-- Added Architectural Blindspots Remediation Suite Master PRD for phase-01.
+- Added Unified Kanban Direct Card URL Resolver for sub-phase.
+- Added Stale Claims PID Liveness Reaper and Garbage Collection for sub-phase.
+- Added AST Verification Gate and Anti-Silent-Fallback Protocol for sub-phase.
+- Added SQLite Concurrency Write Mutex and DSN Normalization for sub-phase.
+- Added Architectural Blindspots Remediation Suite Architecture Plan for sub-phase.
 - Added `just fmt-md` alias for markdown auto-formatting.
 - Added `just lint-md` and `just fix-md` commands for governance docs.
 
@@ -2047,12 +2047,12 @@ v1.14.0 delivers Architectural Blindspots Remediation Suite across phase-01 to p
 
 - Added Blindspots Remediation Suite feature bullet.
 - Pointed Official Distribution backlink to uikode.com/acs portal.
-- Backfilled Last Updated on phase-01 and phase-03.
+- Backfilled Last Updated on sub-phase and sub-phase.
 - Stripped internal stack from acs-knowledge corpus in anti-stack revision.
-- Added wall-clock freshness guard against hallucinated PRD timestamps.
+- Added wall-clock freshness guard against hallucinated feature plan timestamps.
 - Added Phase 05 Knowledge Base GUI and 2 residual fixes.
-- Reconciled acs-knowledge PRD blueprint to HG1B ACCEPT.
-- Reconciled runtime-harness-and-kanban-gateway-hardening PRD blueprint to certified.
+- Reconciled acs-knowledge feature plan blueprint to HG1B ACCEPT.
+- Reconciled runtime-harness-and-kanban-gateway-hardening feature plan blueprint to certified.
 - Translated all Indonesian content to English in rulesets and templates.
 - Overhauled v1.13.0 release notes with backward compatibility guarantees.
 
@@ -2075,7 +2075,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - Git commit inspection service, backend Go handler, and frontend `GitCommitDetailModal`.
 - Surgical uninstaller engines for Go, PowerShell, and POSIX shell with `.acs` local directory purge capabilities.
 - Windows integration tooling including Zero-UAC broker, terminal step orchestrator, and AST terminal patchers.
-- Embeds for 15 OMC subagent personas, dual-verification badge indicators, and P9 micro-chunk verification gates.
+- Embeds for 15 OMC subagent personas, dual-verification badge indicators, and P9 micro- gates.
 
 ### Changed
 - Modularized `ACSKanbanBoard` into dedicated components featuring P0-P3 priority sorting and 5-column lifecycle states.
@@ -2086,7 +2086,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 
 ### Critical Bug Fixes
 - **macOS BSD awk Installer Error**: Resolved syntax error on macOS (`awk: syntax error at source line 1`) during download size calculation using POSIX parameter passing.
-- **Doctor Silent Crash (Exit Code 2)**: Resolved runtime panic in `acs doctor` on fresh/minimal environments using `cliconfig.LoadOrDefault()` fallback.
+- **Doctor Silent Crash (Exit Code 2)**: Resolved runtime panic in `acs doctor` on fresh/minimal environments using `cliconfig.LoadOrDefault` fallback.
 - **Dashboard Status False-Negative**: Fixed `acs status` erroneously reporting dashboard stopped in minimal containers lacking `lsof`/`ss` by adding TCP and HTTP health probes.
 - **Accounts Page SQL Logic Error**: Handled missing `providerConnections` table gracefully on fresh installs by returning empty list instead of HTTP 503 toast error.
 - **Token Usage Infinite Shimmer**: Decoupled loading state from data presence in `TokenUsageChart.tsx` and returned zeroed bucket metrics on fresh installs.
@@ -2112,14 +2112,14 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - Real log registry: `dashboard-service.log`, `daemon-service.log`, and `9router.log` registered in UI log viewer.
 - SafeGo panic recovery wrapper (`server.SafeGo`) with stack trace logging across all background goroutines.
 - Resilient Auto-Heal & Anti-Flapping: HTTP health probe timeout increased to 8s with 2x retry buffer, 45s cold-boot grace period, and persistent `watchdog.RestartTracker` (circuit breaker capped at 3 restarts per 15 minutes).
-- Automated Phase Commit Enforcer hook (`prd-phase-commit-enforcer.mjs`) executing atomic local commits immediately upon sub-phase completion (`✅ Done`).
+- Automated Phase Commit Enforcer hook (`phase-commit-enforcer.mjs`) executing atomic local commits immediately upon sub-phase completion (`✅ Done`).
 - Zero-friction Git Onboarding Core (`git-onboarding-lib.mjs`) with automatic GitHub CLI (`gh api user`) identity resolution and non-TTY safe fallback.
 - Dedicated ACS Project Hub & Workspace Manager modal on `/kanban` route with first-class Native MCP Tools (`kanban_list`, `kanban_create`, `kanban_update`, `kanban_artifacts`, `kanban_claim_files`) and interactive CLI.
-- Standardized local timezone and dynamic UTC offset formatting `YYYY-MM-DD HH:MM (UTC±X)` across CHANGELOG and PRD templates.
-- Explicit "Lead Orchestrator Command Map" section and 6 Authoritative Governance Pillars embedded into Master PRD template and watchdog rulesets.
+- Standardized local timezone and dynamic UTC offset formatting `YYYY-MM-DD HH:MM (UTC±X)` across CHANGELOG and feature plan templates.
+- Explicit "Lead Orchestrator Command Map" section and 6 Authoritative Governance Pillars embedded into Architecture Plan template and watchdog rulesets.
 
 ### Fixed
-- SQLite connection churn: eliminated all premature `defer db.Close()` on singleton pool `global9rDB`, resolving `sql: database is closed` errors and use-after-free panics.
+- SQLite connection churn: eliminated all premature `defer db.Close` on singleton pool `global9rDB`, resolving `sql: database is closed` errors and use-after-free panics.
 - WebSocket data race: guarded `conn.WriteMessage` with per-connection `writeMu sync.Mutex`.
 - Resource leaks: fixed unclosed HTTP response bodies on non-200 statuses, closed parent file descriptor handles on Windows service spawn, and bound cache loop to `sync.Once`.
 - Zero console window: enforced Win32 `STARTUPINFO(SW_HIDE)` and `windowsHide` configurations across Python build tools, runners, and scripts to eliminate terminal flash.
@@ -2144,7 +2144,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - implement target-gated estimate and status endpoints with zero premature errors (Phase 03)
 - add creator bypass for Andy Vandaric in proprietary IP protection hook
 - standardize rulesets to 100% English and deduplicate instructions (Phase 01)
-- add orchestrator watchdog rules and mandatory KPI PRD standard (Phase 02)
+- add orchestrator watchdog rules and mandatory KPI feature plan standard (Phase 02)
 - universal multi-agent awareness and rules sync (Phase 03)
 - wire --mode lean|full flag to acs adopt command
 - blueprint scanner and dedicated /api/kanban routes (Phase 02A)
@@ -2165,11 +2165,11 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - workflow awareness SessionStart + version endpoint + bundle fix
 - tambah R8 stash recovery via branch isolasi, larang checkout-buta
 - wajib auto-commit lokal tiap phase DONE tanpa approval (R7)
-- fix cross-session task-scope false positives + R7 rules adendum (Wave 3a P04)
-- add PreToolUse git-guard blocking destructive git on ACTIVE claims (Wave 2 P03)
-- implement cross-session claim lib, session-start display, and session-end auto-release (Wave 1)
+- fix cross-session task-scope false positives + R7 rules adenduma P04)
+- add PreToolUse git-guard blocking destructive git on ACTIVE claims
+- implement cross-session claim lib, session-start display, and session-end auto-release
 - enforce multi-session worktree concurrency rules (R1-R6)
-- SessionStart MCP auto-provision + Contract-First waves in PRD standard
+- SessionStart MCP auto-provision + Contract-First waves in feature plan standard
 - explicit project_dirs in POST /api/mcp/agent/sync
 - fan-out SyncToAllAgents to all known project .mcp.json
 
@@ -2183,7 +2183,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - align diff orientation (local - to bundle +) and fix dry-run preview root resolution
 - sanitize staging domain in license-pipeline to prevent binary leaks
 - eliminate dev path leaks in bundle and adjust hardening thresholds
-- Phase 02 verifier remediation Wave 2a
+- Phase 02 verifier remediationa
 - scope stop hook per sesi, cegah false-positive lintas sesi
 - probe staging before prod in MCP auto-provision order
 - purge ALL acs-* from global, env-scoped port, no cross-env detect
@@ -2206,8 +2206,8 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 ### Documentation
 - complete universal installer and sovereign cdn distribution suite
 - reconcile system watchdog and wcag diff blueprint to COMPLETED (Final Gate PASS)
-- remediate phase-06 air-gap and expand phase-07 verification scope
-- add adaptive PRD language rule and strict English delegation policy
+- remediate sub-phase air-gap and expand sub-phase verification scope
+- add adaptive feature plan language rule and strict English delegation policy
 - add KPI 6 for workflow english adoption and generator english template spec
 - align sub-phase filenames to 7-phase sequence
 - finalize complete 7-phase master blueprint with exact mapping and KPIs
@@ -2216,34 +2216,34 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - remediate audit findings (align Gate 9, path fallback, and leak table)
 - add comprehensive production hardening and release blueprint
 - Phase 01-04 completed and verified for kanban-workflow-hub
-- sync format timestamp lokal ke agentic-stack prd templates
+- sync format timestamp lokal ke agentic-stack feature plan templates
 - Phase 04 DONE — final gate E2E parity lean adopt COMPLETED
-- update hash commit phase 03 di phase-03-lean-surfaces.md
+- update hash commit phase 03 di sub-phase-lean-surfaces.md
 - Phase 02 DONE — generator lean mode dan adopt option wiring 32eae7c6
 - terapkan kebijakan timestamp lokal +0700 massal (Phase 05)
 - Phase 01 DONE — stamp kontrak lean pointer 2842ef12
 - koreksi stamp index lean ke format lokal +0700
-- remediasi 7 temuan + re-audit 97 APPROVE Wave 1 lean adopt
+- remediasi 7 temuan + re-audit 97 APPROVE lean adopt
 - tambah Phase 05 timestamp policy + koreksi stamp (W0-docs)
 - lean adopt on-demand blueprint, Hard Gate 1 CLEAR 98 persen
 - tambah R10 MCP JSON runtime artifact governance
 - sinkron baris P01 DONE RED 049b3686 di index kanban
-- phase-04 E2E terisolasi + claim-scopes + COMPLETED
-- phase-03 implementation reference hash ce6ec1dd
+- sub-phase E2E terisolasi + claim-scopes + COMPLETED
+- sub-phase implementation reference hash ce6ec1dd
 - kanban standalone ACS client blueprint, Hard Gate 1 CLEAR 98 persen
 - Phase 05-frontend DONE + index baris P05
 - Phase 04 DONE stamp 08664bcd
 - Phase 03 stamp hash commit dfd119fe
-- remediate Wave 1 verifier gaps P01
+- remediate verifier gaps P01
 - bekukan regex pola stamp-leak P06 (F5 susulan)
-- remediasi audit F1-F6, skor 98 persen layak APPROVE Wave 1
+- remediasi audit F1-F6, skor 98 persen layak APPROVE
 - tambah Phase 07 community submissions Opsi B terminal
 - workflow versioning control blueprint + team audit remediation
 - tambah Final Live E2E Gate dan Session Isolation Boundary
 - split §6 boundary contracts into universal principles + per-stack appendix
-- Wave 1 blocking checklist + runtime boundary contracts (§6)
-- add Duration field (Completed minus Created) to PRD header
-- PRD datetime WIB (YYYY-MM-DD HH:MM WIB) for Created/Completed/Updated
+- blocking checklist + runtime boundary contracts (§6)
+- add Duration field (Completed minus Created) to feature plan header
+- feature plan datetime WIB (YYYY-MM-DD HH:MM WIB) for Created/Completed/Updated
 
 
 ## [v1.6.1] - 2026-09-16
@@ -2256,7 +2256,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - **SolidJS GUI LeanAdoptPanel**: Komponen switch mode Full vs Lean di halaman `/workflow` berstandar W3C design tokens dan 8pt grid.
 
 ### Changed
-- **Timestamp Policy Standardization**: Standardisasi penulisan timestamp PRD ke waktu lokal penulis eksplisit offset `YYYY-MM-DD HH:MM ±HHMM` (menghapus label zona `WIB`).
+- **Timestamp Policy Standardization**: Standardisasi penulisan timestamp feature plan ke waktu lokal penulis eksplisit offset `YYYY-MM-DD HH:MM ±HHMM` (menghapus label zona `WIB`).
 - **Binary Hardening & Leak Elimination**: Mengeliminasi path developer lokal `source-private` dan domain staging dari biner rilis produksi.
 - **CLI Adopt Mode Wiring**: Menghubungkan flag `--mode <lean|full>` ke CLI commands `acs adopt` dan `acs workflow adopt`.
 
@@ -2286,8 +2286,8 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - ignore .wrangler directories across subrepos
 
 ### Documentation
-- author Master PRD for Cloudflare email routing, AI auto-reply, and minimalist VPS stack via VPSEase
-- update master PRD header metadata to reflect 5/8 completed phases
+- author Architecture Plan for Cloudflare email routing, AI auto-reply, and minimalist VPS stack via VPSEase
+- update master feature plan header metadata to reflect 5/8 completed phases
 - update CLI modernization blueprint progress to 5/8 phases completed
 
 
@@ -2473,7 +2473,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 
 ### Changed
 - bump version to 1.0.1
-- parallelize garble build and upx compression in release pipeline
+- parallelize production build and upx compression in release pipeline
 
 ### Documentation
 - rewrite README & fix auth bypass vulnerability
@@ -2756,7 +2756,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 
 ### Fixed
 - commit leftover changes from agent
-- use os.Executable() to resolve acs-cli path for auto-fixes
+- use os.Executable to resolve acs-cli path for auto-fixes
 - resolve LookPath caching and hanging probes
 - set WaitDelay for antigravity/mcp subprocesses
 - set WaitDelay for claude version probe
@@ -2829,7 +2829,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - self-heal ~/.acs/bin in persistent user PATH
 - auto-register watchdog/backup tasks on daemon start
 - HUD MCP count + raw-splice agent sync + setup skill
-- assign ClaudeStackDir from TemplatesDir so deployAgents() finds bundled agents
+- assign ClaudeStackDir from TemplatesDir so deployAgents finds bundled agents
 - server field in request log + overview stats for all sub-servers
 - route acs-browser restart to stdio path + surface bridge errors
 - skip auth middleware for localhost connections
@@ -2890,9 +2890,9 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - race condition guard between ACS self-heal and Hermes lifecycle
 - graceful restart via StopGateway+StartGateway
 - context_length 256k standard + silent gateway spawning
-- acs-search test returns toolsCount from AllTools()
+- acs-search test returns toolsCount from AllTools
 - graceful Windows gateway stop — prevent ghost hermes.exe
-- toggle wiring — isOn() uses toolsCount, backend updates Status, skip builtin servers
+- toggle wiring — isOn uses toolsCount, backend updates Status, skip builtin servers
 - agent_research_exa - remove stale Exa-Beta header, add key pool rotation
 - minor type fixes in TokenBreakdown and ToolProfilesPanel
 - detect gateway crash loops + auto-repair hermes venv
@@ -3411,7 +3411,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - self-heal ~/.acs/bin in persistent user PATH
 - auto-register watchdog/backup tasks on daemon start
 - HUD MCP count + raw-splice agent sync + setup skill
-- assign ClaudeStackDir from TemplatesDir so deployAgents() finds bundled agents
+- assign ClaudeStackDir from TemplatesDir so deployAgents finds bundled agents
 - server field in request log + overview stats for all sub-servers
 - route acs-browser restart to stdio path + surface bridge errors
 - skip auth middleware for localhost connections
@@ -3472,9 +3472,9 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - race condition guard between ACS self-heal and Hermes lifecycle
 - graceful restart via StopGateway+StartGateway
 - context_length 256k standard + silent gateway spawning
-- acs-search test returns toolsCount from AllTools()
+- acs-search test returns toolsCount from AllTools
 - graceful Windows gateway stop — prevent ghost hermes.exe
-- toggle wiring — isOn() uses toolsCount, backend updates Status, skip builtin servers
+- toggle wiring — isOn uses toolsCount, backend updates Status, skip builtin servers
 - agent_research_exa - remove stale Exa-Beta header, add key pool rotation
 - minor type fixes in TokenBreakdown and ToolProfilesPanel
 - detect gateway crash loops + auto-repair hermes venv
@@ -3989,7 +3989,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - self-heal ~/.acs/bin in persistent user PATH
 - auto-register watchdog/backup tasks on daemon start
 - HUD MCP count + raw-splice agent sync + setup skill
-- assign ClaudeStackDir from TemplatesDir so deployAgents() finds bundled agents
+- assign ClaudeStackDir from TemplatesDir so deployAgents finds bundled agents
 - server field in request log + overview stats for all sub-servers
 - route acs-browser restart to stdio path + surface bridge errors
 - skip auth middleware for localhost connections
@@ -4050,9 +4050,9 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - race condition guard between ACS self-heal and Hermes lifecycle
 - graceful restart via StopGateway+StartGateway
 - context_length 256k standard + silent gateway spawning
-- acs-search test returns toolsCount from AllTools()
+- acs-search test returns toolsCount from AllTools
 - graceful Windows gateway stop — prevent ghost hermes.exe
-- toggle wiring — isOn() uses toolsCount, backend updates Status, skip builtin servers
+- toggle wiring — isOn uses toolsCount, backend updates Status, skip builtin servers
 - agent_research_exa - remove stale Exa-Beta header, add key pool rotation
 - minor type fixes in TokenBreakdown and ToolProfilesPanel
 - detect gateway crash loops + auto-repair hermes venv
@@ -4528,7 +4528,7 @@ ACS v1.13.0 brings major stability, container reliability, and workflow enhancem
 - Filter builtin names from custom presets list
 - API resilience — force sync param, service stop, EXA validation
 - Concurrency and reliability hardening across broker/daemon/automation
-- Replace hardcoded path with dynamic cliconfig.DataDir()
+- Replace hardcoded path with dynamic cliconfig.DataDir
 - Pass all linters strict — mypy, ruff, bandit
 - Remove shadowed shutil imports in gates.py
 - Theme-aware scrollbars + gitignore .venv/.mcp.json
@@ -5301,8 +5301,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -5730,8 +5730,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -6162,8 +6162,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -6666,8 +6666,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -7020,8 +7020,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -7329,8 +7329,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -7705,8 +7705,8 @@ All notable changes to this project are documented in this file.
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
 - `120c6a9` docs(prefs): document strict validation apply behavior
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `1d5800a` fix(release): make bundle copy reliable on Windows
@@ -8063,8 +8063,8 @@ All notable changes to this project are documented in this file.
 - `ad3ed96` feat(cli): add global ocs dispatcher and prefs wizard
 - `dae1057` feat(prefs): enforce strict schema validation in wizard
 - `120c6a9` docs(prefs): document strict validation apply behavior
-- `b25c385` feat(plugin): add phase-0 policy rollout guardrails
-- `96302de` feat(plugin): harden phase-1 retry and quota classification
+- `b25c385` feat(plugin): add sub-phase policy rollout guardrails
+- `96302de` feat(plugin): harden sub-phase retry and quota classification
 - `f510011` feat(plugin): extend cooldown duration fallback parsing
 - `42fc708` test(plugin): add 429 dedup storm coverage
 - `0362157` feat(plugin): normalize model-family cooldown lock keys
@@ -8163,7 +8163,7 @@ All notable changes to this project are documented in this file.
 
 ### Fixed
 
-- Plugin installation now generates a `package.json` in `~/.config/opencode` from the deployed `opencode.json` plugin list before running `bun install` — fixes "Bun could not find a package.json" error caused by `enforcePureConfig()` wiping it on each deploy.
+- Plugin installation now generates a `package.json` in `~/.config/opencode` from the deployed `opencode.json` plugin list before running `bun install` — fixes "Bun could not find a package.json" error caused by `enforcePureConfig` wiping it on each deploy.
 
 ## [1.10.1] - 2026-02-21
 
