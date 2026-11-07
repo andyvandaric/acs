@@ -818,9 +818,9 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
 - update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
-- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile dynamic operator identity resolution to completed
 - reconcile sub-phase conpty isolation and desk binding to completed
-- author phase-02b dynamic operator identity resolution chain blueprint
+- author dynamic operator identity resolution chain blueprint
 - refine sub-phase with universal stack-agnostic dual-engine task dispatcher
 - expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
 - reconcile sub-phase fleet disallowed-tools and routing to completed
@@ -1049,9 +1049,9 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
 - update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
-- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile dynamic operator identity resolution to completed
 - reconcile sub-phase conpty isolation and desk binding to completed
-- author phase-02b dynamic operator identity resolution chain blueprint
+- author dynamic operator identity resolution chain blueprint
 - refine sub-phase with universal stack-agnostic dual-engine task dispatcher
 - expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
 - reconcile sub-phase fleet disallowed-tools and routing to completed
@@ -1279,9 +1279,9 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
 - update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
-- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile dynamic operator identity resolution to completed
 - reconcile sub-phase conpty isolation and desk binding to completed
-- author phase-02b dynamic operator identity resolution chain blueprint
+- author dynamic operator identity resolution chain blueprint
 - refine sub-phase with universal stack-agnostic dual-engine task dispatcher
 - expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
 - reconcile sub-phase fleet disallowed-tools and routing to completed
@@ -1508,9 +1508,9 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
 - update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
-- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile dynamic operator identity resolution to completed
 - reconcile sub-phase conpty isolation and desk binding to completed
-- author phase-02b dynamic operator identity resolution chain blueprint
+- author dynamic operator identity resolution chain blueprint
 - refine sub-phase with universal stack-agnostic dual-engine task dispatcher
 - expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
 - reconcile sub-phase fleet disallowed-tools and routing to completed
@@ -1731,9 +1731,9 @@ v1.29.0 introduces Session Bus with SQLite WAL store, 8 core tools, and Virtual 
 - apply Hard Gate 1B patch delta to sub-phase blueprint (8 chunks, 99.2% confidence)
 - update sub-phase blueprint with strict P9 chunks, schema migration, and KPIs
 - certify acs-session-bus-visual-and-pty suite 100% completed across all 4 phases
-- reconcile phase-02b dynamic operator identity resolution to completed
+- reconcile dynamic operator identity resolution to completed
 - reconcile sub-phase conpty isolation and desk binding to completed
-- author phase-02b dynamic operator identity resolution chain blueprint
+- author dynamic operator identity resolution chain blueprint
 - refine sub-phase with universal stack-agnostic dual-engine task dispatcher
 - expand sub-phase to stack-agnostic autonomous task dispatcher and handoff engine
 - reconcile sub-phase fleet disallowed-tools and routing to completed
