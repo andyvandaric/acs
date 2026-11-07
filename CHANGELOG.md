@@ -3,62 +3,40 @@
 ## [v1.37.0] - 2026-11-06
 
 ### Added
-- Tabbed navigation and project configuration parity UI.
-- Upstream endpoint configuration with auth tokens and live validation for projects.
-- Panic shield protection on the `mcp serve` loop.
-- 16MB stdio scanner buffer with non-fatal recovery mechanism.
-- Subprocess stdout and stderr stream isolation during installation.
-- Modular package boundary claim guard enforcement.
+- Tabbed project configuration with upstream endpoint configuration, API keys, and live connection testing.
+- Automated panic shield and resilience layer for high-throughput MCP tool execution loops.
+- Expanded 16MB stdio communication buffer with non-fatal auto-recovery for large agentic coding contexts.
+- Secure, time-bound ticketed download verification system for official release binaries.
 
 ### Changed
-- Extracted `ProjectMcpServerGrid` component for improved modularity.
-- Modularized reusable Claude endpoint authentication and diagnostic components.
-- Synchronized upstream rulesets to embedded and downstream mirror targets.
+- Improved dashboard project settings layout with responsive tabbed views and streamlined model selection.
+- Modularized endpoint authentication with secure masked input and instant connectivity probes.
 
 ### Fixed
-- Isolated `acs mcp serve` background processes from build and release kill sweeps.
-- Calibrated headroom startup safety timeout threshold to 45 seconds in `ComponentCard`.
-- Cleared stale headroom user-stopped markers when terminating orphaned instances.
-- Normalized commit identifiers with phase suffix trimming and workspace anchor resolution.
-- Made `ninerouter` test suites hermetic and suppressed console popup windows on spawn.
-- Handled update statuses as check-only operations across end-to-end tests.
-- Refreshed embed cache by touching `main.go` prior to `garble` builds.
-- Suppressed `context-propagation` linter warnings on `task-synchronizer.run`.
+- Protected background AI processes and daemon tasks from unexpected termination during updates.
+- Calibrated service startup tolerances for smooth cold boots across all operating systems.
+- Optimized Windows binary packaging to eliminate false-positive antivirus heuristic flags.
 
 ### Documentation
-- Standardized installation instructions to require download codes and documented anti-leak measures.
-- Documented blueprint phase gates for smart pre-commits, MCP stdio resilience, and tabbed global/project configuration parity.
-- Finalized documentation for Defender false-positive remediation and 9router zombie process recovery.
+- Updated quickstart and member documentation for single-command ticketed installation.
+- Added comprehensive guide for configuring upstream AI model endpoints and authentication tokens.
 
 ## [v1.36.1] - 2026-11-06
 
 ### Added
-- In-memory TTL cache, model usage structs, and metrics derivation backend logic.
-- `/usage/antigravity-quotas` route with local token usage correlation.
-- `ModelQuotaDetail` struct with isolated 5-hour and weekly quota extraction.
-- Multi-tier contextual phase resolution and wave support with plan fallback in phase locator.
-- `ModelUsageBreakdown` dual-dimension visualization wired into Usage page via `createTide`.
-- `AntigravityQuotaTracker` component with zero-division guard.
-- Account column to `UsageTable` bound to `AntigravityQuotaTracker`.
-- Pre-assessment idea assessment skill `acs-assess`.
+- Real-time token usage breakdown by AI model with dual-dimension visualization on the Usage dashboard.
+- Live Antigravity quota tracker with remaining allocation metrics and zero-division safeguards.
+- Pre-assessment workflow for automated idea evaluation and scoping.
 
 ### Changed
-- Updated `account quota summary` struct and plan checklist alignment.
-- Bumped version to 1.36.1.
+- Improved Usage dashboard interface with dedicated account and model quota status indicators.
 
 ### Fixed
-- Decoupled `9router` and headroom process log pipes from anonymous OS pipes to direct OS file handles.
-- Preserved phase tags and bindings during commit audit and activity correlator commit attachment.
-- Corrected walkthrough section merging and commit accumulation.
-- Added body trailer context to plan sync commit reflex.
+- Decoupled 9router and headroom process logging to direct OS file handles, eliminating freeze issues during restarts.
+- Enhanced background process health monitoring with automated self-healing restart loops.
 
 ### Documentation
-- Added Windows Defender exclusion guide and zero-threat certification.
-- Standardized phase commit tags, kanban pipe tokens, and feature plan phase templates.
-- Formalized swarm consortium rules R9/R10, deployment barriers, and Section 6 Traceability Matrix.
-- Integrated R11 autonomous idle beacon reflex into phase specifications.
-
-## [Unreleased]
+- Added Windows installation security assurance and zero-threat certification details.
 
 ## [v1.36.0] - 2026-11-06
 
