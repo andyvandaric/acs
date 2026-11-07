@@ -1,5 +1,26 @@
 # Changelog
 
+## [v1.38.0] - 2026-11-07
+
+### Added
+- Automated daemon coordination and self-healing resilience for background services.
+- Real-time service health probe with adaptive dial retry logic.
+- Fastpath package and version discovery for Python virtual environment components.
+- Automated commit phase validation gate ensuring synchronized development tracking.
+
+### Changed
+- Streamlined project workspace configuration layout for improved dashboard performance.
+- Enhanced package metadata resolution with multi-version SemVer precision.
+
+### Fixed
+- Hardened process startup locks with isolated rendezvous protection.
+- Enhanced release distribution pipeline with member changelog anti-leak protection.
+- Stabilized background daemon recovery against race conditions.
+
+### Documentation
+- Updated service resilience and background process health monitoring guides.
+- Standardized release notes curation and user-outcome change tracking.
+
 ## [v1.37.0] - 2026-11-06
 
 ### Added
