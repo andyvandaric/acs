@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.37.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.38.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -82,6 +82,9 @@ ACS is protected by a proprietary commercial license:
 - **Silent Background Operation**: Services and background tools run completely in the background without intrusive terminal popups or desktop interruptions.
 - **Resilient Service Architecture**: Dashboard and proxy services run with independent lifecycles to ensure continuous uptime during maintenance.
 - **Panic Shield & Boundary Protection**: MCP serve loop protected with panic shield, isolated subprocess execution streams, and modular package boundary claim guards.
+- **Watchdog & Daemon Coordination**: Prevents dual-healer race conditions for headroom, adds streak resilience, dial retry health probes, and zombie process recovery.
+- **Blueprint Phase Gate & Hook Engine**: Native git hook integration, pretool git commit phase gate interceptors, and smart staged files context evaluation.
+- **Fastpath Package Metadata**: Optimized pip component updater with fallback paths and SSOT multi-dist-info SemVer metadata parsing.
 
 ---
 
@@ -134,6 +137,4 @@ All operations are unified under the modern `acs` command:
 ### ✨ Architectural Pillars
 
 1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools, 16MB stdio scanner buffers with non-fatal recovery, project upstream endpoint support, and stdio JSON-RPC 2.0 server harness.
-2. **Zero-Idle-Token Architecture**: Dynamic skill injection cuts baseline token consumption by up to 89%, freeing reasoning headroom for actual code generation.
-3. **Anti-Freeze Smart Circuit Breakers**: Flapping detection and cold-boot grace periods guarantee continuous uptime.
-4. **Agentic Tabbed Navigation & Config Parity**: Unified cockpit UI featuring tabbed navigation and real-time project configuration parity.
+2. **Zero-Idle-Token 
