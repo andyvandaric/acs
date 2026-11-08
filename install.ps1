@@ -586,15 +586,78 @@ if ($hasHeadroom) {
 $auto9router = if ($hasNodeOrBun) { "true" } else { "false" }
 $autoHeadroom = if ($hasHeadroom) { "true" } else { "false" }
 
+# Helper: resilient config file writer (handles read-only attributes, transient locks, and permissions)
+function Set-SafeConfigFile {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+        [Parameter(Mandatory = $true)]
+        [string]$Content
+    )
+
+    # Fast path: if file exists and content is identical, skip write entirely
+    if (Test-Path -LiteralPath $Path) {
+        try {
+            $current = [System.IO.File]::ReadAllText($Path, [System.Text.Encoding]::UTF8)
+            if ($current -eq $Content) {
+                return $true
+            }
+        } catch { }
+
+        # Clear ReadOnly flag if set by prior sessions, backup tools, or ACLs
+        try {
+            $item = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+            if ($item -and $item.IsReadOnly) {
+                $item.IsReadOnly = $false
+            }
+        } catch { }
+    }
+
+    # Direct write with retry loop (handles transient locks e.g. AV scan or running processes)
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        try {
+            [System.IO.File]::WriteAllText($Path, $Content, [System.Text.Encoding]::UTF8)
+            return $true
+        } catch {
+            if ($attempt -lt 3) {
+                Start-Sleep -Milliseconds (150 * $attempt)
+            }
+        }
+    }
+
+    # Fallback 1: Atomic write via temporary file replacement
+    $parentDir = [System.IO.Path]::GetDirectoryName($Path)
+    if ($parentDir -and -not (Test-Path -LiteralPath $parentDir)) {
+        try { New-Item -ItemType Directory -Path $parentDir -Force | Out-Null } catch { }
+    }
+    $tmpFile = Join-Path $parentDir ("stack-cfg-tmp-" + [System.IO.Path]::GetRandomFileName() + ".json")
+    try {
+        [System.IO.File]::WriteAllText($tmpFile, $Content, [System.Text.Encoding]::UTF8)
+        Copy-Item -LiteralPath $tmpFile -Destination $Path -Force -ErrorAction Stop
+        Remove-Item -LiteralPath $tmpFile -Force -ErrorAction SilentlyContinue
+        return $true
+    } catch {
+        Remove-Item -LiteralPath $tmpFile -Force -ErrorAction SilentlyContinue
+        # Fallback 2: Set-Content -Force
+        try {
+            Set-Content -LiteralPath $Path -Value $Content -Encoding UTF8 -Force -ErrorAction Stop
+            return $true
+        } catch {
+            return $false
+        }
+    }
+}
+
 $acsDataDir = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs\data"
 $acsRoot = Join-Path ([Environment]::GetFolderPath("UserProfile")) ".acs"
 foreach ($dir in @($acsDataDir, $acsRoot)) {
-    if (-not (Test-Path $dir)) {
-        New-Item -ItemType Directory -Path $dir -Force | Out-Null
-    }
-    $cfgPath = Join-Path $dir "stack-config.json"
-    if (-not (Test-Path $cfgPath)) {
-        $cfgContent = @"
+    try {
+        if (-not (Test-Path -LiteralPath $dir)) {
+            New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        }
+        $cfgPath = Join-Path $dir "stack-config.json"
+        if (-not (Test-Path -LiteralPath $cfgPath)) {
+            $cfgContent = @"
 {
   "auto_start": {
     "9router": $auto9router,
@@ -605,18 +668,35 @@ foreach ($dir in @($acsDataDir, $acsRoot)) {
   }
 }
 "@
-        [System.IO.File]::WriteAllText($cfgPath, $cfgContent, [System.Text.Encoding]::UTF8)
-    } else {
-        if (-not $hasNodeOrBun) {
-            $existing = Get-Content $cfgPath -Raw
-            $updated = $existing -replace '"9router":\s*true', '"9router": false'
-            [System.IO.File]::WriteAllText($cfgPath, $updated, [System.Text.Encoding]::UTF8)
+            $ok = Set-SafeConfigFile -Path $cfgPath -Content $cfgContent
+            if (-not $ok) {
+                Warn "Could not write initial $cfgPath (permissions restricted) - continuing setup"
+            }
+        } else {
+            $existing = $null
+            try {
+                $existing = [System.IO.File]::ReadAllText($cfgPath, [System.Text.Encoding]::UTF8)
+            } catch {
+                $existing = Get-Content -LiteralPath $cfgPath -Raw -ErrorAction SilentlyContinue
+            }
+            if ($existing) {
+                $updated = $existing
+                if (-not $hasNodeOrBun) {
+                    $updated = $updated -replace '"9router":\s*true', '"9router": false'
+                }
+                if (-not $hasHeadroom) {
+                    $updated = $updated -replace '"headroom":\s*true', '"headroom": false'
+                }
+                if ($updated -ne $existing) {
+                    $ok = Set-SafeConfigFile -Path $cfgPath -Content $updated
+                    if (-not $ok) {
+                        Warn "Could not update $cfgPath (permissions restricted) - continuing setup"
+                    }
+                }
+            }
         }
-        if (-not $hasHeadroom) {
-            $existing = Get-Content $cfgPath -Raw
-            $updated = $existing -replace '"headroom":\s*true', '"headroom": false'
-            [System.IO.File]::WriteAllText($cfgPath, $updated, [System.Text.Encoding]::UTF8)
-        }
+    } catch {
+        Warn "Could not configure $dir\stack-config.json ($($_.Exception.Message)) - continuing setup"
     }
 }
 

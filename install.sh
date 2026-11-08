@@ -489,10 +489,10 @@ if [ "$HAS_HEADROOM" = "false" ]; then
 fi
 
 for CFG_DIR in "${HOME}/.acs/data" "${HOME}/.acs"; do
-  mkdir -p "$CFG_DIR"
+  mkdir -p "$CFG_DIR" 2>/dev/null || true
   CFG_FILE="${CFG_DIR}/stack-config.json"
   if [ ! -f "$CFG_FILE" ]; then
-    cat > "$CFG_FILE" <<EOF
+    cat > "$CFG_FILE" <<EOF 2>/dev/null || true
 {
   "auto_start": {
     "9router": ${AUTO_9ROUTER},
@@ -504,11 +504,12 @@ for CFG_DIR in "${HOME}/.acs/data" "${HOME}/.acs"; do
 }
 EOF
   else
+    [ -w "$CFG_FILE" ] || chmod +w "$CFG_FILE" 2>/dev/null || true
     if [ "$AUTO_9ROUTER" = "false" ]; then
-      sed 's/"9router":[[:space:]]*true/"9router": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" || rm -f "${CFG_FILE}.tmp"
+      sed 's/"9router":[[:space:]]*true/"9router": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" 2>/dev/null || rm -f "${CFG_FILE}.tmp"
     fi
     if [ "$AUTO_HEADROOM" = "false" ]; then
-      sed 's/"headroom":[[:space:]]*true/"headroom": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" || rm -f "${CFG_FILE}.tmp"
+      sed 's/"headroom":[[:space:]]*true/"headroom": false/g' "$CFG_FILE" > "${CFG_FILE}.tmp" 2>/dev/null && mv "${CFG_FILE}.tmp" "$CFG_FILE" 2>/dev/null || rm -f "${CFG_FILE}.tmp"
     fi
   fi
 done

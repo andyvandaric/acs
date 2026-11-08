@@ -166,6 +166,13 @@ test_acs_branding() {
 }
 assert_test "Standardizes branding to ACS instead of obsolete acs-cli" test_acs_branding
 
+# 8. Stack Config Resilience
+test_stack_config_resilience() {
+  grep -q '\[ -w "\$CFG_FILE" \] || chmod +w "\$CFG_FILE"' "${INSTALL_SH}" && \
+  grep -q 'mkdir -p "\$CFG_DIR" 2>/dev/null || true' "${INSTALL_SH}"
+}
+assert_test "Stack config file operations include non-fatal guards and write permission handling" test_stack_config_resilience
+
 echo ""
 echo "----------------------------------------------------"
 echo "Total Tests: $((TESTS_PASSED + TESTS_FAILED)) | Passed: ${TESTS_PASSED} | Failed: ${TESTS_FAILED}"

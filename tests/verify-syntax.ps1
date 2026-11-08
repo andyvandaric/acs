@@ -118,6 +118,18 @@ Assert-Test "Standardizes branding to ACS instead of obsolete acs-cli" {
     $content -match 'ACS `u{2014} Agnostic Config Suites' -or $content -match 'ACS — Agnostic Config Suites' -or $content -match 'ACS - Agnostic Config Suites'
 }
 
+# 7. Stack Config Write Resilience checks
+Assert-Test "Safe stack-config write helper Set-SafeConfigFile is defined with read-only clearance" {
+    $content -match 'function Set-SafeConfigFile' -and
+    $content -match '\.IsReadOnly\s*=\s*\$false'
+}
+
+Assert-Test "Stack config write incorporates retry loop, temp file replacement, and non-fatal try-catch" {
+    $content -match 'for\s*\(\s*\$attempt\s*=\s*1;\s*\$attempt\s*-le\s*3;\s*\$attempt\+\+\)' -and
+    $content -match 'Copy-Item\s+-LiteralPath\s+\$tmpFile\s+-Destination\s+\$Path\s+-Force' -and
+    $content -match 'try\s*\{[\s\S]*Set-SafeConfigFile[\s\S]*\}\s*catch\s*\{[\s\S]*Warn "Could not configure'
+}
+
 Write-Host ""
 Write-Host "----------------------------------------------------"
 Write-Host "Total Tests: $($testsPassed + $testsFailed) | Passed: $testsPassed | Failed: $testsFailed"
