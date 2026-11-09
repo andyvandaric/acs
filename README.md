@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.38.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.39.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -85,6 +85,8 @@ ACS is protected by a proprietary commercial license:
 - **Watchdog & Daemon Coordination**: Prevents dual-healer race conditions for headroom, adds streak resilience, dial retry health probes, and zombie process recovery.
 - **Blueprint Phase Gate & Hook Engine**: Native git hook integration, pretool git commit phase gate interceptors, and smart staged files context evaluation.
 - **Fastpath Package Metadata**: Optimized pip component updater with fallback paths and SSOT multi-dist-info SemVer metadata parsing.
+- **Synaptic Memory & Second Brain**: Hybrid dense-lexical RRF retrieval engine, pure-Go SQLite vec0 driver, bitemporal ontology graph with bilingual extraction, project isolation, superseded retention purge, and granular query cache invalidation.
+- **Gateway & Router Consolidation**: Unified model proxy with interactive key reveals, SSOT gateway resolution, and custom model fetch proxy.
 
 ---
 
@@ -129,12 +131,4 @@ All operations are unified under the modern `acs` command:
 | `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
 | `go run -tags buildtools . rules compile-roles` | Build-time pipeline command (invoked by `just rules-sync`) — compiles Gonja Jinja2 role templates; NOT part of the release `acs` binary |
 | `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
-| `acs sessionbus` | Cross-agent session bus messaging, inbox reflex, and claim management |
-| `acs assess` | Pre-PRD idea assessment skill (`acs-assess`) |
-
----
-
-### ✨ Architectural Pillars
-
-1. **Native Model Context Protocol (MCP)**: Zero-friction integration with filesystem, browser automation, code intelligence, and research tools via 27 consolidated core tools, 16MB stdio scanner buffers with non-fatal recovery, project upstream endpoint support, and stdio JSON-RPC 2.0 server harness.
-2. **Zero-Idle-Token 
+| `acs sessionbus` | Cross-agent session bus messaging,
