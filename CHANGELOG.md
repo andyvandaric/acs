@@ -1,5 +1,27 @@
 # Changelog
 
+## [v1.39.0] - 2026-11-09
+
+### Added
+- Second-brain knowledge engine with hybrid semantic and keyword retrieval.
+- Intelligent context evaluation and automated blueprint stage verification.
+- Multi-agent coordination with real-time process monitoring and status tracking.
+- Secure credential resolution with encrypted vault storage.
+
+### Changed
+- Unified process execution with background terminal isolation.
+- Streamlined package and dependency discovery for multi-runtime projects.
+- Standardized binary management across installer workflows.
+
+### Fixed
+- Hardened service recovery against concurrent health check races.
+- Enhanced workspace blueprint discovery across nested project structures.
+- Stabilized background daemon recovery against race conditions.
+
+### Documentation
+- Updated memory engine architecture and multi-agent coordination guides.
+- Standardized release notes curation and user-outcome change tracking.
+
 ## [v1.38.0] - 2026-11-07
 
 ### Added
