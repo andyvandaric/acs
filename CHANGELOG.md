@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.40.0] - 2026-11-10
+
+### Added
+- Resilient model loader with in-memory TTL cache and manual force-refresh support for 9router combos.
+- Interactive terminal auto-resume with elevated permission management on in-progress tasks.
+- Progressive column pagination and windowing for high-density Kanban boards.
+- Automated walkthrough synthesis and provenance tracking across blueprint tasks.
+
+### Changed
+- Streamlined background agent context propagation during autonomous task dispatch.
+- Optimized task payload transfer using server-side window functions.
+
+### Fixed
+- Enhanced 9router combo schema compatibility and automated kind healing for sequential combos.
+- Hardened active session binding and PTY terminal process resolution.
+- Improved CDN distribution endpoint health probe resilience.
+
 ## [v1.39.0] - 2026-11-09
 
 ### Added
