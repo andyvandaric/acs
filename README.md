@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.39.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.41.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -87,6 +87,8 @@ ACS is protected by a proprietary commercial license:
 - **Fastpath Package Metadata**: Optimized pip component updater with fallback paths and SSOT multi-dist-info SemVer metadata parsing.
 - **Synaptic Memory & Second Brain**: Hybrid dense-lexical RRF retrieval engine, pure-Go SQLite vec0 driver, bitemporal ontology graph with bilingual extraction, project isolation, superseded retention purge, and granular query cache invalidation.
 - **Gateway & Router Consolidation**: Unified model proxy with interactive key reveals, SSOT gateway resolution, and custom model fetch proxy.
+- **9Router Combo Management & Model Routing**: Full CRUD handlers and reactive combo store mutations with cache synchronization, reusable ComboManagerModal with reordering integrated into HermesConfigPanel, PresetManagerDialog, and ClaudeModelRouting, along with an active combos section and relaxed provider filters.
+- **Setup Enhancements**: WezTerm direct installer fallback and pre-existing installation bypass support.
 
 ---
 
@@ -128,7 +130,4 @@ All operations are unified under the modern `acs` command:
 | `acs articles` | Query offline synthesized research and knowledge base |
 | `acs sessions` | Inspect and manage active agent execution sessions |
 | `acs logs` | Tail real-time service logs |
-| `acs bug-hunter` | Standalone autonomous bug hunter agent and security auditor |
-| `go run -tags buildtools . rules compile-roles` | Build-time pipeline command (invoked by `just rules-sync`) — compiles Gonja Jinja2 role templates; NOT part of the release `acs` binary |
-| `acs memory [status\|prune]` | Inspect synaptic memory status and prune evicted or expired records |
-| `acs sessionbus` | Cross-agent session bus messaging,
+| `acs bug-hunter` | Standalone autonomo
