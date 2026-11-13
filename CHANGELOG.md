@@ -1,5 +1,21 @@
 # Changelog
 
+## [v1.41.0] - 2026-11-11
+
+### Added
+- Added 9router combo CRUD routes and handlers with relaxed provider filtering and active combos display.
+- Implemented reactive combo store mutations and cache synchronization.
+- Created reusable ComboManagerModal component supporting item reordering.
+- Integrated ComboManagerModal into HermesConfigPanel, PresetManagerDialog, and ClaudeModelRouting.
+- Added direct installer fallback and pre-existing installation bypass for WezTerm.
+
+### Fixed
+- Ensured in-process environment variables synchronize on configuration patches.
+- Extended 9router model timeouts in end-to-end resilience tests.
+
+### Changed
+- Bumped version to 1.41.0.
+
 ## [v1.40.0] - 2026-11-10
 
 ### Added
