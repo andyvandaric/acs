@@ -1,5 +1,24 @@
 # Changelog
 
+## [v1.42.0] - 2026-11-14
+
+### Added
+- Progressive diagnostic SSE streaming, consumer client, tier isolation, and real-time tier latency badges.
+- Exported `HealthCheckWithProgress` API and decoupled `/v1/models` catalog timeout from diagnostics.
+- Transactional combo tombstone recording, dual-cache invalidation, and seed-once persistence with Antigravity MITM seeder parity.
+- Retargeted default model routes to `gemini-3.8-flash-med`, adapted Anke models, and cleaned initial combo seeds.
+- Dynamic versioned welcome announcement and changelog engine.
+- 4-in-1 usage & cache efficiency dashboard card with zero redundancy.
+- High-resolution timeline tooltips, formatted x-axis hourly labels, and `display_label` population for token usage charts.
+
+### Fixed
+- Increased Fiber `WriteTimeout` to 180 seconds to support uninterrupted SSE diagnostic streams.
+- Prevented premature error states during diagnostic streaming by rendering a live progress banner.
+- Corrected announcement date comparisons and active slice initialization logic.
+- Sanitized fallback changelog generation and aligned 9router default routing to `gemini-3.8-flash-med`.
+- Fixed Gate 2 test suite blockers by capping Windows test parallelism to 4 and raising execution timeout to 900s.
+- Synchronized changelog releases to buyer and installer repositories to eliminate cross-repo version drift.
+
 ## [v1.41.0] - 2026-11-11
 
 ### Added

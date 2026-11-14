@@ -5,7 +5,7 @@
 <img src="https://dl.uikode.com/logo.svg" width="160" alt="ACS Logo">
 
 ![ACS](https://img.shields.io/badge/ACS-Agnostic_Config_Suites-blue?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-1.41.0-orange?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.42.0-orange?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Stack-Production_Ready-brightgreen?style=for-the-badge)
 
@@ -88,6 +88,9 @@ ACS is protected by a proprietary commercial license:
 - **Synaptic Memory & Second Brain**: Hybrid dense-lexical RRF retrieval engine, pure-Go SQLite vec0 driver, bitemporal ontology graph with bilingual extraction, project isolation, superseded retention purge, and granular query cache invalidation.
 - **Gateway & Router Consolidation**: Unified model proxy with interactive key reveals, SSOT gateway resolution, and custom model fetch proxy.
 - **9Router Combo Management & Model Routing**: Full CRUD handlers and reactive combo store mutations with cache synchronization, reusable ComboManagerModal with reordering integrated into HermesConfigPanel, PresetManagerDialog, and ClaudeModelRouting, along with an active combos section and relaxed provider filters.
+- **Progressive Diagnostics & Tier Isolation**: Progressive diagnostic SSE streaming consumer with real-time tier latency badges, tier isolation, decoupled `/v1/models` catalog timeout, and progressive health check routines.
+- **Tombstone Awareness & Seeder Persistence**: Transactional combo tombstone recording with dual cache invalidation, antigravity mitm seeder tombstone parity, seed-once persistence, and retargeted default models (gemini-3.8-flash-med, adapted anke models).
+- **Dashboard & Usage Intelligence**: 4-in-1 usage & cache efficiency card, rich timeline tooltips with hourly display labels on token usage charts, and dynamic versioned welcome announcement & changelog engine.
 - **Setup Enhancements**: WezTerm direct installer fallback and pre-existing installation bypass support.
 
 ---
@@ -124,10 +127,4 @@ All operations are unified under the modern `acs` command:
 #### Agentic Ecosystem & Tools
 | Command | Description |
 |---|---|
-| `acs kanban` | Local visual task management and PRD Blueprint tracker |
-| `acs mcp [list\|add\|remove\|serve]` | Manage Model Context Protocol (MCP) servers and tools |
-| `acs accounts` | Manage provider accounts and quota allocations |
-| `acs articles` | Query offline synthesized research and knowledge base |
-| `acs sessions` | Inspect and manage active agent execution sessions |
-| `acs logs` | Tail real-time service logs |
-| `acs bug-hunter` | Standalone autonomo
+| `acs kanban` | Local visual task management |
