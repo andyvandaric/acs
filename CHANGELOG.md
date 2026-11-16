@@ -1,5 +1,77 @@
 # Changelog
 
+## [v1.43.0] - 2026-11-16
+
+
+### Added
+- optimize antigravity stack template for turbo execution
+- integrate official @deepseek-ai/dsh installation into acs setup pipeline
+- add DSH profile config persistence and live GUI routing
+- auto-deploy DeepSeek Harness slash commands and profile in acs setup
+- add DeepSeek Harness manager page, model routing, and 23-persona swarm grid
+- integrate DeepSeek Harness runtime, profiles, and ACP daemon runner
+- normalize native antigravity toolcall schema in reflex handlers
+- add DeepSeek official provider logo for Agentic UI
+- dynamic multi-project discovery for bootsync and daemon sweep
+- wire antigravity posttool write reflex to blueprint sync
+- support antigravity write_file and edit_file in blueprint sync reflex
+- live db repair, xingchi connection, and e2e regression
+- wire 9router maintenance daemon task and optimize-db CLI
+- implement database pruning, settings sanitizer and backup rotator
+- add global file permission grants for zero-prompt autonomy
+- implement 20+ subagent personas registry for antigravity
+- implement dual-namespace tool aliasing and governance
+- implement binary thin shim with memory and kanban reflex
+- implement dual-scope stdio harness
+
+### Fixed
+- ensure unique allowed user ids on windows low-resolution timer
+- restore cordis patch mcp blocks and stabilize e2e sla
+- resolve gate 2 release test regressions
+- prevent runaway backlog task auto-claim in hook activity
+- align default routes with active claude
+- add native tool permission grants for zero approval prompt
+- configure full auto-approve permission policy for dsh patches
+- restore __hook omission from getPublicWhitelistedCommands
+- make settings.json.template optional in Antigravity template loader
+- whitelist __hook and hook subcommands in dispatch license gate
+- add context lint annotations to blueprint reconciler
+- bind prod dashboard port 20130 via version.BuildEnv sync and explicit start flag
+- consolidate on-demand skill matcher into single native pre-invocation hook
+- align antigravity pre-invocation hook payload with proto spec
+- restore canonical binary thin shim hook command
+- purge legacy http mcp servers and outdated combos
+
+### Changed
+- bump version to 1.43.0
+- unwire deepseek harness from sidebar navigation and routing
+- unwire deepseek harness from setup, sync, and routes
+- optimize hook execution via inline node fetch
+- consolidate antigravity pre-invocation into single clean UI dropdown
+- purge misleading legacy settings.json template and deployment
+- purge superseded file
+
+### Documentation
+- synchronize release notes from production pipeline
+- reconcile 9router optimizer blueprint sub-phases to completed
+- reconcile deepseek-harness-agentic-stack plan blueprint to completed
+- update deepseek-harness-agentic-stack blueprint with reflex, second brain, and nav reorder
+- draft deepseek-harness-agentic-stack plan blueprint
+- reconcile realtime blueprint kanban sync blueprint to completed
+- mark phase 02 completed with commit 07ff3576a
+- mark phase 01 completed with commit cc66c3ccf
+- refine realtime blueprint kanban sync plan blueprint suite
+- complete sub-phases for realtime blueprint kanban sync plan
+- draft realtime blueprint to kanban sync plan blueprint
+- expand 9router optimizer blueprint with backup purge, thought sigs, and pragma tuning
+- draft 9router auto-prune and db optimizer blueprint
+- reconcile all sub-phase statuses to completed
+- enforce kanban reflex and dual-scope hooks parity
+- harden blueprint with dual-scope and hippocampus memory recall
+- upgrade antigravity plan blueprint to 1:1 complete parity
+- remediate antigravity stdio mcp plan blueprint to 100% compliance
+- draft antigravity stdio mcp and hooks parity plan blueprint
+
 ## [v1.42.0] - 2026-11-14
 
 ### Added
