@@ -89,7 +89,7 @@ ACS is protected by a proprietary commercial license:
 - **Gateway & Router Consolidation**: Unified model proxy with interactive key reveals, SSOT gateway resolution, and custom model fetch proxy.
 - **9Router Combo Management & Model Routing**: Full CRUD handlers and reactive combo store mutations with cache synchronization, reusable ComboManagerModal with reordering integrated into HermesConfigPanel, PresetManagerDialog, and ClaudeModelRouting, along with an active combos section and relaxed provider filters.
 - **Progressive Diagnostics & Tier Isolation**: Progressive diagnostic SSE streaming consumer with real-time tier latency badges, tier isolation, decoupled `/v1/models` catalog timeout, and progressive health check routines.
-- **Tombstone Awareness & Seeder Persistence**: Transactional combo tombstone recording with dual cache invalidation, antigravity mitm seeder tombstone parity, seed-once persistence, aligned model routes, and cleaned scratch seeds.
+- **Tombstone Awareness & Seeder Persistence**: Transactional combo tombstone recording with dual cache invalidation, antigravity mitm seeder tombstone parity, seed-once persistence, and canonical active model alignment.
 - **Dashboard & Usage Intelligence**: 4-in-1 usage & cache efficiency card, rich timeline tooltips with hourly display labels on token usage charts, and dynamic versioned welcome announcement & changelog engine.
 - **Setup Enhancements**: WezTerm direct installer fallback and pre-existing installation bypass support.
 
