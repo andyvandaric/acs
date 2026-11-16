@@ -5,13 +5,7 @@
 
 ### Added
 - optimize antigravity stack template for turbo execution
-- integrate official @deepseek-ai/dsh installation into acs setup pipeline
-- add DSH profile config persistence and live GUI routing
-- auto-deploy DeepSeek Harness slash commands and profile in acs setup
-- add DeepSeek Harness manager page, model routing, and 23-persona swarm grid
-- integrate DeepSeek Harness runtime, profiles, and ACP daemon runner
 - normalize native antigravity toolcall schema in reflex handlers
-- add DeepSeek official provider logo for Agentic UI
 - dynamic multi-project discovery for bootsync and daemon sweep
 - wire antigravity posttool write reflex to blueprint sync
 - support antigravity write_file and edit_file in blueprint sync reflex
@@ -31,7 +25,6 @@
 - prevent runaway backlog task auto-claim in hook activity
 - align default routes with active claude
 - add native tool permission grants for zero approval prompt
-- configure full auto-approve permission policy for dsh patches
 - restore __hook omission from getPublicWhitelistedCommands
 - make settings.json.template optional in Antigravity template loader
 - whitelist __hook and hook subcommands in dispatch license gate
@@ -44,8 +37,6 @@
 
 ### Changed
 - bump version to 1.43.0
-- unwire deepseek harness from sidebar navigation and routing
-- unwire deepseek harness from setup, sync, and routes
 - optimize hook execution via inline node fetch
 - consolidate antigravity pre-invocation into single clean UI dropdown
 - purge misleading legacy settings.json template and deployment
@@ -54,9 +45,6 @@
 ### Documentation
 - synchronize release notes from production pipeline
 - reconcile 9router optimizer blueprint sub-phases to completed
-- reconcile deepseek-harness-agentic-stack plan blueprint to completed
-- update deepseek-harness-agentic-stack blueprint with reflex, second brain, and nav reorder
-- draft deepseek-harness-agentic-stack plan blueprint
 - reconcile realtime blueprint kanban sync blueprint to completed
 - mark phase 02 completed with commit 07ff3576a
 - mark phase 01 completed with commit cc66c3ccf
