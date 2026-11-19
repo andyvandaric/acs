@@ -1,5 +1,73 @@
 # Changelog
 
+## [v1.45.0] - 2026-11-19
+
+
+### Added
+- implement gui preflight connectivity gate and combined adopt
+- ephemeral mcp browser lifecycle and 24kb rule modularization
+- dynamic multi-tenant commit reconciler and ready task auto-promotion
+- enforce universal kernel license gate and turn-0 micro contract
+- implement auto-promotion lifecycle fallback on tool invocation
+- add antigravity-budget cli optimizer command and audit engine
+- set lean mode as default adoption strategy in gui
+- default adopt command and server routes to lean on-demand mode
+- antigravity suite status parity and optimistic hosts switch
+- equalize orchestrator watchdog reflex and payload mapping
+- self-healing embedded templates fallback and auto-materialize for antigravity
+- package gemini-3.8-flash-max and gemini-flash-low combos into ssot seed
+- set acs-browser default on and whitelist against cleanup
+- persist token usage chart period and layout refinements
+- allow owner authorized push override for reflex 06
+
+### Fixed
+- prevent access denied on existing db and allow doctor warning exit code
+- isolate office state fallback from live sessionbus db
+- update LeanRuleCount to 23 reflecting active governance ruleset
+- calibrate configuration drift budget to 41 for recent hookengine resolvers
+- log task promotion error on antigravity pre-tool
+- regenerate asset manifest checksums for hermes watchdog assets
+- resolve antigravity author provenance and eliminate misleading cli attribution
+- resolve antigravity author provenance and eliminate misleading cli attribution
+- isolate hosts file path in mitm route unit tests
+- automatic zero-conflict tailscale relocation to port 8443
+- auto-detect port 443 conflicts and automate tailscale relocation for mitm
+- enforce 1-click elevated restart and mutual locking on mitm controls
+- fix suite status badge, mcp switcher filter, and memory self-heal
+- ensure acs-browser is default on in antigravity mcp config
+- prevent cross-project blueprint task bleed in git-blueprint-phase-guard
+- prevent ping button overflow on mcp catalog cards
+- auto-detect 9router mitm proxy state and dual-mode dns status
+
+### Changed
+- bump version to 1.45.0
+- enforce progressive disclosure and zero-overhead token budget
+- unify reachable dot indicators in mcp catalog
+- convert mcp servers page to pure catalog and reachability tester
+- streamline mitm tab by removing redundant browser synergy section
+- reconcile plans and sync mcp config
+
+### Documentation
+- mark wave-3 completed in master blueprint [wave-3]
+- mark completed in blueprint
+- mark completed in blueprint
+- mark completed in blueprint
+- mark completed in blueprint
+- mark completed in blueprint
+- mark completed in blueprint
+- incorporate universal kernel license gate, hermes hooks, browser lifecycle, and 24kb rule modularization
+- remediate 5 ast divergences identified in critic gate 1 audit
+- align blueprint with combined-by-default adopt and ssot root enforcement
+- author master specification blueprint for antigravity workflow token alignment
+- author antigravity dashboard parity blueprint
+- retract acs-browser stdio blueprint in favor of http multiplexer
+- author master plan blueprint for acs-browser stdio IPC migration
+- purge heartbeat-watchdog and equalize watchdog reflexes [reconcile]
+- untick unauthored DoD boxes; machine-check C1 claims
+- fix register candor + add cross-phase identifier rule
+- authorize CLAUDE.md correction; add session defect registry
+- heartbeat-watchdog plan blueprint (Hard Gate 1 complete)
+
 ## [v1.44.0] - 2026-11-18
 
 ### Added
