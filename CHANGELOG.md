@@ -1,5 +1,82 @@
 # Changelog
 
+## [v1.44.0] - 2026-11-18
+
+### Added
+
+- one-click antigravity mitm cockpit and safe hosts engine
+- enforce acs-core immutability guard and test master harness
+- integrate desktop teamwork mode with specialist persona roster
+- enforce cross-session lock governance and heartbeat watchdog
+- generate 23 specialist persona skills and master teamwork skill
+- align multi-agent swarm reflex and 5-min watchdog ssot
+- extend persona resolution to workspace skills and claude agents
+- implement owner standing authority and push override protocol for reflex 06
+- harden lead orchestrator swarm protocol in antigravity template
+- formalize second-zero multi-agent swarm reflex across runtimes
+- consolidate antigravity mcp config to unified acs-core stdio
+- atomic task registration and queued status for stack updates
+- transparent component log reader aggregation and daemon pruner sync
+- windows in-place non-renaming log rotator
+- component-scoped log targets for multi-process isolation
+- deterministic 180s SLA timer and error fingerprinting
+- antigravity pretool deny parity and fail-closed gate
+- proactive PID probe auto-sweep and external state shield
+- deploy acs telemetry og social card and fallback assets
+- complete Antigravity IDE and Desktop kanban reflex parity
+- reactive pin toggle and hermes agent lifecycle integration
+- re-wire hermes binary check and add auto-fix handler
+- auto install hermes-agent to ~/.hermes/hermes-agent
+- enforce 1:1 gui parity defaults in adopt cli
+- stack manager lock controls, realtime ws wiring and ux polish
+- prevent FTS5 index bloat and add memory compact
+
+### Fixed
+
+- remove claude model tier artifact leak from antigravity skills and prompt hooks
+- enhance template resolution candidates and mcp test query params
+- eliminate premature done progress and false completion on stack updates
+- prevent premature log file close on Windows daemon spawn
+- resolve subproject git root and multi-workspace commit reconciliation
+- run vite build via bunx and include package.json in biome files
+- eliminate summary phantom counts and wire reactive pagination load-more
+- use correct useStackUpdateStore hook in TideDashboardBridge
+- resolve antigravity session id and prevent premature task completion
+- sync fallback changelog to portal repo during AI outage
+
+### Changed
+
+- purge redundant quota card and dead modals in antigravity manager
+
+### Documentation
+
+- reconcile antigravity persona swarm blueprint to completed
+- reconcile antigravity mcp stdio specification to completed
+- reconcile acs-swarm-orchestrator-reflex specification to completed
+- draft antigravity mcp stdio and manager overhaul specification
+- draft acs-swarm-orchestrator-reflex-and-ssot-hardening specification
+- reconcile stack updater progress specification to completed
+- add stack updater progress reconciliation blueprint
+- reconcile multi-process log rotation completed
+- reconcile multi-process log rotation to completed
+- reconcile multi-process log rotation to completed
+- add multi-process log rotation hardening specification
+- add acs reflex hardening comprehensive verification report
+- reconcile acs-reflex-hardening-and-parity-overhaul to completed
+- reconcile wave 03 watchdog SLA and beacon R11 blueprint
+- reconcile acs-reflex-hardening to completed
+- reconcile acs-reflex-hardening to completed
+- align git concurrency rule with synchronous fleet trunk architecture
+- add acs-reflex-hardening-and-parity-overhaul specification
+- reconcile hermes agent setup and doctor parity blueprint
+- document autonomous workflow adoption protocol in workflow-ssot
+- reconcile stack manager remediation specification to completed
+- update second-brain optimization blueprint status to approved
+- draft stack manager update protection & realtime ux remediation specification
+- reconcile second brain db bloat blueprint to completed
+- draft second brain db bloat blueprint
+- purge unwired deepseek harness from v1.43.0 release notes
+
 ## [v1.43.0] - 2026-11-16
 
 
