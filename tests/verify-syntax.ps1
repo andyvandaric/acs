@@ -84,6 +84,25 @@ Assert-Test "Authorized ticket stream binary download logic is present" {
     $content -match 'Get-BytesWithProgress.*\$DOWNLOAD_STREAM_URL'
 }
 
+# 3b. Streaming Chunk Progress & Speed Meter (Phase 02)
+Assert-Test "Get-BytesWithProgress implements HttpClient streaming and stopwatch speed meter for PS7" {
+    $content -match 'function Get-BytesWithProgress' -and
+    $content -match '\[System\.Net\.Http\.HttpClient\]' -and
+    $content -match '\[System\.Diagnostics\.Stopwatch\]' -and
+    $content -match 'Write-Progress.*Downloading ACS Binary' -and
+    $content -match '\$speedMb'
+}
+
+Assert-Test "Get-BytesWithProgress implements HttpWebRequest chunked streaming fallback for PS 5.1" {
+    $content -match '\[System\.Net\.HttpWebRequest\]' -and
+    $content -match 'System\.IO\.MemoryStream'
+}
+
+Assert-Test "Streaming download enforces in-memory collection without disk write before SHA-256" {
+    $content -match 'function Get-BytesWithProgress' -and
+    $content -match 'return ,\$memStream\.ToArray\(\)'
+}
+
 # 4. Security & Integrity verification
 Assert-Test "SHA-256 integrity verification is enforced" {
     ($content -match 'Get-FileHash.*SHA256' -or $content -match 'Test-Sha256Bytes') -and

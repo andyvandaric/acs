@@ -315,44 +315,181 @@ function Get-StagingDir {
 }
 
 function Get-BytesWithProgress {
-    param([string]$Url)
-    # 1. On PowerShell 7+, use HttpClient for memory stream reading
-    if ($PSVersionTable.PSVersion.Major -ge 7) {
-        try {
-            $client = [System.Net.Http.HttpClient]::new()
-            try {
-                $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
-                [void]$resp.EnsureSuccessStatusCode()
-                $total = $resp.Content.Headers.ContentLength
-                $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
-                $mem = New-Object System.IO.MemoryStream
-                try {
-                    $buf = New-Object byte[] 81920
-                    $read = 0
-                    $lastMb = -1
-                    while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
-                        $mem.Write($buf, 0, $n)
-                        $read += $n
-                        if ($total -and $total -gt 0) {
-                            $mb = [math]::Floor($read / 1MB)
-                            if ($mb -ne $lastMb) { $lastMb = $mb; Write-Progress -Activity "Downloading" -Status "$mb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total))) }
-                        }
-                    }
-                    Write-Progress -Activity "Downloading" -Completed
-                    return $mem.ToArray()
-                } finally { $mem.Dispose(); $stream.Dispose() }
-            } finally { $client.Dispose() }
-        } catch {
-            # Fall through to WebClient if HttpClient fails
-        }
-    }
+    param(
+        [string]$Url,
+        [int]$TimeoutSec = 30
+    )
 
-    # 2. Universal reliable fallback: WebClient
-    $wc = New-Object System.Net.WebClient
-    try {
-        return $wc.DownloadData($Url)
-    } finally {
-        $wc.Dispose()
+    $isPwsh = $PSVersionTable.PSVersion.Major -ge 7
+
+    if ($isPwsh) {
+        $handler = [System.Net.Http.SocketsHttpHandler]::new()
+        $handler.ConnectTimeout = [System.TimeSpan]::FromSeconds(10)
+        $client = [System.Net.Http.HttpClient]::new($handler)
+        $client.Timeout = [System.TimeSpan]::FromSeconds($TimeoutSec)
+
+        try {
+            $response = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
+            [void]$response.EnsureSuccessStatusCode()
+
+            $contentLength = $response.Content.Headers.ContentLength
+            $totalBytes = if ($null -ne $contentLength) { [long]$contentLength } else { -1L }
+
+            $stream = $response.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
+            $memStream = [System.IO.MemoryStream]::new()
+            $buffer = [byte[]]::new(65536) # 64KB chunks
+            $totalRead = 0L
+
+            $sw = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastProgress = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastTerminalLog = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastTerminalBytes = 0L
+
+            while ($true) {
+                $read = $stream.ReadAsync($buffer, 0, $buffer.Length).GetAwaiter().GetResult()
+                if ($read -le 0) { break }
+
+                $memStream.Write($buffer, 0, $read)
+                $totalRead += $read
+
+                # Throttle UI updates to 200ms
+                if ($lastProgress.ElapsedMilliseconds -ge 200) {
+                    $elapsedSec = $sw.Elapsed.TotalSeconds
+                    $speedMb = if ($elapsedSec -gt 0) { [math]::Round(($totalRead / 1MB) / $elapsedSec, 2) } else { 0 }
+                    $readMb = [math]::Round($totalRead / 1MB, 2)
+
+                    if ($totalBytes -gt 0) {
+                        $percent = [math]::Min(100, [int](($totalRead / $totalBytes) * 100))
+                        $totalMb = [math]::Round($totalBytes / 1MB, 2)
+                        Write-Progress -Activity "Downloading ACS Binary" `
+                            -Status ("{0} MB / {1} MB ({2}%) at {3} MB/s" -f $readMb, $totalMb, $percent, $speedMb) `
+                            -PercentComplete $percent
+                    } else {
+                        Write-Progress -Activity "Downloading ACS Binary" `
+                            -Status ("{0} MB at {1} MB/s" -f $readMb, $speedMb)
+                    }
+                    $lastProgress.Restart()
+                }
+
+                # Non-interactive / CI / fallback terminal output every 5MB or 2 seconds
+                if ($lastTerminalLog.ElapsedMilliseconds -ge 2000 -or ($totalRead - $lastTerminalBytes) -ge (5 * 1024 * 1024)) {
+                    $elapsedSec = $sw.Elapsed.TotalSeconds
+                    $speedMb = if ($elapsedSec -gt 0) { [math]::Round(($totalRead / 1MB) / $elapsedSec, 2) } else { 0 }
+                    $readMb = [math]::Round($totalRead / 1MB, 2)
+                    if ($totalBytes -gt 0) {
+                        $percent = [math]::Min(100, [int](($totalRead / $totalBytes) * 100))
+                        $totalMb = [math]::Round($totalBytes / 1MB, 2)
+                        Write-Host -NoNewline ("`r  Downloading: {0} MB / {1} MB ({2}%) at {3} MB/s..." -f $readMb, $totalMb, $percent, $speedMb)
+                    } else {
+                        Write-Host -NoNewline ("`r  Downloading: {0} MB at {1} MB/s..." -f $readMb, $speedMb)
+                    }
+                    $lastTerminalLog.Restart()
+                    $lastTerminalBytes = $totalRead
+                }
+            }
+
+            Write-Progress -Activity "Downloading ACS Binary" -Completed
+            if ($totalRead -gt 0) {
+                Write-Host ""
+            }
+
+            return ,$memStream.ToArray()
+        } finally {
+            if ($null -ne $memStream) { $memStream.Dispose() }
+            if ($null -ne $stream) { $stream.Dispose() }
+            if ($null -ne $response) { $response.Dispose() }
+            $client.Dispose()
+            $handler.Dispose()
+        }
+    } else {
+        # Windows PowerShell 5.1 fallback: Streaming chunk reader with HttpWebRequest
+        try {
+            $req = [System.Net.HttpWebRequest]::Create($Url)
+            $req.Timeout = $TimeoutSec * 1000
+            $req.ReadWriteTimeout = $TimeoutSec * 1000
+            $req.UserAgent = "ACS-Installer"
+
+            $resp = $req.GetResponse()
+            $totalBytes = $resp.ContentLength
+            $respStream = $resp.GetResponseStream()
+
+            $memStream = [System.IO.MemoryStream]::new()
+            $buffer = [byte[]]::new(65536) # 64KB chunks
+            $totalRead = 0L
+
+            $sw = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastProgress = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastTerminalLog = [System.Diagnostics.Stopwatch]::StartNew()
+            $lastTerminalBytes = 0L
+
+            while ($true) {
+                $read = $respStream.Read($buffer, 0, $buffer.Length)
+                if ($read -le 0) { break }
+
+                $memStream.Write($buffer, 0, $read)
+                $totalRead += $read
+
+                if ($lastProgress.ElapsedMilliseconds -ge 200) {
+                    $elapsedSec = $sw.Elapsed.TotalSeconds
+                    $speedMb = if ($elapsedSec -gt 0) { [math]::Round(($totalRead / 1MB) / $elapsedSec, 2) } else { 0 }
+                    $readMb = [math]::Round($totalRead / 1MB, 2)
+
+                    if ($totalBytes -gt 0) {
+                        $percent = [math]::Min(100, [int](($totalRead / $totalBytes) * 100))
+                        $totalMb = [math]::Round($totalBytes / 1MB, 2)
+                        Write-Progress -Activity "Downloading ACS Binary" `
+                            -Status ("{0} MB / {1} MB ({2}%) at {3} MB/s" -f $readMb, $totalMb, $percent, $speedMb) `
+                            -PercentComplete $percent
+                    } else {
+                        Write-Progress -Activity "Downloading ACS Binary" `
+                            -Status ("{0} MB at {1} MB/s" -f $readMb, $speedMb)
+                    }
+                    $lastProgress.Restart()
+                }
+
+                if ($lastTerminalLog.ElapsedMilliseconds -ge 2000 -or ($totalRead - $lastTerminalBytes) -ge (5 * 1024 * 1024)) {
+                    $elapsedSec = $sw.Elapsed.TotalSeconds
+                    $speedMb = if ($elapsedSec -gt 0) { [math]::Round(($totalRead / 1MB) / $elapsedSec, 2) } else { 0 }
+                    $readMb = [math]::Round($totalRead / 1MB, 2)
+                    if ($totalBytes -gt 0) {
+                        $percent = [math]::Min(100, [int](($totalRead / $totalBytes) * 100))
+                        $totalMb = [math]::Round($totalBytes / 1MB, 2)
+                        Write-Host -NoNewline ("`r  Downloading: {0} MB / {1} MB ({2}%) at {3} MB/s..." -f $readMb, $totalMb, $percent, $speedMb)
+                    } else {
+                        Write-Host -NoNewline ("`r  Downloading: {0} MB at {1} MB/s..." -f $readMb, $speedMb)
+                    }
+                    $lastTerminalLog.Restart()
+                    $lastTerminalBytes = $totalRead
+                }
+            }
+
+            Write-Progress -Activity "Downloading ACS Binary" -Completed
+            if ($totalRead -gt 0) {
+                Write-Host ""
+            }
+
+            return ,$memStream.ToArray()
+        } catch {
+            # WebClient streaming fallback as ultimate safety net
+            $wc = [System.Net.WebClient]::new()
+            try {
+                $stream = $wc.OpenRead($Url)
+                $memStream = [System.IO.MemoryStream]::new()
+                $buffer = [byte[]]::new(65536)
+                while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+                    $memStream.Write($buffer, 0, $read)
+                }
+                return ,$memStream.ToArray()
+            } finally {
+                if ($null -ne $stream) { $stream.Dispose() }
+                if ($null -ne $memStream) { $memStream.Dispose() }
+                $wc.Dispose()
+            }
+        } finally {
+            if ($null -ne $memStream) { $memStream.Dispose() }
+            if ($null -ne $respStream) { $respStream.Dispose() }
+            if ($null -ne $resp) { $resp.Dispose() }
+        }
     }
 }
 
