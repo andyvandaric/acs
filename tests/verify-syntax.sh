@@ -68,9 +68,11 @@ assert_test "Dual-track manifest fetch URLs configured" test_dual_track_manifest
 
 test_authorized_download_ticket() {
   grep -q 'download/ticket' "${INSTALL_SH}" && \
-  grep -q 'curl.*DOWNLOAD_STREAM_URL' "${INSTALL_SH}"
+  grep -q 'DOWNLOAD_STREAM_URL' "${INSTALL_SH}" && \
+  grep -q -- '--progress-bar' "${INSTALL_SH}" && \
+  grep -q -- '--retry-connrefused' "${INSTALL_SH}"
 }
-assert_test "Authorized ticket stream binary download logic configured" test_authorized_download_ticket
+assert_test "Authorized ticket stream binary download logic configured with progress and retry resilience" test_authorized_download_ticket
 
 # 4. Inline Python Manifest Parser Check
 test_python_parser_syntax() {

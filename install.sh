@@ -326,7 +326,12 @@ fi
 ok "Download ticket verified"
 info "Downloading ${FILE_NAME} via authorized secure stream..."
 
-if ! curl -fsSL --connect-timeout 15 --max-time 180 "${DOWNLOAD_STREAM_URL}" -o "${TMP_FILE}"; then
+CURL_PROGRESS_FLAG="-fsSL"
+if [ -t 1 ]; then
+  CURL_PROGRESS_FLAG="-fL --progress-bar"
+fi
+
+if ! curl $CURL_PROGRESS_FLAG --retry 3 --retry-delay 1 --retry-connrefused --connect-timeout 15 -m 300 "${DOWNLOAD_STREAM_URL}" -o "${TMP_FILE}"; then
   err "Unduhan stream biner gagal. Silakan coba kembali dengan kode baru dari Member Area."
 fi
 
