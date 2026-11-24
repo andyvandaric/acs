@@ -1,5 +1,89 @@
 # Changelog
 
+## [v1.46.0] - 2026-11-24
+
+
+### Added
+- inject workflow micro-contract and ScheduleWakeup watchdog instruction
+- detect and expose AGY CLI across ACS ecosystem
+- standardize delete confirmation modals and sidebar navigation
+- implement 2-tier delete modal and trashbin ecosystem parity
+- implement two-tier delete confirmation modal replacing native confirm
+- display developer direct responses and tickets in feedback hub
+- integrate antigravity cli installer, doctor check, and ecosystem parity
+- add remote developer feedback response query endpoint
+- support persona and role handle resolution in SendMessage and doctor readiness check
+- resolve recipient by persona CallName alias
+- add idle session grace-period fallback and robust CLI unescaping
+- dynamic auto-registration, background heartbeat and transparent hot-proxy in SSOT
+- add grace-period fallback to acs bus list
+- add acs bus CLI alias and auto-register MCP session callers
+- implement cross-session console reflex wakeup and per-session HUD alert isolation
+- stream binary updates via authorized license ticket conduit
+- implement download ticket acquisition conduit
+- synchronize ssot coordination reflex and turn-0 hud auto-registration
+- add antigravity native ipc listener and instant wakeup sync
+- wire direct pipe wakeup with trailing coalescer and routes delegation
+- implement antigravity ipc pipe spec and unified acs:core channel
+- automate 1-click root CA installation for 9router and add acs setup cert
+- wire direct in-process console wakeup and fix windows conhost flicker
+- add ANTIGRAVITY_CONVERSATION_ID fallback to identity resolution
+- clean borderless 1-2 line statusline and prevent prompt resurfacing
+- support native agy.exe telemetry protobuf field names
+- display project directory, detailed git stats, and complete persona role
+- wire automatic Antigravity HUD deployment into stepAntigravity
+- add user-facing session bus inbox callout reflex banner
+- synchronize anti-slop zero em-dash rules and GPU motion PageSpeed invariants to SSOT and distribution stacks
+- upgrade acs-technical-copy-seo and acs-frontend-ui-ux with Sections 1-6 DNC and zero-penalty motion standards
+- achieve full reflex parity and ephemeral browser quarantine
+
+### Fixed
+- decouple registration idempotency per server sink
+- resolve spawn guard ast and breakaway flag violations
+- enforce honest unknown default on empty consumer identity [hotfix]
+- sanitize SessionStart hook schema and allow in-session persona switch
+- use interactive start for gui apps and guide project invocation for agy
+- emit strictly single valid json for claude code lifecycle hooks
+- move trashbin menu below feedback hub in sidebar
+- auto-close delete confirmation modal immediately on action
+- wire lsp tools through localToolAdapter for environment initialization
+- eliminate console window flicker and stdin hang in antigravity hooks
+- neutralize omc plugin hooks and auto-sanitize on deploy
+- add fast-path workspace resolver and reconcile wild-done blueprint
+- restore project discovery fallback from tasks and fix missing import
+- auto-switch selected project on deep link and sync url params
+- implement local hook sanitization auto-handler, zero-flicker headless hooks, and blueprint implemented status normalization
+- align compact schema required sets with flexible kanban parameter aliasing
+- eliminate unknown persona leaks and support flexible tool parameter aliasing
+- reliable git status detection and background swr refresh on windows
+- enforce 7-hook single-door thin relay in setup and settings patcher
+- strictly isolate session context and eliminate cross-session token bleeding
+- eliminate terminal window spawn on agy session boot (zero-flicker)
+- enforce Antigravity built-in tool schema signatures in Turn-0 micro contract
+- hide subagent badge when zero agents are running
+- implement racing SWR and sub-millisecond git mtime cache invalidation
+- enforce strict per-session alert isolation and sender metadata
+- resolve session-agnostic workspace cache key fallback
+- suppress context lint on sessionbus SendMessage
+- prevent intermittent 0% drops via debounce and context caching
+- derive usedTokens from context percentage when explicit count missing
+- use pathToFileURL for Windows ESM detached cache worker import
+- true non-blocking SWR cache with async git prober and detached refresh
+- true non-blocking SWR cache and 25ms stdin timeout to prevent statusline flickering
+- ensure project directory and git change stats are always visible in statusline
+- avoid duplicating persona name when badge already includes name in compact mode
+- enforce strict single-line statusline with zero newlines to prevent TUI cursor overwrite
+- canonical v1.45.0, deduplicate persona, adaptive context limit, and clean quota display
+- query /api/sessionbus/sessions and await refreshWorker on expired cache
+- make DeployAntigravityHUD respect geminiDir and enforce idempotency
+- register antigravity hud assets in automation asset manifest
+
+### Changed
+- fast netstat probe on port 443 and cache version candidates
+
+### Documentation
+- update upstream SSOT acs-lsp-rest contract and agent personas
+
 ## [v1.45.0] - 2026-11-19
 
 
