@@ -1,5 +1,24 @@
 # Changelog
 
+## [v1.47.0] - 2026-11-26
+
+
+### Added
+- replace cloakbrowser with seleniumbase pure cdp across agentic-stack and docs
+
+### Fixed
+- harden hook deadlock sweeper against killing agy and interactive shells
+- quote antigravity HUD statusline path with spaces and auto-heal
+- set browser favicon to official acs logo
+- add self-healing guard for 9router chunk 915 double closing braces
+- deploy curated bilingual changelogs to sovereign cdn
+
+### Changed
+- unwire GlobalUpdateIndicator floating dock
+
+### Documentation
+- update browser documentation to SeleniumBase Pure CDP
+
 ## [v1.46.0] - 2026-11-24
 
 

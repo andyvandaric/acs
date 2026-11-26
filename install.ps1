@@ -1,4 +1,4 @@
-# install.ps1 - Install ACS for Windows
+﻿# install.ps1 - Install ACS for Windows
 # Usage: $env:ACS_DOWNLOAD_CODE="<CODE>"; irm https://dl.uikode.com/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1 -Code <CODE>
 
@@ -389,7 +389,7 @@ if ($DownloadCode) {
 $ticketJson = $ticketPayload | ConvertTo-Json -Compress
 $ticketResp = $null
 try {
-    $ticketResp = Invoke-RestMethod -Uri "$API_BASE/api/v1/download/ticket" -Method Post -Body $ticketJson -ContentType "application/json" -TimeoutSec 15
+    $ticketResp = Invoke-RestMethod -Uri "$API_BASE/api/v1/download/ticket" -Method Post -Body $ticketJson -ContentType "application/json" -TimeoutSec 45
 } catch {
     $errMsg = $_.Exception.Message
     try {
