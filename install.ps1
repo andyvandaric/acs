@@ -319,22 +319,34 @@ function Get-BytesWithProgress {
     if ($PSVersionTable.PSVersion.Major -ge 7) {
         try {
             $client = [System.Net.Http.HttpClient]::new()
+            $client.Timeout = [TimeSpan]::FromMinutes(10)
             try {
                 $resp = $client.GetAsync($Url, [System.Net.Http.HttpCompletionOption]::ResponseHeadersRead).GetAwaiter().GetResult()
                 [void]$resp.EnsureSuccessStatusCode()
                 $total = $resp.Content.Headers.ContentLength
+                $totalMb = if ($total -and $total -gt 0) { [math]::Round($total / 1MB, 1) } else { 0 }
                 $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
                 $mem = New-Object System.IO.MemoryStream
                 try {
                     $buf = New-Object byte[] 81920
                     $read = 0
                     $lastMb = -1
+                    $lastLogMb = 0
                     while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
                         $mem.Write($buf, 0, $n)
                         $read += $n
-                        if ($total -and $total -gt 0) {
-                            $mb = [math]::Floor($read / 1MB)
-                            if ($mb -ne $lastMb) { $lastMb = $mb; Write-Progress -Activity "Downloading" -Status "$mb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total))) }
+                        $mb = [math]::Floor($read / 1MB)
+                        if ($total -and $total -gt 0 -and $mb -ne $lastMb) {
+                            $lastMb = $mb
+                            Write-Progress -Activity "Downloading" -Status "$mb MB / $totalMb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total)))
+                        }
+                        if ($mb -ge ($lastLogMb + 10)) {
+                            $lastLogMb = $mb
+                            if ($totalMb -gt 0) {
+                                Info "  Progress: $mb MB / $totalMb MB"
+                            } else {
+                                Info "  Progress: $mb MB"
+                            }
                         }
                     }
                     Write-Progress -Activity "Downloading" -Completed
@@ -342,7 +354,7 @@ function Get-BytesWithProgress {
                 } finally { $mem.Dispose(); $stream.Dispose() }
             } finally { $client.Dispose() }
         } catch {
-            # Fall through to WebClient if HttpClient fails
+            Warn "Stream interrupted ($($_.Exception.Message)); retrying via fallback client..."
         }
     }
 
@@ -490,6 +502,7 @@ if (Test-Path $legacyExe) {
 
 Remove-Item -Recurse -Force $TMP_DIR -ErrorAction SilentlyContinue
 Ok "Installed: $targetExe"
+Info "Initializing ACS CLI & environment..."
 
 # --- Persona commands bootstrap ----------------------------------------------
 # Idempotent: `acs persona deploy` writes ~/.claude/commands/*.md.
