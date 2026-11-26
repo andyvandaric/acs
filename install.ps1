@@ -1,8 +1,7 @@
-﻿# install.ps1 - Install ACS for Windows
+# install.ps1 - Install ACS for Windows
 # Usage: $env:ACS_DOWNLOAD_CODE="<CODE>"; irm https://dl.uikode.com/install.ps1 | iex
 # Or:    pwsh -NoProfile -ExecutionPolicy Bypass -File install.ps1 -Code <CODE>
 
-[CmdletBinding()]
 param(
     [Alias("v")]
     [string]$Version = $env:ACS_VERSION,
