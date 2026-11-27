@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.48.0] - 2026-11-27
+
+
+### Fixed
+- sanitize andyvandaric browser profile in embedded assets
+- preserve headed+profile session and unhide Chrome GUI on Windows
+- purge legacy .cloak-browser-mcp in auto-handler
+- support headed+profile CDP and sync browser automation SSOT
+- sync hud assets on startup and raise sse scanner buffer to 16mib
+- resolve browser event loop crash and make hud version dynamic
+- add 10m stream timeout and inline download/init progress
+- enforce ticketed updates with auto code generation
+
 ## [v1.47.0] - 2026-11-26
 
 
