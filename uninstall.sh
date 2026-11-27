@@ -1,24 +1,50 @@
 #!/usr/bin/env bash
 # uninstall.sh — Standalone ACS CLI uninstaller for Linux/macOS
-# Usage: curl -fsSL https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.sh | bash
-# Or:    bash uninstall.sh [--purge]
+# Usage: curl -fsSL https://dl.uikode.com/uninstall.sh | bash
+# Or:    bash uninstall.sh [--purge] [--force] [--dry-run] [--help]
 set -euo pipefail
 
 PURGE=false
+FORCE=false
+DRY_RUN=false
+HELP=false
+
 for arg in "$@"; do
   case "$arg" in
-    --purge) PURGE=true ;;
+    -p|--purge) PURGE=true ;;
+    -f|--force) FORCE=true ;;
+    -d|--dry-run) DRY_RUN=true ;;
+    -h|--help) HELP=true ;;
   esac
 done
 
+if [[ "$HELP" == "true" ]]; then
+  echo ""
+  echo "ACS — Universal Uninstaller"
+  echo "------------------------------------"
+  echo "Usage:"
+  echo "  curl -fsSL https://dl.uikode.com/uninstall.sh | bash"
+  echo "  bash uninstall.sh [--purge] [--force] [--dry-run] [--help]"
+  echo ""
+  echo "Options:"
+  echo "  -p, --purge     Remove all ACS data, skills, configs, and ~/.acs directory"
+  echo "  -f, --force     Skip interactive confirmations"
+  echo "  -d, --dry-run   Preview actions without modifying files or system state"
+  echo "  -h, --help      Show this help message"
+  echo ""
+  exit 0
+fi
+
 info() { echo "  $*"; }
-ok() { echo "✅ $*"; }
-warn() { echo "⚠️  $*" >&2; }
+ok() { echo "[OK] $*"; }
+warn() { echo "[WARN] $*" >&2; }
 
 echo ""
-echo "⚡ ACS CLI — Uninstaller"
-echo "────────────────────────────────────"
-if [[ "$PURGE" == "true" ]]; then
+echo "ACS — Uninstaller"
+echo "------------------------------------"
+if [[ "$DRY_RUN" == "true" ]]; then
+  echo "  Mode: DRY RUN (no changes will be applied)"
+elif [[ "$PURGE" == "true" ]]; then
   echo "  Mode: PURGE (remove everything)"
 else
   echo "  Mode: Safe (keep skills, configs, data)"
@@ -26,19 +52,30 @@ else
 fi
 echo ""
 
-INSTALL_DIR="${HOME}/.acs/bin"
-SKILLS_DIR="${HOME}/.acs/skills"
+ACS_DIR="${HOME}/.acs"
+INSTALL_DIR="${ACS_DIR}/bin"
+SKILLS_DIR="${ACS_DIR}/skills"
 SKILLS_DIR_ALT="${XDG_DATA_HOME:-${HOME}/.local/share}/acs-cli/skills"
 HERMES_PROFILE="${HOME}/.hermes/profiles/acs-default"
 KANBAN_DB="${HOME}/.hermes/kanban.db"
 CLAUDE_DIR="${HOME}/.claude"
 
-# ─── Stop service ───────────────────────────────────────────────────────────
+# ─── Stop service & delegate to acs ──────────────────────────────────────────
 info "Stopping service..."
-if command -v acs >/dev/null 2>&1; then
-  acs service uninstall 2>/dev/null || true
-elif command -v acs-cli >/dev/null 2>&1; then
-  acs-cli service uninstall 2>/dev/null || true
+TARGET_EXE="${INSTALL_DIR}/acs"
+CLI_ARGS=("service" "uninstall")
+if [[ "$PURGE" == "true" ]]; then CLI_ARGS+=("--purge"); fi
+if [[ "$FORCE" == "true" ]]; then CLI_ARGS+=("--force"); fi
+if [[ "$DRY_RUN" == "true" ]]; then CLI_ARGS+=("--dry-run"); fi
+
+if [[ "$DRY_RUN" != "true" ]]; then
+  if [[ -x "$TARGET_EXE" ]]; then
+    "$TARGET_EXE" "${CLI_ARGS[@]}" 2>/dev/null || true
+  elif command -v acs >/dev/null 2>&1; then
+    acs "${CLI_ARGS[@]}" 2>/dev/null || true
+  elif command -v acs-cli >/dev/null 2>&1; then
+    acs-cli "${CLI_ARGS[@]}" 2>/dev/null || true
+  fi
 fi
 
 # Kill by PID file
@@ -48,7 +85,7 @@ if [[ -n "${XDG_DATA_HOME:-}" ]]; then
 else
   PID_FILE="${HOME}/.local/share/acs-cli/acs-cli.pid"
 fi
-if [[ -f "$PID_FILE" ]]; then
+if [[ -f "$PID_FILE" && "$DRY_RUN" != "true" ]]; then
   PID=$(cat "$PID_FILE" 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin).get('pid',''))" 2>/dev/null || true)
   if [[ -n "$PID" ]] && kill -0 "$PID" 2>/dev/null; then
     kill "$PID" 2>/dev/null || true
@@ -63,21 +100,24 @@ case "$(uname -s)" in
   Darwin)
     PLIST="${HOME}/Library/LaunchAgents/dev.acs.cli.plist"
     if [[ -f "$PLIST" ]]; then
-      launchctl unload "$PLIST" 2>/dev/null || true
-      rm -f "$PLIST"
+      if [[ "$DRY_RUN" != "true" ]]; then
+        launchctl unload "$PLIST" 2>/dev/null || true
+        rm -f "$PLIST"
+      fi
       ok "Removed launchd plist"
     fi
     ;;
   *)
-    # Canonical unit first, legacy unit second (pre-migration installs).
-    for UNIT_NAME in acs.service acs-cli.service; do
-      UNIT="${HOME}/.config/systemd/user/${UNIT_NAME}"
+    for unit in acs.service acs-cli.service acs-watchdog.timer; do
+      UNIT="${HOME}/.config/systemd/user/${unit}"
       if [[ -f "$UNIT" ]]; then
-        systemctl --user stop "$UNIT_NAME" 2>/dev/null || true
-        systemctl --user disable "$UNIT_NAME" 2>/dev/null || true
-        rm -f "$UNIT"
-        systemctl --user daemon-reload 2>/dev/null || true
-        ok "Removed systemd unit ($UNIT_NAME)"
+        if [[ "$DRY_RUN" != "true" ]]; then
+          systemctl --user stop "$unit" 2>/dev/null || true
+          systemctl --user disable "$unit" 2>/dev/null || true
+          rm -f "$UNIT"
+          systemctl --user daemon-reload 2>/dev/null || true
+        fi
+        ok "Removed systemd unit ($unit)"
       fi
     done
     ;;
@@ -88,26 +128,26 @@ info "Removing automation..."
 REMOVED=0
 
 if [[ -d "${HERMES_PROFILE}/hooks/intent-capture" ]]; then
-  rm -rf "${HERMES_PROFILE}/hooks/intent-capture"
+  [[ "$DRY_RUN" != "true" ]] && rm -rf "${HERMES_PROFILE}/hooks/intent-capture"
   REMOVED=$((REMOVED + 1))
 fi
 
 for script in watchdog.py board-sweep.py token-refresh.py; do
   if [[ -f "${HERMES_PROFILE}/scripts/${script}" ]]; then
-    rm -f "${HERMES_PROFILE}/scripts/${script}"
+    [[ "$DRY_RUN" != "true" ]] && rm -f "${HERMES_PROFILE}/scripts/${script}"
     REMOVED=$((REMOVED + 1))
   fi
 done
 
-# Remove post-commit hook if it's ACS-only
 if git rev-parse --git-dir >/dev/null 2>&1; then
   HOOK="$(git rev-parse --git-dir)/hooks/post-commit"
   if [[ -f "$HOOK" ]] && grep -q "acs \|acs-cli\|acs-docs" "$HOOK" 2>/dev/null; then
-    if grep -q "# --- ACS START ---" "$HOOK"; then
-      # Multi-purpose hook — strip ACS section
-      sed -i '/# --- ACS START ---/,/# --- ACS END ---/d' "$HOOK"
-    else
-      rm -f "$HOOK"
+    if [[ "$DRY_RUN" != "true" ]]; then
+      if grep -q "# --- ACS START ---" "$HOOK"; then
+        sed -i '/# --- ACS START ---/,/# --- ACS END ---/d' "$HOOK"
+      else
+        rm -f "$HOOK"
+      fi
     fi
     REMOVED=$((REMOVED + 1))
   fi
@@ -115,71 +155,97 @@ fi
 
 [[ $REMOVED -gt 0 ]] && ok "Removed $REMOVED automation items"
 
+# ─── Surgical MCP cleanup in .claude.json ──────────────────────────────────
+CLAUDE_JSON="${HOME}/.claude.json"
+if [[ -f "$CLAUDE_JSON" && "$DRY_RUN" != "true" ]]; then
+  PY_BIN=""
+  if command -v python3 >/dev/null 2>&1; then
+    PY_BIN="python3"
+  elif command -v python >/dev/null 2>&1; then
+    PY_BIN="python"
+  fi
+  if [[ -n "$PY_BIN" ]]; then
+    "$PY_BIN" -c '
+import json, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+try:
+    data = json.loads(p.read_text(encoding="utf-8"))
+except Exception:
+    sys.exit(0)
+servers = data.get("mcpServers")
+if isinstance(servers, dict):
+    keys = [k for k in servers if k.startswith("acs-")]
+    if keys:
+        for k in keys:
+            servers.pop(k, None)
+        p.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+' "$CLAUDE_JSON" 2>/dev/null || true
+  fi
+fi
+
 # ─── Purge-only removals ───────────────────────────────────────────────────
 if [[ "$PURGE" == "true" ]]; then
   echo ""
   info "Purging all data..."
 
-  # Skills
   for sdir in "$SKILLS_DIR" "$SKILLS_DIR_ALT"; do
-    if [[ -d "$sdir" ]]; then
+    if [[ -d "$sdir" && "$DRY_RUN" != "true" ]]; then
       rm -rf "$sdir"
     fi
   done
   ok "Removed skills"
 
-  # Hermes config (SOUL.md only, preserve config.yaml for re-install)
   if [[ -f "${HERMES_PROFILE}/SOUL.md" ]]; then
-    rm -f "${HERMES_PROFILE}/SOUL.md"
+    [[ "$DRY_RUN" != "true" ]] && rm -f "${HERMES_PROFILE}/SOUL.md"
     ok "Removed SOUL.md"
   fi
 
-  # Claude config — remove 9router apiUrl lines
   if [[ -f "${CLAUDE_DIR}/settings.json" ]]; then
-    sed -i '/127\.0\.0\.1:20128/d' "${CLAUDE_DIR}/settings.json"
+    [[ "$DRY_RUN" != "true" ]] && sed -i '/127\.0\.0\.1:20128/d' "${CLAUDE_DIR}/settings.json"
     ok "Cleaned claude settings.json"
   fi
 
-  # Kanban DB (backup first)
   if [[ -f "$KANBAN_DB" ]]; then
-    cp "$KANBAN_DB" "${KANBAN_DB}.uninstall-backup"
-    rm -f "$KANBAN_DB"
+    if [[ "$DRY_RUN" != "true" ]]; then
+      cp "$KANBAN_DB" "${KANBAN_DB}.uninstall-backup"
+      rm -f "$KANBAN_DB"
+    fi
     ok "Removed kanban.db (backup: ${KANBAN_DB}.uninstall-backup)"
   fi
 
-  # Binary (modern first, legacy fallback)
   if [[ -f "${INSTALL_DIR}/acs" ]]; then
-    rm -f "${INSTALL_DIR}/acs"
+    [[ "$DRY_RUN" != "true" ]] && rm -f "${INSTALL_DIR}/acs"
     ok "Removed binary"
   elif [[ -f "${INSTALL_DIR}/acs-cli" ]]; then
-    rm -f "${INSTALL_DIR}/acs-cli"
+    [[ "$DRY_RUN" != "true" ]] && rm -f "${INSTALL_DIR}/acs-cli"
     ok "Removed legacy binary"
   fi
 
-  # Remove PATH from shell RC
   for RC in "${HOME}/.bashrc" "${HOME}/.zshrc" "${HOME}/.config/fish/config.fish"; do
     if [[ -f "$RC" ]] && grep -q "${INSTALL_DIR}" "$RC" 2>/dev/null; then
-      # Remove the ACS CLI comment + PATH line
-      sed -i '/# ACS CLI/d' "$RC"
-      sed -i "\|${INSTALL_DIR}|d" "$RC"
+      if [[ "$DRY_RUN" != "true" ]]; then
+        sed -i '/# ACS CLI/d' "$RC"
+        sed -i "\|${INSTALL_DIR}|d" "$RC"
+      fi
       ok "Cleaned PATH from $(basename "$RC")"
     fi
   done
 
-  # Remove empty .acs dir
-  if [[ -d "${HOME}/.acs" ]]; then
-    rmdir "${HOME}/.acs/bin" 2>/dev/null || true
-    rmdir "${HOME}/.acs" 2>/dev/null || true
+  if [[ -d "$ACS_DIR" ]]; then
+    [[ "$DRY_RUN" != "true" ]] && rm -rf "$ACS_DIR"
+    ok "Purged $ACS_DIR"
   fi
 fi
 
 echo ""
-echo "────────────────────────────────────"
-if [[ "$PURGE" == "true" ]]; then
-  echo "  ACS CLI fully removed."
+echo "------------------------------------"
+if [[ "$DRY_RUN" == "true" ]]; then
+  echo "  Dry run complete. No changes made."
+elif [[ "$PURGE" == "true" ]]; then
+  echo "  ACS fully removed."
 else
   echo "  Automation removed. Skills + configs preserved."
   echo "  Run with --purge to remove everything."
 fi
-echo "────────────────────────────────────"
+echo "------------------------------------"
 echo ""

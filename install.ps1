@@ -315,7 +315,7 @@ function Get-StagingDir {
 
 function Get-BytesWithProgress {
     param([string]$Url)
-    # 1. On PowerShell 7+, use HttpClient for memory stream reading
+    # 1. On PowerShell 7+, use HttpClient streaming with Stopwatch speed meter
     if ($PSVersionTable.PSVersion.Major -ge 7) {
         try {
             $client = [System.Net.Http.HttpClient]::new()
@@ -326,19 +326,22 @@ function Get-BytesWithProgress {
                 $total = $resp.Content.Headers.ContentLength
                 $totalMb = if ($total -and $total -gt 0) { [math]::Round($total / 1MB, 1) } else { 0 }
                 $stream = $resp.Content.ReadAsStreamAsync().GetAwaiter().GetResult()
-                $mem = New-Object System.IO.MemoryStream
+                $memStream = New-Object System.IO.MemoryStream
+                $sw = [System.Diagnostics.Stopwatch]::StartNew()
                 try {
                     $buf = New-Object byte[] 81920
                     $read = 0
                     $lastMb = -1
                     $lastLogMb = 0
                     while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
-                        $mem.Write($buf, 0, $n)
+                        $memStream.Write($buf, 0, $n)
                         $read += $n
                         $mb = [math]::Floor($read / 1MB)
                         if ($total -and $total -gt 0 -and $mb -ne $lastMb) {
                             $lastMb = $mb
-                            Write-Progress -Activity "Downloading" -Status "$mb MB / $totalMb MB" -PercentComplete ([math]::Min(100, ($read * 100 / $total)))
+                            $elapsed = [math]::Max(0.01, $sw.Elapsed.TotalSeconds)
+                            $speedMb = [math]::Round(($read / 1MB) / $elapsed, 2)
+                            Write-Progress -Activity "Downloading ACS Binary" -Status "$mb MB / $totalMb MB ($speedMb MB/s)" -PercentComplete ([math]::Min(100, ($read * 100 / $total)))
                         }
                         if ($mb -ge ($lastLogMb + 10)) {
                             $lastLogMb = $mb
@@ -349,21 +352,45 @@ function Get-BytesWithProgress {
                             }
                         }
                     }
-                    Write-Progress -Activity "Downloading" -Completed
-                    return $mem.ToArray()
-                } finally { $mem.Dispose(); $stream.Dispose() }
+                    Write-Progress -Activity "Downloading ACS Binary" -Completed
+                    return ,$memStream.ToArray()
+                } finally { $memStream.Dispose(); $stream.Dispose() }
             } finally { $client.Dispose() }
         } catch {
             Warn "Stream interrupted ($($_.Exception.Message)); retrying via fallback client..."
         }
     }
 
-    # 2. Universal reliable fallback: WebClient
-    $wc = New-Object System.Net.WebClient
+    # 2. PowerShell 5.1 fallback: HttpWebRequest chunked streaming into MemoryStream
+    $req = [System.Net.HttpWebRequest]::Create($Url)
+    $req.Timeout = 600000
+    $resp = $req.GetResponse()
+    $total = $resp.ContentLength
+    $totalMb = if ($total -and $total -gt 0) { [math]::Round($total / 1MB, 1) } else { 0 }
+    $stream = $resp.GetResponseStream()
+    $memStream = New-Object System.IO.MemoryStream
+    $sw = [System.Diagnostics.Stopwatch]::StartNew()
     try {
-        return $wc.DownloadData($Url)
+        $buf = New-Object byte[] 81920
+        $read = 0
+        $lastMb = -1
+        while (($n = $stream.Read($buf, 0, $buf.Length)) -gt 0) {
+            $memStream.Write($buf, 0, $n)
+            $read += $n
+            $mb = [math]::Floor($read / 1MB)
+            if ($total -and $total -gt 0 -and $mb -ne $lastMb) {
+                $lastMb = $mb
+                $elapsed = [math]::Max(0.01, $sw.Elapsed.TotalSeconds)
+                $speedMb = [math]::Round(($read / 1MB) / $elapsed, 2)
+                Write-Progress -Activity "Downloading ACS Binary" -Status "$mb MB / $totalMb MB ($speedMb MB/s)" -PercentComplete ([math]::Min(100, ($read * 100 / $total)))
+            }
+        }
+        Write-Progress -Activity "Downloading ACS Binary" -Completed
+        return ,$memStream.ToArray()
     } finally {
-        $wc.Dispose()
+        $memStream.Dispose()
+        $stream.Dispose()
+        $resp.Close()
     }
 }
 

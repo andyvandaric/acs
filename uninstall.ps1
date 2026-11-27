@@ -1,21 +1,53 @@
-# uninstall.ps1 — Standalone ACS CLI uninstaller for Windows
-# Usage: irm https://raw.githubusercontent.com/andyvandaric/acs/main/uninstall.ps1 | iex
-# Or:    .\uninstall.ps1 [-Purge]
+# uninstall.ps1 - Standalone ACS CLI uninstaller for Windows
+# Usage: irm https://dl.uikode.com/uninstall.ps1 | iex
+# Or:    .\uninstall.ps1 [-Purge] [-Force] [-DryRun] [-Help]
+param(
+    [switch]$Purge,
+    [switch]$Force,
+    [switch]$DryRun,
+    [switch]$Help
+)
+
 $ErrorActionPreference = "Stop"
 
-param([switch]$Purge)
-
 # Re-parse args if invoked via piped iex
-if (-not $Purge -and ($args -contains "--purge" -or $args -contains "-Purge")) {
+if (-not $Purge -and ($args -contains "--purge" -or $args -contains "-Purge" -or $args -contains "-p")) {
     $Purge = $true
+}
+if (-not $Force -and ($args -contains "--force" -or $args -contains "-Force" -or $args -contains "-f")) {
+    $Force = $true
+}
+if (-not $DryRun -and ($args -contains "--dry-run" -or $args -contains "-DryRun" -or $args -contains "-d")) {
+    $DryRun = $true
+}
+if (-not $Help -and ($args -contains "--help" -or $args -contains "-Help" -or $args -contains "-h")) {
+    $Help = $true
+}
+
+if ($Help) {
+    Write-Host ""
+    Write-Host "ACS - Universal Uninstaller" -ForegroundColor Cyan
+    Write-Host "------------------------------------"
+    Write-Host "Usage:"
+    Write-Host "  irm https://dl.uikode.com/uninstall.ps1 | iex"
+    Write-Host "  .\uninstall.ps1 [-Purge] [-Force] [-DryRun] [-Help]"
+    Write-Host ""
+    Write-Host "Options:"
+    Write-Host "  -Purge    Remove all ACS data, skills, configs, and ~/.acs directory"
+    Write-Host "  -Force    Skip interactive confirmations"
+    Write-Host "  -DryRun   Preview actions without modifying files or system state"
+    Write-Host "  -Help     Show this help message"
+    Write-Host ""
+    return
 }
 
 function Info($msg) { Write-Host "  $msg" }
-function Ok($msg) { Write-Host "✅ $msg" -ForegroundColor Green }
-function Warn($msg) { Write-Host "⚠️  $msg" -ForegroundColor Yellow }
+function Ok($msg) { Write-Host "[OK] $msg" -ForegroundColor Green }
+function Warn($msg) { Write-Host "[WARN] $msg" -ForegroundColor Yellow }
 
-$INSTALL_DIR = "$env:USERPROFILE\.acs\bin"
-$SKILLS_DIR = "$env:USERPROFILE\.acs\skills"
+$ACS_DIR = "$env:USERPROFILE\.acs"
+$INSTALL_DIR = "$ACS_DIR\bin"
+$SKILLS_DIR = "$ACS_DIR\skills"
 $HERMES_PROFILE = "$env:LOCALAPPDATA\hermes\profiles\acs-default"
 $KANBAN_DB = "$env:LOCALAPPDATA\hermes\kanban.db"
 $CLAUDE_DIR = "$env:USERPROFILE\.claude"
@@ -27,9 +59,11 @@ $PID_FILES = @(
 )
 
 Write-Host ""
-Write-Host "⚡ ACS CLI — Uninstaller" -ForegroundColor Cyan
-Write-Host "────────────────────────────────────"
-if ($Purge) {
+Write-Host "ACS - Uninstaller" -ForegroundColor Cyan
+Write-Host "------------------------------------"
+if ($DryRun) {
+    Write-Host "  Mode: DRY RUN (no changes will be applied)" -ForegroundColor Yellow
+} elseif ($Purge) {
     Write-Host "  Mode: PURGE (remove everything)" -ForegroundColor Red
 } else {
     Write-Host "  Mode: Safe (keep skills, configs, data)"
@@ -37,47 +71,78 @@ if ($Purge) {
 }
 Write-Host ""
 
-# ─── Stop service ───────────────────────────────────────────────────────────
+# --- Stop service & delegate to acs.exe -------------------------------------
 Info "Stopping service..."
-if (Test-Path "$INSTALL_DIR\acs.exe") {
-    try { & "$INSTALL_DIR\acs.exe" service uninstall 2>$null } catch {}
-} elseif (Test-Path "$INSTALL_DIR\acs-cli.exe") {
-    try { & "$INSTALL_DIR\acs-cli.exe" service uninstall 2>$null } catch {}
+$cliArgs = @("service", "uninstall")
+if ($Purge) { $cliArgs += "--purge" }
+if ($Force) { $cliArgs += "--force" }
+if ($DryRun) { $cliArgs += "--dry-run" }
+
+$targetExe = Join-Path $INSTALL_DIR "acs.exe"
+$legacyExe = Join-Path $INSTALL_DIR "acs-cli.exe"
+if (Test-Path $targetExe) {
+    if (-not $DryRun) {
+        try { & $targetExe @cliArgs 2>$null } catch {}
+    } else {
+        Info "[DRY RUN] Would run: $targetExe $($cliArgs -join ' ')"
+    }
+} elseif (Test-Path $legacyExe) {
+    if (-not $DryRun) {
+        try { & $legacyExe @cliArgs 2>$null } catch {}
+    } else {
+        Info "[DRY RUN] Would run: $legacyExe $($cliArgs -join ' ')"
+    }
 }
 
 foreach ($pidFile in $PID_FILES) {
     if (Test-Path $pidFile) {
-        try {
-            $pidJson = Get-Content $pidFile -Raw | ConvertFrom-Json
-            $proc = Get-Process -Id $pidJson.pid -ErrorAction SilentlyContinue
-            if ($proc) {
-                Stop-Process -Id $pidJson.pid -Force -ErrorAction SilentlyContinue
-                Ok "Stopped service (PID $($pidJson.pid))"
-            }
-        } catch {}
-        Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
+        if (-not $DryRun) {
+            try {
+                $pidJson = Get-Content $pidFile -Raw | ConvertFrom-Json
+                $proc = Get-Process -Id $pidJson.pid -ErrorAction SilentlyContinue
+                if ($proc) {
+                    Stop-Process -Id $pidJson.pid -Force -ErrorAction SilentlyContinue
+                    Ok "Stopped service (PID $($pidJson.pid))"
+                }
+            } catch {}
+            Remove-Item $pidFile -Force -ErrorAction SilentlyContinue
+        } else {
+            Info "[DRY RUN] Would stop PID from $pidFile"
+        }
     }
 }
 
-# ─── Remove service registration (registry Run key) ────────────────────────
+# --- Remove service registration (registry Run key + Scheduled Tasks) -------
 Info "Removing service registration..."
 $regKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
 $regValue = "ACS_CLI_Service"
 try {
     $existing = Get-ItemProperty -Path $regKey -Name $regValue -ErrorAction SilentlyContinue
     if ($existing) {
-        Remove-ItemProperty -Path $regKey -Name $regValue -Force
-        Ok "Removed registry Run key"
+        if (-not $DryRun) {
+            Remove-ItemProperty -Path $regKey -Name $regValue -Force
+            Ok "Removed registry Run key"
+        } else {
+            Info "[DRY RUN] Would remove registry Run key $regValue"
+        }
     }
 } catch {}
 
-# ─── Remove automation (always) ────────────────────────────────────────────
+foreach ($t in @("ACS Watchdog", "ACS Kanban Backup")) {
+    if (-not $DryRun) {
+        try { & schtasks.exe /Delete /TN $t /F 2>$null | Out-Null } catch {}
+    } else {
+        Info "[DRY RUN] Would delete scheduled task $t"
+    }
+}
+
+# --- Remove automation (always) ---------------------------------------------
 Info "Removing automation..."
 $removed = 0
 
 $hooksDir = Join-Path $HERMES_PROFILE "hooks\intent-capture"
 if (Test-Path $hooksDir) {
-    Remove-Item $hooksDir -Recurse -Force
+    if (-not $DryRun) { Remove-Item $hooksDir -Recurse -Force }
     $removed++
 }
 
@@ -85,7 +150,7 @@ $scripts = @("watchdog.py", "board-sweep.py", "token-refresh.py")
 foreach ($script in $scripts) {
     $scriptPath = Join-Path $HERMES_PROFILE "scripts\$script"
     if (Test-Path $scriptPath) {
-        Remove-Item $scriptPath -Force
+        if (-not $DryRun) { Remove-Item $scriptPath -Force }
         $removed++
     }
 }
@@ -96,12 +161,14 @@ try {
     if ($gitDir) {
         $hookPath = Join-Path $gitDir "hooks\post-commit"
         if ((Test-Path $hookPath) -and (Select-String -Path $hookPath -Pattern "acs |acs-cli|acs-docs" -Quiet)) {
-            if (Select-String -Path $hookPath -Pattern "# --- ACS START ---" -Quiet) {
-                $content = Get-Content $hookPath -Raw
-                $content = $content -replace '(?s)# --- ACS START ---.*?# --- ACS END ---\r?\n?', ''
-                Set-Content $hookPath $content
-            } else {
-                Remove-Item $hookPath -Force
+            if (-not $DryRun) {
+                if (Select-String -Path $hookPath -Pattern "# --- ACS START ---" -Quiet) {
+                    $content = Get-Content $hookPath -Raw
+                    $content = $content -replace '(?s)# --- ACS START ---.*?# --- ACS END ---\r?\n?', ''
+                    Set-Content $hookPath $content
+                } else {
+                    Remove-Item $hookPath -Force
+                }
             }
             $removed++
         }
@@ -110,7 +177,29 @@ try {
 
 if ($removed -gt 0) { Ok "Removed $removed automation items" }
 
-# ─── Purge-only removals ───────────────────────────────────────────────────
+# --- Surgical MCP cleanup in .claude.json -----------------------------------
+$claudeJsonPath = Join-Path $env:USERPROFILE ".claude.json"
+if (Test-Path $claudeJsonPath) {
+    try {
+        $jsonObj = Get-Content $claudeJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($jsonObj -and $jsonObj.mcpServers) {
+            $acsKeys = @($jsonObj.mcpServers.PSObject.Properties | Where-Object { $_.Name -like "acs-*" } | ForEach-Object { $_.Name })
+            if ($acsKeys.Count -gt 0) {
+                if (-not $DryRun) {
+                    foreach ($k in $acsKeys) {
+                        $jsonObj.mcpServers.PSObject.Properties.Remove($k)
+                    }
+                    $jsonObj | ConvertTo-Json -Depth 16 | Set-Content -Path $claudeJsonPath -Encoding UTF8
+                    Ok "Removed $($acsKeys.Count) ACS MCP server(s) from .claude.json"
+                } else {
+                    Info "[DRY RUN] Would remove ACS MCP keys: $($acsKeys -join ', ')"
+                }
+            }
+        }
+    } catch {}
+}
+
+# --- Purge-only removals ----------------------------------------------------
 if ($Purge) {
     Write-Host ""
     Info "Purging all data..."
@@ -119,7 +208,7 @@ if ($Purge) {
     $skillsPaths = @($SKILLS_DIR, "$env:LOCALAPPDATA\acs-cli\skills")
     foreach ($sp in $skillsPaths) {
         if (Test-Path $sp) {
-            Remove-Item $sp -Recurse -Force
+            if (-not $DryRun) { Remove-Item $sp -Recurse -Force }
         }
     }
     Ok "Removed skills"
@@ -127,23 +216,27 @@ if ($Purge) {
     # Hermes SOUL.md
     $soulPath = Join-Path $HERMES_PROFILE "SOUL.md"
     if (Test-Path $soulPath) {
-        Remove-Item $soulPath -Force
+        if (-not $DryRun) { Remove-Item $soulPath -Force }
         Ok "Removed SOUL.md"
     }
 
-    # Claude config — remove 9router apiUrl lines
+    # Claude config - remove 9router apiUrl lines
     $settingsPath = Join-Path $CLAUDE_DIR "settings.json"
     if (Test-Path $settingsPath) {
-        $content = Get-Content $settingsPath -Raw
-        $content = $content -replace '(?m)^.*127\.0\.0\.1:20128.*\r?\n?', ''
-        Set-Content $settingsPath $content
+        if (-not $DryRun) {
+            $content = Get-Content $settingsPath -Raw
+            $content = $content -replace '(?m)^.*127\.0\.0\.1:20128.*\r?\n?', ''
+            Set-Content $settingsPath $content
+        }
         Ok "Cleaned claude settings.json"
     }
 
     # Kanban DB (backup first)
     if (Test-Path $KANBAN_DB) {
-        Copy-Item $KANBAN_DB "$KANBAN_DB.uninstall-backup" -Force
-        Remove-Item $KANBAN_DB -Force
+        if (-not $DryRun) {
+            Copy-Item $KANBAN_DB "$KANBAN_DB.uninstall-backup" -Force
+            Remove-Item $KANBAN_DB -Force
+        }
         Ok "Removed kanban.db (backup: $KANBAN_DB.uninstall-backup)"
     }
 
@@ -153,33 +246,41 @@ if ($Purge) {
         $binaryPath = Join-Path $INSTALL_DIR "acs-cli.exe"
     }
     if (Test-Path $binaryPath) {
-        $uninstallPath = "$binaryPath.uninstall"
-        Move-Item $binaryPath $uninstallPath -Force -ErrorAction SilentlyContinue
-        Ok "Removed binary (renamed to .uninstall)"
+        if (-not $DryRun) {
+            $uninstallPath = "$binaryPath.uninstall"
+            Move-Item $binaryPath $uninstallPath -Force -ErrorAction SilentlyContinue
+        }
+        Ok "Removed binary"
     }
 
     # Remove PATH from user environment
     $currentPath = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($currentPath -like "*$INSTALL_DIR*") {
-        $newPath = ($currentPath -split ";" | Where-Object { $_ -ne $INSTALL_DIR }) -join ";"
-        [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+        if (-not $DryRun) {
+            $newPath = ($currentPath -split ";" | Where-Object { $_ -ne $INSTALL_DIR }) -join ";"
+            [Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+        }
         Ok "Removed from PATH"
     }
 
-    # Remove empty .acs dir
-    $acsDir = "$env:USERPROFILE\.acs"
-    if ((Test-Path $acsDir) -and -not (Get-ChildItem $acsDir -Recurse -File)) {
-        Remove-Item $acsDir -Recurse -Force -ErrorAction SilentlyContinue
+    # Remove entire ~/.acs directory recursively
+    if (Test-Path $ACS_DIR) {
+        if (-not $DryRun) {
+            Remove-Item $ACS_DIR -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        Ok "Purged $ACS_DIR"
     }
 }
 
 Write-Host ""
-Write-Host "────────────────────────────────────"
-if ($Purge) {
-    Write-Host "  ACS CLI fully removed." -ForegroundColor Green
+Write-Host "------------------------------------"
+if ($DryRun) {
+    Write-Host "  Dry run complete. No changes made." -ForegroundColor Yellow
+} elseif ($Purge) {
+    Write-Host "  ACS fully removed." -ForegroundColor Green
 } else {
     Write-Host "  Automation removed. Skills + configs preserved."
     Write-Host "  Run with -Purge to remove everything."
 }
-Write-Host "────────────────────────────────────"
+Write-Host "------------------------------------"
 Write-Host ""
