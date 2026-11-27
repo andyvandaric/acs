@@ -27,7 +27,7 @@ Catatan rilis ini menyoroti manfaat nyata bagi pengguna, peningkatan performa, d
 - **Sinkronisasi Changelog Bilingual**: Penerapan catatan rilis bilingual terkurasi ke CDN.
 
 ### Diubah
-- **Indikator Pembaruan Global Lebih Bersih**: Menghapus dock mengambang `GlobalUpdateIndicator` demi tampilan dashboard yang lebih ringkas.
+- **Indikator Pembaruan Global Lebih Bersih**: Menyederhanakan indikator pembaruan pada tampilan dashboard agar lebih ringkas.
 
 ## [v1.46.0] - 2026-11-24
 
@@ -250,7 +250,7 @@ Catatan rilis ini menyoroti manfaat nyata bagi pengguna, peningkatan performa, d
 ## [v1.33.0] - 2026-10-12
 
 ### Ditambahkan
-- **Klasifikasi Gerbang Tugas Tiga Lapis**: Penjenjangan otomatis jenis tugas (Tier 1 Langsung, Tier 2 PRD, Tier 3 Operasional) berdasarkan analisis dampak.
+- **Klasifikasi Gerbang Tugas Tiga Lapis**: Penjenjangan otomatis jenis tugas (Lapis 1 Langsung, Lapis 2 Rencana Terstruktur, Lapis 3 Operasional) berdasarkan analisis dampak.
 - **Perekam Pengesahan & Loop Umpan Balik**: Pencatatan bukti audit verifikasi yang menghubungkan vonis pengujian dengan dokumen rencana.
 - **Badge Notifikasi Sesi Belum Dibaca**: Indikator jumlah pesan belum dibaca realtime pada detak jantung sesi aktif.
 

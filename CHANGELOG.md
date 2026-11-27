@@ -13,22 +13,16 @@
 
 ## [v1.47.0] - 2026-11-26
 
-
 ### Added
-- replace cloakbrowser with seleniumbase pure cdp across agentic-stack and docs
-
-### Fixed
-- harden hook deadlock sweeper against killing agy and interactive shells
-- quote antigravity HUD statusline path with spaces and auto-heal
-- set browser favicon to official acs logo
-- add self-healing guard for 9router chunk 915 double closing braces
-- deploy curated bilingual changelogs to sovereign cdn
+- **SeleniumBase Pure CDP Browser Automation**: 100% headless background agent web browsing with zero focus-stealing popups and native stealth browser fingerprint emulation for audits, research, and form automation.
 
 ### Changed
-- unwire GlobalUpdateIndicator floating dock
+- **Workspace Path Auto-Quoting & UI Polish**: Automatic quote-handling for statusline workspaces containing directory spaces, paired with standardized official ACS branding and updated Pure CDP browser documentation.
 
-### Documentation
-- update browser documentation to SeleniumBase Pure CDP
+### Fixed
+- **Anti-Deadlock Sweeper & Subprocess Immunity**: Strict whitelist guards protecting agent CLI binaries and parent shells from premature termination during long-running tasks.
+- **Self-Healing LLM Stream Recovery**: Automated detection and sanitization for malformed closing braces in streaming provider chunks to prevent parsing failures.
+- **Bilingual Changelog Delivery**: Curated English and Indonesian release notes synchronized cleanly across download mirrors.
 
 ## [v1.46.0] - 2026-11-24
 
